@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { Grid, Loader } from "@webmens-ru/ui_lib";
-import { TRowItem } from "@webmens-ru/ui_lib/dist/components/grid/types";
+import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { useSaveSchemaMutation } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { setCheckboxes } from "../mainSlice";
@@ -43,7 +43,7 @@ export function GridWrapper() {
   );
 
   const checkboxesHandler = useCallback(
-    (arr: number[]) => {
+    (arr: TRowID[]) => {
       if (grid) {
         // const checkboxes = grid?.grid
         //   ?.filter((row: { id: number }) => arr.includes(row.id))
