@@ -10,6 +10,7 @@ import {
   useLazyGetFieldsQuery,
   useLazyGetGridQuery,
 } from "../mainApi";
+import { setGrid, setSchema } from "../mainSlice"
 
 export const useData = () => {
   const { mainSlice } = useAppSelector((state) => state);
@@ -36,7 +37,7 @@ export const useData = () => {
       let currentFilter;
       let currentFields;
 
-      const [filters, allFields] = await Promise.all([
+      const [filters, allFields, schema] = await Promise.all([
         getFilters(entity),
         getAllFields(entity),
         getSchema(entity),
@@ -57,16 +58,20 @@ export const useData = () => {
           currentFields.data,
           allFields.data,
         ).filter((f) => Boolean(f.visible));
+        
         const filterResponse = getFilterResponse(correctFields);
-        dispatch(setFilterResponse(filterResponse));
-        await getGrid({
+        const grid = await getGrid({
           entity,
-          filter: filterResponse,
+          filter: mainSlice.toolbarFilterResponse !== null ? mainSlice.toolbarFilterResponse : filterResponse,
         });
+        
+        dispatch(setFilterResponse(filterResponse));
+        dispatch(setSchema(schema.data))
+        dispatch(setGrid(grid.data))
       }
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, isCorrect, mainSlice.currentTab]);
+  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, isCorrect, mainSlice.currentTab, mainSlice.toolbarFilterResponse, mainSlice.lastTimeSliderOpened]);
 
   useLayoutEffect(() => {
     init();

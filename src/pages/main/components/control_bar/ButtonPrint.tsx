@@ -16,7 +16,7 @@ export function ButtonPrint() {
     setIsLoadingPays(true);
     await downloadFile(
       url,
-      mainSlice.checkboxes.map((item) => item.id),
+      mainSlice.checkboxes,
       "docx",
     );
     setShow(false);
@@ -35,7 +35,7 @@ export function ButtonPrint() {
     setIsShowModal(false);
     await downloadFile(
       "/route-sheet/print-docx",
-      { id: mainSlice.checkboxes.map((item) => item.id), text },
+      { id: mainSlice.checkboxes, text },
       "docx",
     );
   };
