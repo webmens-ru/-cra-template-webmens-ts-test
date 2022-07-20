@@ -6,6 +6,7 @@ import { useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation, us
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { axiosInst } from "../../../app/api/baseQuery";
 import { setTimeSliderOpened } from "../mainSlice";
+import MainForm from "../../mainForm/mainForm";
 
 export function TopBarButtons() {
   const { mainSlice } = useAppSelector((state) => state);
@@ -79,6 +80,7 @@ export function TopBarButtons() {
       window.open(buttonAdd.data?.params.link);
     } else {
       console.log(buttonAdd.data?.params);
+      return <MainForm />
     }
   };
 

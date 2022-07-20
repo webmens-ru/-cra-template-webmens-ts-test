@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Main } from "./pages/main";
 import { MainDetail } from "./pages/mainDetail";
+import MainForm from "./pages/mainForm/mainForm";
 
 function App() {
   useEffect(() => {
@@ -16,6 +17,8 @@ function App() {
       switch (opt.path) {
         case "mainDetail":
           return <MainDetail title={opt.mainDetailTitle}/>;
+        case "mainForm":
+          return <MainForm mode="edit"/>;
         default:
           return <Main />
       }
