@@ -1,38 +1,48 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Main } from "./pages/main";
+import { MainDetail } from "./pages/mainDetail";
 
 function App() {
-  const router = useMemo(() => {
-    let params: { [key: string]: any } = {};
+  useEffect(() => {
     if (process.env.NODE_ENV === "production") {
-      params = window._PARAMS_.placementOptions;
-    } else {
-      const pathArr = window.location.pathname
-        .replace("/", "")
-        .split("&")
-        .map((item) => item.split("="))
-        .flat();
-      for (let i = 0; i < pathArr.length; i += 2) {
-        params[pathArr[i]] = pathArr[i + 1];
-      }
+      const size = BX24.getScrollSize()
+      BX24.resizeWindow(size.scrollWidth, size.scrollHeight - 5)
     }
-    if (!params) return <h1>error</h1>;
-    switch (params.entity) {
-      // case "taskstatistics/all-in-work":
-      //   return <AllInWorks />;
-      // case "taskstatistics/leader-effectiveness":
-      //   return <LeaderEff menuId={params.menuId}/>
-      // case "taskstatistics/task-report":
-      //   return <TaskReport menuId={params.menuId}/>
-      // case "taskstatistics/personal-efficiency":
-      //   return <PersonalEff menuId={params.menuId}/>
-      default:
-        return <Main menuId={params.menuId} />;
-    }
-  }, []);
+  }, [])
+  const switchPath = (opt: TPlacementOptions) => {
+    try {
+      console.log(opt.path);
 
-  return router;
+      switch (opt.path) {
+        case "mainDetail":
+          return <MainDetail title={opt.mainDetailTitle}/>;
+        default:
+          return <Main />
+      }
+    } catch (error) {
+      console.log([error, 'error']);
+      return <Main />
+    }
+  };
+
+  if (process.env.NODE_ENV === "production") {
+    return switchPath(window._PARAMS_.placementOptions);
+  }
+  if (process.env.NODE_ENV === "development") {
+    const pathArr = window.location.pathname
+      .replace("/", "")
+      .split("&")
+      .map((item) => item.split("="))
+      .flat();
+    const pathObj: any = {};
+    for (let i = 0; i < pathArr.length; i += 2) {
+      pathObj[pathArr[i]] = pathArr[i + 1];
+    }
+
+    return switchPath(pathObj);
+  }
+  return <Main />;
 }
 
 export default App;
-// npx create-react-app dir_name --template webmens-ts
+

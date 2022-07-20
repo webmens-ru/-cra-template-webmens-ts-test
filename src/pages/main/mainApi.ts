@@ -133,6 +133,11 @@ export const mainApi = createApi({
         body,
       }),
     }),
+    getButtonAdd: build.query<{title: string, params: any}, string>({ //TODO: params: any
+      query: (entity) => ({
+        url: `${entity}/get-button-add`,
+      }),
+    })
   }),
 });
 
@@ -154,5 +159,6 @@ export const {
   useLazyGetGridQuery,
   useLazyGetDynamicSelectItemsQuery,
   useSendDataOnButtonClickMutation,
-  useLazyGetDynamicButtonItemsQuery
+  useLazyGetDynamicButtonItemsQuery,
+  useLazyGetButtonAddQuery
 } = mainApi;

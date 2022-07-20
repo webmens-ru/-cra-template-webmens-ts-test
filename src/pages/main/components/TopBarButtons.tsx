@@ -1,21 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button } from "@webmens-ru/ui_lib";
 import styled from "styled-components";
-import { useAppSelector } from "../../../app/store/hooks";
-import { useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation } from "../mainApi";
+import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
+import { useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation, useLazyGetButtonAddQuery } from "../mainApi";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { axiosInst } from "../../../app/api/baseQuery";
+import { setTimeSliderOpened } from "../mainSlice";
 
 export function TopBarButtons() {
   const { mainSlice } = useAppSelector((state) => state);
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
+  const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (mainSlice.currentTab?.params?.entity) {
       getItems(mainSlice.currentTab?.params?.entity);
+      getButtonAdd(mainSlice.currentTab?.params?.entity);
     }
-  }, [getItems, mainSlice.currentTab?.params?.entity]);
+  }, [getItems, getButtonAdd, mainSlice.currentTab?.params?.entity]);
 
   const itemClickHandler = async (item: any) => {
     const { grid, checkboxes } = mainSlice
@@ -49,8 +53,46 @@ export function TopBarButtons() {
     link.click()
   }
 
+  const buttonAddOnClick = () => {
+    console.log(buttonAdd.data, 'buttonAdd.data')
+    if (process.env.NODE_ENV === "production") {
+      console.log();
+      
+      switch (buttonAdd.data?.params.type) {
+        case "openPath":
+          BX24.openPath(buttonAdd.data?.params.link, (res: any) => console.log(res));
+          break;
+        case "openApplication":
+          BX24.openApplication(buttonAdd.data?.params, function() {
+            if (buttonAdd.data?.params.updateOnCloseSlider) {
+              dispatch(setTimeSliderOpened(Date.now()))
+            }
+          });
+          break;
+        case "openLink":
+          window.open(buttonAdd.data?.params.link);
+          break;
+        default:
+          break;
+      }
+    } else if (buttonAdd.data?.params.type === "openLink") {
+      window.open(buttonAdd.data?.params.link);
+    } else {
+      console.log(buttonAdd.data?.params);
+    }
+  };
+
   return (
     <Container>
+      {!!buttonAdd.data && (
+      <Button
+        color="success"
+        svgBefore="black-plus"
+        buttonProps={{ onClick: buttonAddOnClick }}
+      >
+        {buttonAdd.data?.title}
+      </Button>
+      )}
       <Button
         variant="square"
         color="light"
