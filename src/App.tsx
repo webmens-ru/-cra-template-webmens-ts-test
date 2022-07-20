@@ -18,7 +18,7 @@ function App() {
         case "mainDetail":
           return <MainDetail title={opt.mainDetailTitle}/>;
         case "mainForm":
-          return <MainForm mode="edit"/>;
+          return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action}/>;
         default:
           return <Main />
       }

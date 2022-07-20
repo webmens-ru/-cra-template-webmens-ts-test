@@ -80,7 +80,7 @@ export function TopBarButtons() {
       window.open(buttonAdd.data?.params.link);
     } else {
       console.log(buttonAdd.data?.params);
-      return <MainForm />
+      // return <MainForm />
     }
   };
 

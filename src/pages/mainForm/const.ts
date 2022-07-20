@@ -5,7 +5,7 @@ export const mainFormFields = [
   { type: "input", name: "first_name", label: "Имя" },
   { type: "input", name: "second_name", label: "Отчество" },
   { type: "input", name: "last_name_en", label: "Фамилия", labelSuffix: "на англ. языке" },
-  { type: "input", name: "first_name", label: "Имя", labelSuffix: "на англ. языке" },
+  { type: "input", name: "first_name_en", label: "Имя", labelSuffix: "на англ. языке" },
   { type: "input", name: "company_name", label: "Название компании" },
   { type: "input", name: "company_name_en", label: "Название компании", labelSuffix: "на англ. языке" },
   { type: "input", name: "job_title", label: "Должность" },
