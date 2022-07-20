@@ -27,7 +27,6 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
       ) : (
         <MainContainer>
           <img src={webmensLogo} alt="webmens logo" />
-          
         </MainContainer>
       )}
     </>
