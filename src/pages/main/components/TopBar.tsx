@@ -1,6 +1,6 @@
 import React from "react";
-import { Filter } from "@webmens-ru/ui_lib";
-import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { FilterAlpha as Filter } from "@webmens-ru/ui_lib";
+import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter_2/types"; 
 import { setCurrentFilter, useLazyGetDynamicSelectItemsQuery } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import CopyToClipboard from "../../../components/copyToClipboard";
@@ -12,7 +12,7 @@ export function TopBar() {
   const { mainSlice } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
-  const filterProps = useFilterQuery();
+  const filterProps = useFilterQuery();  
 
   const setFilter = (filter: TFilter) => {
     dispatch(setCurrentFilter(filter));

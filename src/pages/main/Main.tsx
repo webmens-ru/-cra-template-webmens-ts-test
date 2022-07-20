@@ -8,11 +8,11 @@ import { MainContainer } from "./mainStyle";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { useSetTabsMutation } from ".";
 
-export function Main({menuId}:{menuId: number}) {
+export function Main({ menuId = 1 }: { menuId?: number }) {
   const { tabs, setTab } = useMenuData(menuId);
+  const [itemsMutation] = useSetTabsMutation();
 
   const { isCorrect } = useData();
-  const [itemsMutation] = useSetTabsMutation();
 
   if (tabs.isLoading) return <Loader />;
 
@@ -27,6 +27,7 @@ export function Main({menuId}:{menuId: number}) {
       ) : (
         <MainContainer>
           <img src={webmensLogo} alt="webmens logo" />
+          
         </MainContainer>
       )}
     </>

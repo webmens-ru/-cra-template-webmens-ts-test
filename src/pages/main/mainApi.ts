@@ -1,6 +1,7 @@
+import { TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types";
-import { TColumnItem } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types"
+import { TColumnItem } from "@webmens-ru/ui_lib/dist/components/grid"
 import { baseQuery } from "../../app/api/baseQuery";
 
 export const mainApi = createApi({
@@ -110,7 +111,7 @@ export const mainApi = createApi({
       }),
       invalidatesTags: ["Schema"],
     }),
-    getGrid: build.query<TColumnItem[], {entity: string, filter: string}>({
+    getGrid: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[]}, { entity: string, filter: string }>({
       query: (params) => ({
         url: `${params.entity}/data?${params.filter}`,
       }),
@@ -120,18 +121,23 @@ export const mainApi = createApi({
         url: `select-dinamic/get-list?name=${code}`
       })
     }),
-    getDynamicButtonItems: build.query<{label: string, title: string}[], string>({
+    getDynamicButtonItems: build.query<{ label: string, title: string }[], string>({
       query: (entity) => ({
         url: `/admin/ui/grid/action/entity-actions?entity=${entity}`
       })
     }),
     sendDataOnButtonClick: build.mutation({
-      query: ({url, body}) => ({
+      query: ({ url, body }) => ({
         url,
         method: "POST",
         body,
       }),
     }),
+    getButtonAdd: build.query<{title: string, params: any}, string>({ //TODO: params: any
+      query: (entity) => ({
+        url: `${entity}/get-button-add`,
+      }),
+    })
   }),
 });
 
@@ -152,6 +158,7 @@ export const {
   useSaveSchemaMutation,
   useLazyGetGridQuery,
   useLazyGetDynamicSelectItemsQuery,
-  useLazyGetDynamicButtonItemsQuery,
   useSendDataOnButtonClickMutation,
+  useLazyGetDynamicButtonItemsQuery,
+  useLazyGetButtonAddQuery
 } = mainApi;

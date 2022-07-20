@@ -12,6 +12,7 @@ import {
   useUpdateFieldMutation,
   useLazyGetGridQuery,
   setIsLoading,
+  setGrid,
 } from "..";
 import { axiosInst } from "../../../app/api/baseQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
@@ -29,18 +30,20 @@ export const useFilterQuery = () => {
   const [createField] = useAddFieldMutation();
   const [deleteField] = useDeleteFieldMutation();
   const [getFieldsQuery] = useLazyGetFieldsQuery();
-  const [getGrid] = useLazyGetGridQuery();
+  const [getGrid] = useLazyGetGridQuery();  
 
   const onSearch = useCallback(
     async (fields: TField[]) => {
       dispatch(setIsLoading(true));
       const filterResponse = getFilterResponse(fields);
-      await getGrid({
+      const grid = await getGrid({
         entity: mainSlice.currentTab.params.entity,
         filter: filterResponse,
       });
-      dispatch(setFilterResponse(filterResponse));
+      
       getFieldsQuery(mainSlice.currentFilter.id);
+      dispatch(setFilterResponse(filterResponse));
+      dispatch(setGrid(grid.data))
       dispatch(setIsLoading(false));
     },
     [
@@ -92,7 +95,7 @@ export const useFilterQuery = () => {
     [mainApi.queries, mainSlice.currentTab.params?.entity],
   );
 
-  const fields = useMemo<any>(() => concatFieldsAndAllFields(f, all), [all, f]);
+  const fields = useMemo<any>(() => concatFieldsAndAllFields(f, all), [all, f]);  
 
   const updateFieldsOrder = async (fields: TField[]) => {
     await axiosInst.post(
