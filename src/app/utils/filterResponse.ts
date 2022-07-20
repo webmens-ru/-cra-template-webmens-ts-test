@@ -1,4 +1,5 @@
 import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { IDataItem } from "@webmens-ru/ui_lib/dist/components/select/types";
 
 export const getFilterResponse = (array: TField[]) => {
   return array
@@ -16,7 +17,7 @@ export const getFilterResponse = (array: TField[]) => {
         case "multiple_select_dynamic":
         case "select_dynamic":
         case "select":
-          return getSelectResponse(item.value, item.queryKey);
+          return getSelectResponse(item.value as unknown as IDataItem[], item.queryKey);
         default:
           return "";
       }
@@ -25,19 +26,24 @@ export const getFilterResponse = (array: TField[]) => {
     .join("&");
 };
 
-const getSelectResponse = (value: string[], name: string) => {
-  if (value.length === 0 || value[0] === "") {
+const getSelectResponse = (value: IDataItem[], name: string) => {
+  const valueWithoutSpaces = value.filter(val => val)
+
+  if (valueWithoutSpaces.length === 0) {
     return "";
   }
-  return `${name}=${value[0]}`;
+  if (valueWithoutSpaces.length > 1) {
+    return getMultiplySelectResponse(valueWithoutSpaces, name)
+  }
+  return `${name}=${value[0].value}`;
 };
 
-// const getMultiplySelectResponse = (value: string[], name: string) => {
-//   if (value.length === 0) {
-//     return "";
-//   }
-//   return `${name}=in[${value.join(",")}]`;
-// };
+const getMultiplySelectResponse = (value: IDataItem[], name: string) => {
+  if (value.length === 0) {
+    return "";
+  }
+  return `${name}=in[${value.map(val => val.value).join(",")}]`;
+};
 
 const getStringResponse = (value: string[], name: string) => {
   if (value.length === 0 || value[0] === "" || !value) {
