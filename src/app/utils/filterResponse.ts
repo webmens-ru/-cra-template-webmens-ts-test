@@ -1,50 +1,56 @@
 import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { TFilterDates } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
+import { IDataItem } from "@webmens-ru/ui_lib/dist/components/select/types";
 
 export const getFilterResponse = (array: TField[]) => {
-  return array
-    .map((item) => {
-      switch (item.type) {
-        case "date":
-          return getDateResponse(item.value, item.queryKey)
-            .replace(/-(\d{1})([-,\]])/g, "-0$1$2")
-            .replace(/-(\d{1})([-,\]])/g, "-0$1$2");
-        case "integer":
-          return getIntegerResponse(item.value, item.queryKey);
-        case "string":
-          return getStringResponse(item.value, item.queryKey);
-        case "multiple_select":
-        case "multiple_select_dynamic":
-        case "select_dynamic":
-        case "select":
-          return getSelectResponse(item.value, item.queryKey);
-        default:
-          return "";
-      }
-    })
+  return array.map((item) => {
+    switch (item.type) {
+      case "date":
+        return getDateResponse(item.value, item.queryKey)
+          .replace(/-(\d{1})([-,\]])/g, "-0$1$2")
+          .replace(/-(\d{1})([-,\]])/g, "-0$1$2");
+      case "integer":
+        return getIntegerResponse(item.value, item.queryKey);
+      case "string":
+        return getStringResponse(item.value, item.queryKey);
+      case "multiple_select":
+      case "multiple_select_dynamic":
+      case "select_dynamic":
+      case "select":
+        return getSelectResponse(item.value as unknown as IDataItem[], item.queryKey);
+      default:
+        return "";
+    }
+  })
     .filter((item) => item !== "")
     .join("&");
 };
 
-const getSelectResponse = (value: string[], name: string) => {
-  if (value.length === 0 || value[0] === "") {
+const getSelectResponse = (value: IDataItem[], name: string) => {
+  const valueWithoutSpaces = value.filter(val => val)
+
+  if (valueWithoutSpaces.length === 0) {
     return "";
   }
-  return `${name}=${value[0]}`;
+  if (valueWithoutSpaces.length > 1) {
+    return getMultiplySelectResponse(valueWithoutSpaces, name)
+  }
+  return `${name}=${value[0].value}`;
 };
 
-// const getMultiplySelectResponse = (value: string[], name: string) => {
-//   if (value.length === 0) {
-//     return "";
-//   }
-//   return `${name}=in[${value.join(",")}]`;
-// };
-
-const getStringResponse = (value: string[], name: string) => {
-  if (value.length === 0 || value[0] === "" || !value) {
+const getMultiplySelectResponse = (value: IDataItem[], name: string) => {
+  if (value.length === 0) {
     return "";
   }
-  if (value[0] === "isNull") {
-    return `${name}=isNull`;
+  return `${name}=in[${value.map(val => val.value).join(",")}]`;
+};
+
+const getStringResponse = (value: string[], name: string) => {
+  if (value.length === 0 || value[0] === "" || !value || (value[0] === "=" && !value[1])) {
+    return "";
+  }
+  if (value[0] === "isNull" || value[0] === "isNotNull") {
+    return `${name}=${value[0]}`;
   }
   return `${name}${value[0]}${value[1]}`;
 };
@@ -66,31 +72,31 @@ export const getDateResponse = (value: string[], name: string) => {
   const date = new Date();
   const year = new Date().getFullYear();
   const month = new Date().getMonth() + 1;
-  switch (value[0]) {
-    case "Любая дата":
+  switch (value[0] as TFilterDates) {
+    case "anyDate":
       return "";
-    case "Вчера":
+    case "yesterday":
       return (
         name +
         "=[>=f,<s]"
           .replace("f", `${autoYear(-1)}-${autoMonth(-1)}-${autoDays(-1)}`)
           .replace("s", `${year}-${month}-${autoDays(0)}`)
       );
-    case "Сегодня":
+    case "today":
       return (
         name +
         "=[>=f,<s]"
           .replace("f", `${year}-${month}-${autoDays(0)}`)
           .replace("s", `${autoYear(1)}-${autoMonth(1)}-${autoDays(1)}`)
       );
-    case "Завтра":
+    case "tomorrow":
       return (
         name +
         "=[>=f,<s]"
           .replace("f", `${autoYear(1)}-${autoMonth(1)}-${autoDays(1)}`)
           .replace("s", `${autoYear(2)}-${autoMonth(2)}-${autoDays(2)}`)
       );
-    case "Текущая неделя":
+    case "currentWeek":
       let countDaysToStartOfWeek = date.getDay() - 1;
       let countDaysToEndOfWeek = 7 - (date.getDay() || 7) + 1;
       return (
@@ -109,7 +115,7 @@ export const getDateResponse = (value: string[], name: string) => {
             )}-${autoDays(countDaysToEndOfWeek)}`,
           )
       );
-    case "Текущий месяц":
+    case "currentMonth":
       return (
         name +
         "=[>=f,<s]"
@@ -121,15 +127,15 @@ export const getDateResponse = (value: string[], name: string) => {
             )}-1`,
           )
       );
-    case "Текущий квартал":
+    case "currentQuarter":
       const currentQuarter =
         month < 4
           ? [1, 4]
           : month < 7
-          ? [4, 7]
-          : month < 10
-          ? [7, 10]
-          : [10, 1];
+            ? [4, 7]
+            : month < 10
+              ? [7, 10]
+              : [10, 1];
       return (
         name +
         "=[>=f,<s]"
@@ -139,14 +145,14 @@ export const getDateResponse = (value: string[], name: string) => {
             `${month < 10 ? year : year + 1}-${currentQuarter[1]}-1`,
           )
       );
-    case "Последние 7 дней":
+    case "last7Days":
       return (
         name +
         "=[>=f,<s]"
           .replace("f", `${autoYear(-6)}-${autoMonth(-6)}-${autoDays(-6)}`)
           .replace("s", `${autoYear(1)}-${autoMonth(1)}-${autoDays(1)}`)
       );
-    case "Последние 30 дней":
+    case "last30Days":
       return (
         name +
         "=[>=f,<s]"
@@ -156,21 +162,21 @@ export const getDateResponse = (value: string[], name: string) => {
           )
           .replace("s", `${autoYear(1)}-${autoMonth(1)}-${autoDays(1)}`)
       );
-    case "Последние 60 дней":
+    case "last60Days":
       return (
         name +
         "=[>=f,<s]"
           .replace("f", `${autoYear(-60)}-${autoMonth(-60)}-${autoDays(-60)}`)
           .replace("s", `${autoYear(1)}-${autoMonth(1)}-${autoDays(1)}`)
       );
-    case "Последние 90 дней":
+    case "last90Days":
       return (
         name +
         "=[>=f,<=s]"
           .replace("f", `${autoYear(-90)}-${autoMonth(-90)}-${autoDays(-90)}`)
           .replace("s", `${autoYear(1)}-${autoMonth(1)}-${autoDays(1)}`)
       );
-    case "Последние N дней":
+    case "lastNDays":
       return (
         name +
         "=[>=f,<=s]"
@@ -182,7 +188,7 @@ export const getDateResponse = (value: string[], name: string) => {
           )
           .replace("s", `${autoYear(1)}-${autoMonth(1)}-${autoDays(1)}`)
       );
-    case "Следующие N дней":
+    case "nextNDays":
       return (
         name +
         "=[>=f,<s]"
@@ -194,19 +200,18 @@ export const getDateResponse = (value: string[], name: string) => {
             )}`,
           )
       );
-    case "Месяц":
+    case "month":
       return (
         name +
         "=[>=f,<s]"
           .replace("f", `${value[2] || year}-${value[1] || month}-${1}`)
           .replace(
             "s",
-            `${(+value[1] || month) === 12 ? year + 1 : year}-${
-              (+value[1] || month) === 12 ? 1 : (+value[1] || month) + 1
+            `${(+value[1] || month) === 12 ? year + 1 : year}-${(+value[1] || month) === 12 ? 1 : (+value[1] || month) + 1
             }-1`,
           )
       );
-    case "Квартал":
+    case "quarter":
       switch (value[1]) {
         case "1":
           return (
@@ -237,14 +242,14 @@ export const getDateResponse = (value: string[], name: string) => {
               .replace("s", `${+value[2] + 1 || year + 1}-1-1`)
           );
       }
-    case "Год":
+    case "year":
       return (
         name +
         "=[>=f,<s]"
           .replace("f", `${+value[1] || year}-1-1`)
           .replace("s", `${+value[1] + 1 || year + 1}-1-1`)
       );
-    case "Точная дата":
+    case "exactDate":
       const dayBefore = new Date(+value[1]);
       const dayAfter = new Date(+value[1] + 86400000);
       return (
@@ -252,18 +257,16 @@ export const getDateResponse = (value: string[], name: string) => {
         `=[>=f,<s]`
           .replace(
             "f",
-            `${dayBefore.getFullYear() || year}-${
-              dayBefore.getMonth() + 1 || month
+            `${dayBefore.getFullYear() || year}-${dayBefore.getMonth() + 1 || month
             }-${dayBefore.getDate()}`,
           )
           .replace(
             "s",
-            `${dayAfter.getFullYear() || year}-${
-              dayAfter.getMonth() + 1 || month
+            `${dayAfter.getFullYear() || year}-${dayAfter.getMonth() + 1 || month
             }-${dayAfter.getDate()}`,
           )
       );
-    case "Прошлая неделя":
+    case "lastWeek":
       let beforeToday1 = -date.getDay() - 6;
       let afterToday1 = -date.getDay() + 1;
       return (
@@ -282,7 +285,7 @@ export const getDateResponse = (value: string[], name: string) => {
             )}`,
           )
       );
-    case "Прошлый месяц":
+    case "lastMonth":
       const prevMonth = month === 1 ? 12 : month - 1;
       return (
         name +
@@ -290,26 +293,23 @@ export const getDateResponse = (value: string[], name: string) => {
           .replace("f", `${month === 0 ? year - 1 : year}-${prevMonth}-1`)
           .replace("s", `${year}-${month}-1`)
       );
-    case "Диапазон":
-      const dayBefore1 = new Date(+value[1]);
-      const dayAfter1 = new Date(+value[2] + 86400000);
+    case "range":
+      const dayBefore1 = new Date(value[1]);
+      const dayAfter1 = new Date(new Date(value[2]).getTime() + 86400000);
+
       return (
         name +
         `=[>=f,<s]`
           .replace(
             "f",
-            `${dayBefore1.getFullYear() || year}-${
-              dayBefore1.getMonth() + 1 || month
-            }-${dayBefore1.getDate()}`,
+            `${dayBefore1.getFullYear() || year}-${dayBefore1.getMonth() + 1 || month}-${dayBefore1.getDate()}`,
           )
           .replace(
             "s",
-            `${dayAfter1.getFullYear() || year}-${
-              dayAfter1.getMonth() + 1 || month
-            }-${dayAfter1.getDate()}`,
+            `${dayAfter1.getFullYear() || year}-${dayAfter1.getMonth() + 1 || month}-${dayAfter1.getDate()}`,
           )
       );
-    case "Следующая неделя":
+    case "nextWeek":
       let nextMonday = 8 - date.getDay();
       return (
         name +
@@ -327,7 +327,7 @@ export const getDateResponse = (value: string[], name: string) => {
             )}-${autoDays(nextMonday + 7)}`,
           )
       );
-    case "Следующий месяц":
+    case "nextMonth":
       let yearMaybeNext = year;
       let nextMonth = month + 1;
       if (month === 12) {
