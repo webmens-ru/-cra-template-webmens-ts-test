@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { Main } from "./pages/main";
 import { MainDetail } from "./pages/mainDetail";
 
