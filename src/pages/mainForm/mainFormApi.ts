@@ -20,6 +20,6 @@ export const mainFormApi: any = createApi({
 
 
 export const {
-  useLazyGetFormFieldsQuery,
+  useGetFormFieldsQuery,
   useGetValidationQuery
 } = mainFormApi

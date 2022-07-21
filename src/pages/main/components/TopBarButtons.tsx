@@ -52,7 +52,7 @@ export function TopBarButtons() {
     link.click()
   }
 
-  const buttonAddOnClick = () => {
+  const buttonAddOnClick = async () => {
     console.log(buttonAdd.data, 'buttonAdd.data')
     if (process.env.NODE_ENV === "production") {
       console.log();
@@ -79,7 +79,6 @@ export function TopBarButtons() {
       window.open(buttonAdd.data?.params.link);
     } else {
       console.log(buttonAdd.data?.params);
-      // return <MainForm />
     }
   };
 
