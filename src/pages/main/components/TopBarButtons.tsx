@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@webmens-ru/ui_lib";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation, useLazyGetButtonAddQuery } from "../mainApi";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { axiosInst } from "../../../app/api/baseQuery";
-import { setTimeSliderOpened } from "../mainSlice";
-import MainForm from "../../mainForm/mainForm";
 
 export function TopBarButtons() {
   const { mainSlice } = useAppSelector((state) => state);
@@ -66,7 +64,8 @@ export function TopBarButtons() {
         case "openApplication":
           BX24.openApplication(buttonAdd.data?.params, function() {
             if (buttonAdd.data?.params.updateOnCloseSlider) {
-              dispatch(setTimeSliderOpened(Date.now()))
+              // dispatch(setTimeSliderOpened(Date.now()))
+              // TODO: Сделать функцию в хуке useData по вызову обновления
             }
           });
           break;

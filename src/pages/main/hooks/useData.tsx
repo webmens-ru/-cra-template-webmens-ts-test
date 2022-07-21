@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import { setCurrentFilter, setFilterResponse, setIsLoading } from "..";
+import { setCurrentFilter, setIsLoading } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { getFilterResponse } from "../../../app/utils/filterResponse";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
@@ -58,20 +58,19 @@ export const useData = () => {
           currentFields.data,
           allFields.data,
         ).filter((f) => Boolean(f.visible));
-        
+
         const filterResponse = getFilterResponse(correctFields);
         const grid = await getGrid({
           entity,
-          filter: mainSlice.toolbarFilterResponse !== null ? mainSlice.toolbarFilterResponse : filterResponse,
+          filter: mainSlice.filterResponse || filterResponse,
         });
-        
-        dispatch(setFilterResponse(filterResponse));
+
         dispatch(setSchema(schema.data))
         dispatch(setGrid(grid.data))
       }
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, isCorrect, mainSlice.currentTab, mainSlice.toolbarFilterResponse, mainSlice.lastTimeSliderOpened]);
+  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, isCorrect, mainSlice.filterResponse, mainSlice.toolbarFilterResponse]);
 
   useLayoutEffect(() => {
     init();

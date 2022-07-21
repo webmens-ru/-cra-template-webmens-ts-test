@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo } from "react";
-import { Grid, Loader } from "@webmens-ru/ui_lib";
-import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid"; 
+import { Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
+import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid/types";
+import { IListItem } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useSaveSchemaMutation } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { setCheckboxes, setSchema, setTimeSliderOpened, setToolbarFilterResponse } from "../mainSlice";
-import { IListItem } from "@webmens-ru/ui_lib/dist/components/toolbar";
-import { Toolbar } from "@webmens-ru/ui_lib";
+import { setCheckboxes, setFilterResponse, setSchema } from "../mainSlice";
 
 export function GridWrapper() {
   const { mainSlice, mainApi } = useAppSelector((state) => state);
@@ -24,7 +23,8 @@ export function GridWrapper() {
         case "openApplication":
           BX24.openApplication(cell, function() {
             if (cell.updateOnCloseSlider) {
-              dispatch(setTimeSliderOpened(Date.now()))
+              // dispatch(setTimeSliderOpened(Date.now()))
+              // TODO: Сделать функцию в хуке useData по вызову обновления
             }
           });
           break;
@@ -39,7 +39,7 @@ export function GridWrapper() {
     } else {
       console.log(cell);
     }
-  }, []);
+  }, [dispatch]);
 
   const handleSchemaMutation = (schema: any) => {
     schemaMutation(schema).then(response => {
@@ -54,28 +54,11 @@ export function GridWrapper() {
     [mainApi.queries, mainSlice.currentTab.params?.entity],
   );
 
-  // const grid = useMemo<any>(
-  //   () => {
-  //     const data = mainApi.queries[
-  //       `getGrid({"entity":"${mainSlice.currentTab.params?.entity}","filter":"${mainSlice.filterResponse}"})`
-  //     ]?.data;
-  //     dispatch(setGrid(data))
-  //     return data;
-  //   },
-  //   [mainApi.queries, mainSlice.currentTab, mainSlice.filterResponse],
-  // );
-
   const grid = mainSlice.grid  
 
   const checkboxesHandler = useCallback(
     (arr: TRowID[]) => {
       if (grid) {
-        // const checkboxes = grid?.grid
-        //   ?.filter((row: { id: number }) => arr.includes(row.id))
-        //   .map((item: { id: any; whoPays: any }) => ({
-        //     id: item.id,
-        //     whoPays: item.whoPays,
-        //   }));
         dispatch(setCheckboxes(arr));
       }
     },
@@ -84,7 +67,7 @@ export function GridWrapper() {
 
   const handleToolbarItemClick = (item: IListItem) => {
     if (item.params && item.params.url !== null) {
-      dispatch(setToolbarFilterResponse(item.params.url))
+      dispatch(setFilterResponse(item.params.url))
     }
   }
   

@@ -52,13 +52,6 @@ export const mainSlice = createSlice({
     },
     setFilterResponse: (state, { payload }) => {
       state.filterResponse = payload;
-      state.toolbarFilterResponse = null;
-    },
-    setToolbarFilterResponse: (state, { payload }) => {
-      state.toolbarFilterResponse = payload;
-    },
-    setTimeSliderOpened: (state, { payload }) => {
-      state.lastTimeSliderOpened = payload
     },
     setIsLoading: (state, { payload }) => {
       state.isLoading = payload;
@@ -82,8 +75,6 @@ export const {
   setCurrentTab,
   setCurrentFilter,
   setFilterResponse,
-  setToolbarFilterResponse,
-  setTimeSliderOpened,
   setIsLoading,
   setIsError,
   setCheckboxes,
