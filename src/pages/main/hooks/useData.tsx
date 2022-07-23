@@ -70,7 +70,7 @@ export const useData = () => {
       }
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, isCorrect, mainSlice.filterResponse, mainSlice.toolbarFilterResponse]);
+  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, isCorrect, mainSlice.currentTab.params.entity, mainSlice.filterResponse]);
 
   useLayoutEffect(() => {
     init();
