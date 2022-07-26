@@ -62,7 +62,7 @@ export const useData = () => {
         const filterResponse = getFilterResponse(correctFields);
         const grid = await getGrid({
           entity,
-          filter: mainSlice.filterResponse || filterResponse,
+          filter: (mainSlice.filterResponse !== null && mainSlice.filterResponse !== undefined) ? mainSlice.filterResponse : filterResponse,
         });
 
         dispatch(setSchema(schema.data))

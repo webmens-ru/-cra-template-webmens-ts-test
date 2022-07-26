@@ -46,6 +46,7 @@ export const mainSlice = createSlice({
   reducers: {
     setCurrentTab: (state, { payload }) => {
       state.currentTab = payload;
+      state.filterResponse = null;
     },
     setCurrentFilter: (state, { payload }) => {
       state.currentFilter = payload;
