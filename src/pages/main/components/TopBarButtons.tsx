@@ -1,24 +1,21 @@
 import React, { useEffect } from "react";
 import { Button } from "@webmens-ru/ui_lib";
 import styled from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation, useLazyGetButtonAddQuery } from "../mainApi";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import { useAppSelector } from "../../../app/store/hooks";
+import { useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation } from "../mainApi";
 import { axiosInst } from "../../../app/api/baseQuery";
 
 export function TopBarButtons() {
   const { mainSlice } = useAppSelector((state) => state);
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
-  const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (mainSlice.currentTab?.params?.entity) {
       getItems(mainSlice.currentTab?.params?.entity);
-      getButtonAdd(mainSlice.currentTab?.params?.entity);
     }
-  }, [getItems, getButtonAdd, mainSlice.currentTab?.params?.entity]);
+  }, [getItems, mainSlice.currentTab?.params?.entity]);
 
   const itemClickHandler = async (item: any) => {
     const { grid, checkboxes } = mainSlice
@@ -41,7 +38,7 @@ export function TopBarButtons() {
     const response = await axiosInst.post('/admin/excel/get-excel', {
       schema: mainSlice.schema.filter(item => item.visible),
       grid: gridData || [],
-      footer: grid.footer || []
+      footer: gridData?.length === grid.grid?.length ? grid.footer : []
     }, {
       responseType: "blob"
     })
