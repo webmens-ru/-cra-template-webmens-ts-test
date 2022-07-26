@@ -16,11 +16,9 @@ export function TopBarButtons() {
   useEffect(() => {
     if (mainSlice.currentTab?.params?.entity) {
       getItems(mainSlice.currentTab?.params?.entity);
-      //getButtonAdd(mainSlice.currentTab?.params?.entity);
+      getButtonAdd(mainSlice.currentTab?.params?.entity);
     }
-  }, [getItems, 
-    //getButtonAdd, 
-    mainSlice.currentTab?.params?.entity]);
+  }, [getItems, getButtonAdd, mainSlice.currentTab?.params?.entity]);
 
   const itemClickHandler = async (item: any) => {
     const { grid, checkboxes } = mainSlice
@@ -83,7 +81,6 @@ export function TopBarButtons() {
       console.log(buttonAdd.data?.params);
     }
   };
-  // TODO: Исправить отрисовку buttonAdd
   return (
     <Container>
       {!!buttonAdd.data && (

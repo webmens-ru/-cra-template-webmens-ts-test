@@ -13,14 +13,6 @@ function App() {
   const switchPath = (opt: TPlacementOptions) => {
     try {
       console.log(opt.path);
-      for (let [key, value] of Object.entries(opt)) {
-        if(value === 'true') {
-          opt.key = true;
-        }
-        if(value === 'false') {
-          opt.key = false;
-        }
-    }
       switch (opt.path) {
         case "mainDetail":
           return <MainDetail title={opt.mainDetailTitle}/>;
