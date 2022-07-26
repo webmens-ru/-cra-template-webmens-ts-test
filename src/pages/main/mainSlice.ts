@@ -68,7 +68,10 @@ export const mainSlice = createSlice({
     },
     setSchema: (state, {payload}) => {
       state.schema = payload
-    }
+    },
+    setTimeSliderOpened: (state, { payload }) => {
+      state.lastTimeSliderOpened = payload
+    },
   },
 });
 
@@ -80,5 +83,6 @@ export const {
   setIsError,
   setCheckboxes,
   setGrid,
+  setTimeSliderOpened,
   setSchema
 } = mainSlice.actions;

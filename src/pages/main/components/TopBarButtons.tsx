@@ -3,19 +3,24 @@ import { Button } from "@webmens-ru/ui_lib";
 import styled from "styled-components";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { useAppSelector } from "../../../app/store/hooks";
-import { useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation } from "../mainApi";
+import { useLazyGetButtonAddQuery, useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation } from "../mainApi";
 import { axiosInst } from "../../../app/api/baseQuery";
+import { setTimeSliderOpened } from "../mainSlice";
 
 export function TopBarButtons() {
   const { mainSlice } = useAppSelector((state) => state);
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
+  const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
 
   useEffect(() => {
     if (mainSlice.currentTab?.params?.entity) {
       getItems(mainSlice.currentTab?.params?.entity);
+      //getButtonAdd(mainSlice.currentTab?.params?.entity);
     }
-  }, [getItems, mainSlice.currentTab?.params?.entity]);
+  }, [getItems, 
+    //getButtonAdd, 
+    mainSlice.currentTab?.params?.entity]);
 
   const itemClickHandler = async (item: any) => {
     const { grid, checkboxes } = mainSlice
@@ -78,7 +83,7 @@ export function TopBarButtons() {
       console.log(buttonAdd.data?.params);
     }
   };
-
+  // TODO: Исправить отрисовку buttonAdd
   return (
     <Container>
       {!!buttonAdd.data && (

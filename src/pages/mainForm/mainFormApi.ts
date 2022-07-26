@@ -15,11 +15,23 @@ export const mainFormApi: any = createApi({
         url: `${entity}/validation`,
       }),
     }),
+    getFormTitle: build.query({
+      query: (entity) => ({
+        url: `https://il.wm-dev.ru/admin/ui/entity/view?id=${entity}`,
+      }),
+    }),
+    getFormValues: build.query({
+      query: ({entity, id}) => ({
+        url: `${entity}/view?id=${id}`,
+      }),
+    }),
   })
 })
 
 
 export const {
+  useGetFormValuesQuery,
+  useGetFormTitleQuery,
   useGetFormFieldsQuery,
   useGetValidationQuery
 } = mainFormApi

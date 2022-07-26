@@ -13,12 +13,19 @@ function App() {
   const switchPath = (opt: TPlacementOptions) => {
     try {
       console.log(opt.path);
-
+    //   for (let [key, value] of Object.entries(opt)) {
+    //     if(value === 'true') {
+    //       opt.key = true;
+    //     }
+    //     if(value === 'false') {
+    //       opt.key = false;
+    //     }
+    // }
       switch (opt.path) {
         case "mainDetail":
           return <MainDetail title={opt.mainDetailTitle}/>;
         case "mainForm":
-          return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action}/>;
+          return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode}/>;
         default:
           return <Main />
       }
