@@ -11,15 +11,16 @@ import {
 import { FormMode, FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { axiosInst } from "../../app/api/baseQuery";
 
-export default function MainForm({width = "100%", mode = "view", entity, action = "update", id = 0, canToggleMode = true}: 
-{ 
+export interface MainFormProps {
   width?: string, 
   mode?: FormMode, 
   entity: string, 
   action?: string, 
   id?: any,
   canToggleMode?: boolean
-}) {
+}
+
+export default function MainForm({width = "100%", mode = "view", entity, action = "update", id = 0, canToggleMode = true}: MainFormProps) {
   // const form = useGetFormQuery(visitorId)
 
   // if (form.isLoading || form.isError) {

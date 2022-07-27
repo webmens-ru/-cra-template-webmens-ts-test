@@ -15,7 +15,7 @@ function App() {
       console.log(opt.path);
       switch (opt.path) {
         case "mainDetail":
-          return <MainDetail title={opt.mainDetailTitle}/>;
+          return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
         case "mainForm":
           return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode}/>;
         default:
