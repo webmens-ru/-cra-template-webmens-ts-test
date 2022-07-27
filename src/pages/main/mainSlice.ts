@@ -46,6 +46,7 @@ export const mainSlice = createSlice({
   reducers: {
     setCurrentTab: (state, { payload }) => {
       state.currentTab = payload;
+      state.filterResponse = null;
     },
     setCurrentFilter: (state, { payload }) => {
       state.currentFilter = payload;
@@ -67,7 +68,10 @@ export const mainSlice = createSlice({
     },
     setSchema: (state, {payload}) => {
       state.schema = payload
-    }
+    },
+    setTimeSliderOpened: (state, { payload }) => {
+      state.lastTimeSliderOpened = payload
+    },
   },
 });
 
@@ -79,5 +83,6 @@ export const {
   setIsError,
   setCheckboxes,
   setGrid,
+  setTimeSliderOpened,
   setSchema
 } = mainSlice.actions;

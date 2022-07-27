@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
 import { Button } from "@webmens-ru/ui_lib";
 import styled from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation, useLazyGetButtonAddQuery } from "../mainApi";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import { useAppSelector } from "../../../app/store/hooks";
+import { useLazyGetButtonAddQuery, useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation } from "../mainApi";
 import { axiosInst } from "../../../app/api/baseQuery";
+import { setTimeSliderOpened } from "../mainSlice";
 
 export function TopBarButtons() {
   const { mainSlice } = useAppSelector((state) => state);
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
   const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (mainSlice.currentTab?.params?.entity) {
@@ -41,7 +41,7 @@ export function TopBarButtons() {
     const response = await axiosInst.post('/admin/excel/get-excel', {
       schema: mainSlice.schema.filter(item => item.visible),
       grid: gridData || [],
-      footer: grid.footer || []
+      footer: gridData?.length === grid.grid?.length ? grid.footer : []
     }, {
       responseType: "blob"
     })
@@ -52,7 +52,7 @@ export function TopBarButtons() {
     link.click()
   }
 
-  const buttonAddOnClick = () => {
+  const buttonAddOnClick = async () => {
     console.log(buttonAdd.data, 'buttonAdd.data')
     if (process.env.NODE_ENV === "production") {
       console.log();
@@ -79,10 +79,8 @@ export function TopBarButtons() {
       window.open(buttonAdd.data?.params.link);
     } else {
       console.log(buttonAdd.data?.params);
-      // return <MainForm />
     }
   };
-
   return (
     <Container>
       {!!buttonAdd.data && (
