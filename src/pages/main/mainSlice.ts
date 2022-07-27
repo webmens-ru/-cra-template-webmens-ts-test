@@ -18,7 +18,7 @@ interface IState {
   schema: TColumnItem[]
 }
 
-interface IGridState {
+export interface IGridState {
   header?: {
     blocks: IBlockItem[]
   };

@@ -1,13 +1,18 @@
 import React, { useEffect } from "react";
 import { Button } from "@webmens-ru/ui_lib";
 import styled from "styled-components";
-import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TColumnItem, TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
 import { useAppSelector } from "../../../app/store/hooks";
 import { useLazyGetButtonAddQuery, useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation } from "../mainApi";
 import { axiosInst } from "../../../app/api/baseQuery";
 import { setTimeSliderOpened } from "../mainSlice";
 
-export function TopBarButtons() {
+interface TopBarButtonsProps {
+  involvedState: any;
+  excelTitle?: string;
+}
+
+export function TopBarButtons({ involvedState, excelTitle }: TopBarButtonsProps) {
   const { mainSlice } = useAppSelector((state) => state);
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
   const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
@@ -21,8 +26,8 @@ export function TopBarButtons() {
   }, [getItems, getButtonAdd, mainSlice.currentTab?.params?.entity]);
 
   const itemClickHandler = async (item: any) => {
-    const { grid, checkboxes } = mainSlice
-    const body = grid.grid!.filter((item) => {
+    const { grid, checkboxes } = involvedState
+    const body = grid.grid!.filter((item: TRowItem) => {
       const id = typeof item.id === "object" ? item.id.title : item.id
       return checkboxes.includes(id as TRowID)
     })
@@ -32,14 +37,14 @@ export function TopBarButtons() {
   };
 
   const handleGearClick = async (item: any) => {
-    const { grid, checkboxes } = mainSlice
+    const { grid, checkboxes, schema } = involvedState
 
     const gridData = checkboxes.length === 0 || checkboxes.length === grid.grid?.length
       ? grid.grid
-      : grid.grid?.filter(item => checkboxes.some(check => check === item.id || check === (item.id as any).title))
+      : grid.grid?.filter((item: TRowItem) => checkboxes.some((check: TRowID) => check === item.id || check === (item.id as any).title))
 
     const response = await axiosInst.post('/admin/excel/get-excel', {
-      schema: mainSlice.schema.filter(item => item.visible),
+      schema: schema.filter((item: TColumnItem) => item.visible),
       grid: gridData || [],
       footer: gridData?.length === grid.grid?.length ? grid.footer : []
     }, {
@@ -47,8 +52,9 @@ export function TopBarButtons() {
     })
     
     const link = document.createElement("a")
+    const title = excelTitle || mainSlice.currentTab.title || "Excel"
     link.href = URL.createObjectURL(new Blob([response.data]))
-    link.download = `${mainSlice.currentTab.title} ${new Date().toLocaleString().slice(0, 10)}.xlsx`
+    link.download = `${title} ${new Date().toLocaleString().slice(0, 10)}.xlsx`
     link.click()
   }
 

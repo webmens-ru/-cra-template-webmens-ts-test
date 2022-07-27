@@ -1,57 +1,49 @@
-import { Grid, Loader } from "@webmens-ru/ui_lib";
-import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import styled from "styled-components";
+import { Grid, Loader } from "@webmens-ru/ui_lib";
+import { initialState, reducer } from "./reducer";
+import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
 import { TopBarButtons } from "../main/components/TopBarButtons";
 import {
-  useGetGridMutation,
+  useLazyGetGridQuery,
   useLazyGetSchemaQuery,
   useSaveSchemaMutation,
 } from "./mainDetailApi";
-import { setCheckboxes } from "../main/mainSlice";
-import { useAppDispatch } from "../../app/store/hooks";
 
 export interface MainDetailProps {
-  title?:string,
+  title?: string,
   entity: string,
   body?: any
 }
 
-export function MainDetail({title, entity, body = []}:MainDetailProps) {
-  const [getSchema, schema] = useLazyGetSchemaQuery();
+export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
+  const [mainDetail, dispatch] = useReducer(reducer, initialState)
+  const [getSchema] = useLazyGetSchemaQuery();
+  const [getGrid] = useLazyGetGridQuery();
   const [schemaMutation] = useSaveSchemaMutation();
-  const [getGrid, grid] = useGetGridMutation();
-  const dispatch = useAppDispatch();
 
   const checkboxesHandler = useCallback(
-    (arr: TRowID[]) => {
-      if (grid) {
-        dispatch(setCheckboxes(arr));
+    (checkboxes: TRowID[]) => {
+      if (mainDetail.grid) {
+        dispatch({ type: "SET_CHECKBOXES", checkboxes });
       }
     },
-    [dispatch, grid],
+    [mainDetail.grid],
   );
 
-  const init = useCallback(async () => {
-    getSchema(entity);
-    getGrid({ entity, body });
-  }, [getGrid, getSchema]);
-
   useEffect(() => {
-    init();
-  }, [init]);
-
-  if (grid.isLoading || !grid.data) {
-    return <Loader />;
-  }
-
-  // const cellClickHandler = (cell: TRowItem) => {
-  //   if (process.env.NODE_ENV === "production") {
-  //     BX24.openPath(cell.link, () => {});
-  //   } else {
-  //     console.log(cell);
-  //   }
-  // };
+    Promise.all([
+      getSchema(entity),
+      getGrid({ entity, body })
+    ]).then(([schema, grid]) => {
+      dispatch({
+        type: "INIT", payload: {
+          schema: schema.data,
+          grid: grid.data,
+        }
+      })
+    })
+  }, []);
 
   const onCellClick = (cell: TRowItem) => {
     if (process.env.NODE_ENV === "production") {
@@ -70,18 +62,23 @@ export function MainDetail({title, entity, body = []}:MainDetailProps) {
     }
   };
 
+  if (!mainDetail.inited) {
+    return <Loader />;
+  }
+
   return (
     <>
-    <Container>
-      <Title>
-        {title}
-      </Title>
-      <TopBarButtons />
+      <Container>
+        <Title children={title} />
+        <TopBarButtons
+          involvedState={mainDetail}
+          excelTitle={title}
+        />
       </Container>
       <Grid
-        column={schema.data}
-        row={grid.data?.grid}
-        footer={grid.data?.footer}
+        column={mainDetail.schema}
+        row={mainDetail.grid.grid}
+        footer={mainDetail.grid.footer}
         height={100}
         isShowCheckboxes
         onChangeCheckboxes={checkboxesHandler}
@@ -91,13 +88,6 @@ export function MainDetail({title, entity, body = []}:MainDetailProps) {
     </>
   );
 }
-
-const getMultiplySelectResponse = (value: string[], name: string) => {
-  if (value.length === 0) {
-    return "";
-  }
-  return `${name}=in[${value.join(",")}]`;
-};
 
 const Title = styled.h1`
   margin: 10px 20px;

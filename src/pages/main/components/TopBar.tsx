@@ -35,7 +35,7 @@ export function TopBar() {
         onClearFilter={() => filterProps.onSearch([])}
         getSelectItems={getSelectItems}
       />
-      <TopBarButtons/>
+      <TopBarButtons involvedState={mainSlice} />
     </ControlBar>
   );
 }

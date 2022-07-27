@@ -20,7 +20,7 @@ export const mainDetailApi = createApi({
       }),
       invalidatesTags: ["Schema"],
     }),
-    getGrid: build.mutation({
+    getGrid: build.query({
       query: ({entity, body}) => ({
         url: `${entity}/data`,
         method: "POST",
@@ -32,6 +32,6 @@ export const mainDetailApi = createApi({
 
 export const {
   useLazyGetSchemaQuery,
+  useLazyGetGridQuery,
   useSaveSchemaMutation,
-  useGetGridMutation,
 } = mainDetailApi;
