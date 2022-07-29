@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import CopyToClipboard from "../../../components/copyToClipboard";
 import { useFilterQuery } from "../hooks/useFilterQuery";
 import ControlBar from "./control_bar";
-import { TopBarButtons } from "./TopBarButtons";
+import { TopBarButtons } from "../../../components/TopBarButtons";
 
 export function TopBar() {
   const { mainSlice } = useAppSelector((state) => state);
@@ -35,7 +35,11 @@ export function TopBar() {
         onClearFilter={() => filterProps.onSearch([])}
         getSelectItems={getSelectItems}
       />
-      <TopBarButtons involvedState={mainSlice} />
+      <TopBarButtons 
+        involvedState={mainSlice} 
+        entity={mainSlice.currentTab?.params?.entity} 
+        excelTitle={mainSlice.currentTab.title}
+      />
     </ControlBar>
   );
 }

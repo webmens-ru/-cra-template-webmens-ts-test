@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Grid, Loader } from "@webmens-ru/ui_lib";
 import { initialState, reducer } from "./reducer";
 import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
-import { TopBarButtons } from "../main/components/TopBarButtons";
+import { TopBarButtons } from "../../components/TopBarButtons";
 import {
   useLazyGetGridQuery,
   useLazyGetSchemaQuery,
@@ -72,6 +72,7 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
         <Title children={title} />
         <TopBarButtons
           involvedState={mainDetail}
+          entity={entity}
           excelTitle={title}
         />
       </Container>
