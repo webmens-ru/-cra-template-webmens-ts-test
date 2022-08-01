@@ -1,12 +1,17 @@
 import React, { useEffect } from "react";
 import { Button } from "@webmens-ru/ui_lib";
 import styled from "styled-components";
-import { TColumnItem, TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { useLazyGetButtonAddQuery, useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation } from "../pages/main/mainApi";
 import { axiosInst } from "../app/api/baseQuery";
+import { IGridState } from "../pages/main";
 
 interface TopBarButtonsProps {
-  involvedState: any;
+  involvedState: {
+    schema: TColumnItem[]
+    grid: IGridState;
+    checkboxes: TRowID[]
+  };
   excelTitle?: string;
   entity?: string;
 }
@@ -25,9 +30,9 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: TopBarButto
   }, [getItems, getButtonAdd, entity]);
 
   const itemClickHandler = (item: any) => {
-    const body = grid.grid!.filter((item: TRowItem) => {
+    const body = grid.grid!.filter((item) => {
       const id = typeof item.id === "object" ? item.id.title : item.id
-      return checkboxes.includes(id as TRowID)
+      return checkboxes.includes(id)
     })
 
     if (body)
@@ -38,10 +43,10 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: TopBarButto
 
     const gridData = checkboxes.length === 0 || checkboxes.length === grid.grid?.length
       ? grid.grid
-      : grid.grid?.filter((item: TRowItem) => checkboxes.some((check: TRowID) => check === item.id || check === (item.id as any).title))
+      : grid.grid?.filter((item) => checkboxes.some((check) => check === item.id || check === (item.id as any).title))
 
     const response = await axiosInst.post('/admin/excel/get-excel', {
-      schema: schema.filter((item: TColumnItem) => item.visible),
+      schema: schema.filter((item) => item.visible).sort((a, b) => a.order - b.order),
       grid: gridData || [],
       footer: gridData?.length === grid.grid?.length ? grid.footer : []
     }, {
