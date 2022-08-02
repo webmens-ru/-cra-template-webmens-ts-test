@@ -17,7 +17,7 @@ export const mainFormApi: any = createApi({
     }),
     getFormTitle: build.query({
       query: (entity) => ({
-        url: `https://il.wm-dev.ru/admin/ui/entity/view?id=${entity}`,
+        url: `/admin/ui/entity/view?id=${entity}`,
       }),
     }),
     getFormValues: build.query({

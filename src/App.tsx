@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Main } from "./pages/main";
 import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
+import MainPlacement from "./pages/mainPlacement/MainPlacement";
 
 function App() {
   useEffect(() => {
@@ -18,6 +19,8 @@ function App() {
           return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
         case "mainForm":
           return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode}/>;
+        case "mainPlacement":
+          return <MainPlacement entity={opt.entity} parentId={opt.parentId}/>;
         default:
           return <Main />
       }
