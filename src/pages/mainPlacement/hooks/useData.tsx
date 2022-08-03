@@ -22,15 +22,10 @@ export const useData = ({entity, parentId}: {entity: string, parentId: any}) => 
   const [getCurrentFiltersFields] = useLazyGetFieldsQuery();
   const [getGrid] = useLazyGetGridQuery();
 
-  
-  
-
   const init = useCallback(async () => {
     dispatch(setIsLoading(true));
     let currentFilter;
     let currentFields;
-
-    console.log(mainPlacementSlice);
 
     const [filters, allFields, schema] = await Promise.all([
       getFilters(entity),
@@ -60,13 +55,11 @@ export const useData = ({entity, parentId}: {entity: string, parentId: any}) => 
         filter: `parentId=${mainPlacementSlice.parentId}&` + ((mainPlacementSlice.filterResponse !== null && mainPlacementSlice.filterResponse !== undefined) ? mainPlacementSlice.filterResponse : filterResponse),
       });
 
-      
-
       dispatch(setSchema(schema.data))
       dispatch(setGrid(grid.data))
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, mainPlacementSlice.filterResponse]);
+  }, [dispatch, entity, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, mainPlacementSlice.filterResponse, mainPlacementSlice.parentId]);
 
   useLayoutEffect(() => {
     init();

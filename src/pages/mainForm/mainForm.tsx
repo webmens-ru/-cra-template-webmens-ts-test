@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Loader } from "@webmens-ru/ui_lib";
 import { Form } from "@webmens-ru/ui_lib"; 
-import { mainFormFields } from "./const";
 import { 
   useGetValidationQuery, 
   useGetFormFieldsQuery,
   useGetFormTitleQuery,
-  useGetFormValuesQuery
+  useLazyGetFormValuesQuery
  } from "./mainFormApi";
 import { FormMode, FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { axiosInst } from "../../app/api/baseQuery";
@@ -21,41 +20,54 @@ export interface MainFormProps {
 }
 
 export default function MainForm({width = "100%", mode = "view", entity, action = "update", id = 0, canToggleMode = true}: MainFormProps) {
-  // const form = useGetFormQuery(visitorId)
-
-  // if (form.isLoading || form.isError) {
-  //   return <Loader />
-  // }
-  const formValues = useGetFormValuesQuery({entity, id});
+  const [getValues] = useLazyGetFormValuesQuery()
   const formFields = useGetFormFieldsQuery(entity);
   const validation = useGetValidationQuery(entity);
   const formTitle = useGetFormTitleQuery(entity);
+
+  const [form, setForm] = useState({ values: {}, isLoading: true })
+
+  useEffect(() => {
+    if (id == 0 || action === "create") {
+      setForm({ values: {}, isLoading: false })
+    } else {
+      getValues({ entity, id }).then((response: { data: FormValues; }) => {
+        setForm({ values: response.data, isLoading: false })
+      })
+    }
+  }, [action, entity, getValues, id])
   
   const handleFormSubmit = (form: FormValues) => {
     console.log(form);
     console.log(action);
-    const url = (action == "create") ? `${entity}/${action}` : `${entity}/${action}?id=${form.id}`
+    const url = (action === "create") ? `${entity}/${action}` : `${entity}/${action}?id=${form.id}`
     return axiosInst({
       url: url,
       method: "POST",
       data: form,
     })
   }
+
+  const handleAfterSubmit = () => {
+    if (process.env.NODE_ENV === "production") {
+      BX24.closeApplication()
+    }
+  }
   
-  if(!formFields.isLoading && !validation.isLoading && !formTitle.isLoading && !formValues.isLoading)
+  if(!formFields.isLoading && !validation.isLoading && !formTitle.isLoading && !form.isLoading)
   {
     return (
       <div className="page" style={{ width }}>
         <Form
           fields={formFields.data}
-          values={formValues.data}
+          values={form.values}
           mode={mode}
           formTitle= {formTitle.data.name}
           height="calc(100vh - 50px)"
           validationRules={validation.data}
           onSubmit={handleFormSubmit}
           canToggleMode={canToggleMode}
-          // onAfterSubmit={handleAfterSubmit}/  //TODO: Закрытие слайдера
+          onAfterSubmit={handleAfterSubmit}
         />
       </div>
     )

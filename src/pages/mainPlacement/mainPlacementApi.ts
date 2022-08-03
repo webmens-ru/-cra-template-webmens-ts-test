@@ -166,5 +166,6 @@ export const {
   useSendDataOnButtonClickMutation,
   useLazyGetDynamicButtonItemsQuery,
   useLazyGetButtonAddQuery,
-  useGetTitleQuery
+  useGetTitleQuery,
+  useLazyGetTitleQuery
 } = mainPlacementApi;

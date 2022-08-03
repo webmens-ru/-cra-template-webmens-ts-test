@@ -46,12 +46,7 @@ export const useFilterQuery = () => {
       dispatch(setGrid(grid.data))
       dispatch(setIsLoading(false));
     },
-    [
-      dispatch,
-      getFieldsQuery,
-      getGrid,
-      mainPlacementSlice.currentFilter
-    ],
+    [dispatch, getFieldsQuery, getGrid, mainPlacementSlice.currentFilter, mainPlacementSlice.entity],
   );
 
   const updateField = async (filter: TField, param: string) => {

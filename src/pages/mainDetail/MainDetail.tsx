@@ -45,6 +45,12 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
     })
   }, []);
 
+  const handleSchemaMutation = (schema: any) => {
+    schemaMutation(schema).then(response => {
+      dispatch({ type: "SET_SCHEMA", schema })
+    })
+  }
+
   const onCellClick = (cell: TRowItem) => {
     if (process.env.NODE_ENV === "production") {
       switch (cell.type) {
@@ -83,7 +89,7 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
         height={100}
         isShowCheckboxes
         onChangeCheckboxes={checkboxesHandler}
-        columnMutation={schemaMutation}
+        columnMutation={handleSchemaMutation}
         onCellClick={onCellClick}
       />
     </>
