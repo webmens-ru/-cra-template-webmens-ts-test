@@ -24,9 +24,8 @@ export function BurgerMenu({ items = [], gridRef, onBurgerItemClick }: IBurgerMe
   const handleBurgerClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const burgerPos = ref.current!.getBoundingClientRect()
     const gridPos = gridRef.current!.element!.getBoundingClientRect()
-    setPos({ top: burgerPos.top - gridPos.top, left: burgerPos.left - gridPos.left })
-    console.log(gridPos);
-    
+
+    setPos({ top: burgerPos.top - (gridPos.top - gridRef.current!.element!.scrollTop), left: burgerPos.left - gridPos.left })
     toggleShow()
   }
 
