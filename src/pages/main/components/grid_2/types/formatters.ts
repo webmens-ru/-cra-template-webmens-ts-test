@@ -1,10 +1,11 @@
 import { FormatterProps } from "react-data-grid";
-import { BurgerItem, TRowItem } from "./types";
+import { BurgerItem, TCellItem, TRowItem } from "./types";
 
 export interface IFormatterProps<T> extends FormatterProps<TRowItem, unknown> {
   row: TRowItem;
   rowKey: string;
   value: T;
+  onCellClick: (cell: TCellItem) => void;
 }
 
 export type ICommonFormatterValue = string | number;
@@ -17,7 +18,8 @@ export interface ILinkFormatterValue {
   title: string | number;
   type: "openApplication" | "openLink" | "openPath";
   route: string;
-  url: string;
+  url?: string;
+  link?: string;
 }
 export interface IDateFormatterValue {
   format: string;

@@ -5,13 +5,12 @@ export interface IGridProps {
   rows?: TRowItem[];
   footer?: TRowItem[];
   height?: number;
-  minHeight?: string;
   burgerItems?: BurgerItem[];
   isShowCheckboxes?: boolean;
   columnMutation?: (arr: TRawColumnItem[]) => void;
   onBurgerItemClick?: (arg: BurgerItem, row?: TRowItem) => void;
   onChangeCheckboxes?: (arr: TRowID[]) => void;
-  onCellClick?: (cell: TRowItem) => void;
+  onCellClick?: (cell: TCellItem) => void;
 }
 
 export type TColumnType = "string" | "number" | "date" | "image" | "link"
@@ -36,5 +35,9 @@ export type TRowItem = {
   id: TRowID | {title: TRowID, [key: string]: any};
   [key: string]: any;
 };
+
+export type TCellItem = {
+  [key: string]: any
+}
 
 export type BurgerItem = { label: string; [key: string]: any };

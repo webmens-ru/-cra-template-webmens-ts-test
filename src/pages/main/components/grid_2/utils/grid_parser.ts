@@ -1,9 +1,10 @@
 import { ACTION_COLUMN, SELECT_COLUMN } from '../consts';
 import FooterFormatter from '../formatters/FooterFormatter';
 import { TColumnItem, TRawColumnItem } from '../types/types';
+import { TCellItem } from './../types/types';
 import { getSuitableFormatter } from './formatter';
 
-export const fromRawColumns = (schema: TRawColumnItem[]): TColumnItem[] => {
+export const fromRawColumns = (schema: TRawColumnItem[], onCellClick: (cell: TCellItem) => void): TColumnItem[] => {
   const columns: TColumnItem[] = schema
     .slice()
     .sort((a, b) => a.order - b.order)
@@ -11,7 +12,7 @@ export const fromRawColumns = (schema: TRawColumnItem[]): TColumnItem[] => {
       key: column.code,
       name: column.title,
       width: column.width,
-      formatter: getSuitableFormatter(column),
+      formatter: getSuitableFormatter(column, onCellClick),
       summaryFormatter: FooterFormatter,
       instance: {...column},
       sortable: true,

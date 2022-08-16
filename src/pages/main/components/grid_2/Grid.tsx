@@ -10,7 +10,7 @@ import useColumns from "./hooks/useColumns";
 import useGridRef from "./hooks/useGridRef";
 import useRows from "./hooks/useRows";
 import { GridContainer, GridStyle } from "./styles/grid";
-import { IGridProps, TColumnItem, TRowItem } from "./types/types";
+import { IGridProps, TCellItem, TColumnItem, TRowItem } from "./types/types";
 import { fromRawColumns, toRawColumns } from "./utils/grid_parser";
 
 export const Grid = ({
@@ -20,9 +20,10 @@ export const Grid = ({
   burgerItems = [{ label: "Редактировать" }, { label: "Удалить" }, ],
   columnMutation = () => { },
   onChangeCheckboxes = () => {},
-  onBurgerItemClick = () => {}
+  onBurgerItemClick = () => {},
+  onCellClick = (cell: TCellItem) => {}
 }: IGridProps) => {
-  const [mutableColumns, setMutableColumns] = useState<TColumnItem[]>(fromRawColumns(columns))
+  const [mutableColumns, setMutableColumns] = useState<TColumnItem[]>(fromRawColumns(columns, onCellClick))
   const { gridRef, refReady } = useGridRef()
 
   
