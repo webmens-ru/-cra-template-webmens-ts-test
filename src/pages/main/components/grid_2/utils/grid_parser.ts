@@ -4,7 +4,7 @@ import { TColumnItem, TRawColumnItem } from '../types/types';
 import { TCellItem } from './../types/types';
 import { getSuitableFormatter } from './formatter';
 
-export const fromRawColumns = (schema: TRawColumnItem[], onCellClick: (cell: TCellItem) => void): TColumnItem[] => {
+export const fromRawColumns = (schema: TRawColumnItem[], isShowCheckboxes: boolean, onCellClick: (cell: TCellItem) => void): TColumnItem[] => {
   const columns: TColumnItem[] = schema
     .slice()
     .sort((a, b) => a.order - b.order)
@@ -19,7 +19,10 @@ export const fromRawColumns = (schema: TRawColumnItem[], onCellClick: (cell: TCe
       resizable: true,
     }))
 
-  columns.unshift(SELECT_COLUMN, ACTION_COLUMN);
+  if (isShowCheckboxes) {
+    columns.unshift(SELECT_COLUMN);
+  }
+  columns.unshift(ACTION_COLUMN);
 
   return columns
 }

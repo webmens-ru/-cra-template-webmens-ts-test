@@ -25,7 +25,7 @@ export const Grid = ({
   onBurgerItemClick = () => {},
   onCellClick = (cell: TCellItem) => {}
 }: IGridProps) => {
-  const [mutableColumns, setMutableColumns] = useState<TColumnItem[]>(fromRawColumns(columns, onCellClick))
+  const [mutableColumns, setMutableColumns] = useState<TColumnItem[]>(fromRawColumns(columns, isShowCheckboxes, onCellClick))
   const { gridRef, refReady } = useGridRef()
 
   const { draggableColumns, sortColumns, showSettings, setShowSettings, setSortColumns } = useColumns({ createColumns: mutableColumns, onReorder: handleColumnsMutation, })
