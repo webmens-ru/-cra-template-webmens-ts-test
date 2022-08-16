@@ -18,6 +18,8 @@ export const Grid = ({
   rows = [],
   footer = [],
   burgerItems = [{ label: "Редактировать" }, { label: "Удалить" }, ],
+  isShowCheckboxes = true,
+  height = 400,
   columnMutation = () => { },
   onChangeCheckboxes = () => {},
   onBurgerItemClick = () => {},
@@ -26,13 +28,10 @@ export const Grid = ({
   const [mutableColumns, setMutableColumns] = useState<TColumnItem[]>(fromRawColumns(columns, onCellClick))
   const { gridRef, refReady } = useGridRef()
 
-  
-  
   const { draggableColumns, sortColumns, showSettings, setShowSettings, setSortColumns } = useColumns({ createColumns: mutableColumns, onReorder: handleColumnsMutation, })
   const { sortedRows, selectedRows, setSelectedRows } = useRows({ createColumns: columns, createRows: rows, sortColumns, burgerItems, gridRef, onBurgerItemClick })
   const { onColumnResize } = useColumnResize({ mutableColumns, draggableColumns, onResizeEnd: handleColumnsMutation })
   
-  console.log(selectedRows);
   useEffect(() => {
     onChangeCheckboxes(Array.from(selectedRows))
   }, [onChangeCheckboxes, selectedRows])
@@ -69,6 +68,7 @@ export const Grid = ({
             onColumnResize={onColumnResize}
             onSortColumnsChange={setSortColumns}
             components={{ checkboxFormatter: CheckboxFormatter }}
+            style={{ height }}
           />
         </DndProvider>
       </GridContainer>
