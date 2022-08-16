@@ -1,10 +1,12 @@
-import React, { useCallback, useMemo } from "react";
-import { Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
+import { Loader, Toolbar } from "@webmens-ru/ui_lib";
 import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { IListItem } from "@webmens-ru/ui_lib/dist/components/toolbar";
+import { useCallback, useMemo } from "react";
 import { useSaveSchemaMutation } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { setCheckboxes, setFilterResponse, setSchema } from "../mainSlice";
+import { Grid } from "./grid_2/Grid";
+import { TRawColumnItem } from "./grid_2/types";
 
 export function GridWrapper() {
   const { mainSlice, mainApi } = useAppSelector((state) => state);
@@ -82,7 +84,7 @@ export function GridWrapper() {
           onItemClick={handleToolbarItemClick}
         />
       )}
-      <Grid
+      {/* <Grid
         column={column}
         row={grid?.grid}
         footer={grid?.footer}
@@ -91,6 +93,14 @@ export function GridWrapper() {
         isShowCheckboxes
         onChangeCheckboxes={checkboxesHandler}
         onCellClick={onCellClick}
+      /> */}
+      <Grid 
+        columns={column as TRawColumnItem[]}
+        rows={grid.grid}
+        footer={grid.footer}
+        columnMutation={handleSchemaMutation}
+        onChangeCheckboxes={checkboxesHandler}
+        onBurgerItemClick={console.log}
       />
     </>
   );
