@@ -17,7 +17,7 @@ export const Grid = ({
   columns = [],
   rows = [],
   footer = [],
-  burgerItems = [{ label: "Редактировать" }, { label: "Удалить" }, ],
+  burgerItems = [],
   isShowCheckboxes = true,
   height = 400,
   columnMutation = () => { },

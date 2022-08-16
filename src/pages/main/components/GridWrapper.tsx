@@ -40,7 +40,7 @@ export function GridWrapper() {
     } else {
       console.log(cell);
     }
-  }, [dispatch]);
+  }, []);
 
   const handleSchemaMutation = (schema: any) => {
     schemaMutation(schema).then(response => {
