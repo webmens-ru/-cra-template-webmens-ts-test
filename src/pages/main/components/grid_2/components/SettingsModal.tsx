@@ -1,8 +1,8 @@
 import { Button, Checkbox, Input } from "@webmens-ru/ui_lib";
 import { useState } from "react";
-import { IGNORED_COLUMN_KEYS } from "../../consts";
-import { TColumnItem } from "../../types";
-import { ActionsContainer, BodyModalContainer, ButtonsContainer, ColumnsList, ColumnsListItem, ColumnsListItemTitle, FooterInnerContainer, FooterModalContainer, HeaderCancelButton, HeaderModalContainer, SettingsModalBackdrop, SettingsModalContainer, SettingsModalInnerContainer, TogglersContainer } from "./styles";
+import { IGNORED_COLUMN_KEYS } from "../consts";
+import { ActionsContainer, BodyModalContainer, ButtonsContainer, ColumnsList, ColumnsListItem, ColumnsListItemTitle, FooterInnerContainer, FooterModalContainer, HeaderCancelButton, HeaderModalContainer, SettingsModalBackdrop, SettingsModalContainer, SettingsModalInnerContainer, TogglersContainer } from "../styles/settings";
+import { TColumnItem } from "../types";
 
 interface SettingsModalProps {
   columns: TColumnItem[];
