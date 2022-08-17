@@ -1,4 +1,5 @@
 import React from "react";
+import { GridLink } from "../styles/formatters";
 import { LinkFormatterProps } from "../types";
 
 export const LinkFormatter = ({ value, onCellClick }: LinkFormatterProps) => {  
@@ -7,5 +8,5 @@ export const LinkFormatter = ({ value, onCellClick }: LinkFormatterProps) => {
     onCellClick(value)
   }
 
-  return <a href={value.url || value.link || "#"} children={value.title} onClick={handleLinkClick} />
+  return <GridLink href={value.url || value.link || "#"} children={value.title} onClick={handleLinkClick} />
 }

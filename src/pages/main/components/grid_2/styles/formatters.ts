@@ -28,3 +28,11 @@ export const EmptyCell = styled(CommonCell)`
   opacity: .5;
 `
 /* EmptyFormatter */
+
+/* LinkFormatter */
+export const GridLink = styled.a`
+  &:link, &:visited {
+    color: #2067b0;
+  }
+`
+/* LinkFormatter */
