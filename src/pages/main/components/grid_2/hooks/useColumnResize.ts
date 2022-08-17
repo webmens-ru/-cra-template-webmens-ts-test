@@ -1,5 +1,5 @@
+import { useRef, useState } from "react";
 import { TColumnItem } from '../types';
-import { useState, useRef } from "react";
 import { updateInstance } from '../utils/grid_parser';
 
 interface IUseColumnResizeProps {
@@ -8,6 +8,7 @@ interface IUseColumnResizeProps {
   onResizeEnd: (columns: TColumnItem[]) => void;
 }
 
+// TODO: Не срабатывает ресайз на замороженных столбцах
 export default function useColumnResize({ draggableColumns, mutableColumns, onResizeEnd }: IUseColumnResizeProps) {
   const [tempWidth, setTempWidth] = useState(0)
   const tempWidthRef = useRef(0)
