@@ -21,6 +21,10 @@ export type TRawColumnItem = {
   type: TColumnType;
   title: string;
   visible: number;
+  frozen?: boolean | null;
+  resizeble?: boolean | null;
+  reordering?: boolean | null;
+  sortable?: boolean | null;
   order: number;
   width: number;
 };

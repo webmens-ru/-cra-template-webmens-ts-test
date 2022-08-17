@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { HeaderRendererProps, SortColumn } from "react-data-grid";
 import { DraggableHeaderRenderer } from "../components/DraggableHeader";
 import SettingsCellHeader from "../components/SettingsCellHeader";
@@ -6,12 +6,13 @@ import { IGNORED_COLUMN_KEYS } from "../consts";
 import { TColumnItem, TRowItem } from "../types/types";
 import { updateInstance } from "../utils/grid_parser";
 
-interface IUseDraggableColumnsProps {
+interface IUseColumnsProps {
   createColumns: TColumnItem[];
   onReorder: (columns: TColumnItem[]) => void;
+  onColumnFrozenToggle: (columns: TColumnItem[]) => void;
 }
 
-export default function useColumns({ createColumns, onReorder }: IUseDraggableColumnsProps) {
+export default function useColumns({ createColumns, onReorder, onColumnFrozenToggle }: IUseColumnsProps) {
   const [columns, setColumns] = useState(createColumns);
   const [sortColumns, setSortColumns] = useState<SortColumn[]>([]);
   const [showSettings, setShowSettings] = useState(false)
@@ -20,12 +21,10 @@ export default function useColumns({ createColumns, onReorder }: IUseDraggableCo
 
   const draggableColumns = useMemo(() => {
     function HeaderRenderer(props: HeaderRendererProps<TRowItem>) {
-      return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
+      return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} onColumnFrozenToggle={handleColumnFrozenToggle} />;
     }
 
     function handleColumnsReorder(sourceKey: string, targetKey: string) {
-      console.log(sourceKey, targetKey);
-
       const sourceColumnIndex = columns.findIndex((c) => c.key === sourceKey);
       const targetColumnIndex = columns.findIndex((c) => c.key === targetKey);
       const reorderedColumns = [...columns];
@@ -42,17 +41,31 @@ export default function useColumns({ createColumns, onReorder }: IUseDraggableCo
       setColumns(resultColumns);
     }
 
+    function handleColumnFrozenToggle(column: TColumnItem) {
+      const changedColumns = columns.map(item => {
+        if (item.key === column.key) {
+          return { ...item, frozen: !item.frozen }
+        }
+        return item
+      })
+      
+      const resultColumns = updateInstance(changedColumns)
+
+      onColumnFrozenToggle(resultColumns)
+      setColumns(resultColumns)
+    }
+
     return columns
       .filter((c) => !!c.instance.visible)
-      .map((c) => {
+      .map((c) => {        
         if (c.key === "action") {
           return { ...c, headerRenderer: () => SettingsCellHeader({ onClick: () => setShowSettings(true) }) }
-        } else if (IGNORED_COLUMN_KEYS.includes(c.key)) {
+        } else if (IGNORED_COLUMN_KEYS.includes(c.key) || !c.instance.reordering) {
           return c
         };
         return { ...c, headerRenderer: HeaderRenderer };
       });
-  }, [columns, onReorder])
+  }, [columns, onColumnFrozenToggle, onReorder])
 
   return {
     draggableColumns,

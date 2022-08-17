@@ -8,6 +8,7 @@ import CheckboxFormatter from "./formatters/CheckboxFormatter";
 import useColumnResize from "./hooks/useColumnResize";
 import useColumns from "./hooks/useColumns";
 import useGridRef from "./hooks/useGridRef";
+import useGridReload from "./hooks/useGridReload";
 import useRows from "./hooks/useRows";
 import { GridContainer, GridStyle } from "./styles/grid";
 import { IGridProps, TCellItem, TColumnItem, TRowItem } from "./types/types";
@@ -26,11 +27,13 @@ export const Grid = ({
   onCellClick = (cell: TCellItem) => {}
 }: IGridProps) => {
   const [mutableColumns, setMutableColumns] = useState<TColumnItem[]>(fromRawColumns(columns, isShowCheckboxes, onCellClick))
+  
+  const { gridKey, reloadGrid } = useGridReload()
   const { gridRef, refReady } = useGridRef()
 
-  const { draggableColumns, sortColumns, showSettings, setShowSettings, setSortColumns } = useColumns({ createColumns: mutableColumns, onReorder: handleColumnsMutation, })
+  const { draggableColumns, sortColumns, showSettings, setShowSettings, setSortColumns } = useColumns({ createColumns: mutableColumns, onReorder: handleColumnsMutation, onColumnFrozenToggle: handleColumnsMutation })
   const { sortedRows, selectedRows, setSelectedRows } = useRows({ createColumns: columns, createRows: rows, sortColumns, burgerItems, gridRef, onBurgerItemClick })
-  const { onColumnResize } = useColumnResize({ mutableColumns, draggableColumns, onResizeEnd: handleColumnsMutation })
+  const { onColumnResize } = useColumnResize({ mutableColumns, draggableColumns, onResizeEnd: handleColumnsMutation })    
   
   useEffect(() => {
     onChangeCheckboxes(Array.from(selectedRows))
@@ -39,6 +42,7 @@ export const Grid = ({
   function handleColumnsMutation(columns: TColumnItem[]) {
     setMutableColumns(columns)
     columnMutation(toRawColumns(columns))
+    reloadGrid()
   }  
 
   const rowKeyGetter = (row: TRowItem) => {
@@ -54,6 +58,7 @@ export const Grid = ({
         {refReady && <SideScroll gridRef={gridRef} />}
         <DndProvider backend={HTML5Backend} >
           <DataGrid
+            key={gridKey}
             ref={gridRef}
             columns={draggableColumns}
             sortColumns={sortColumns}

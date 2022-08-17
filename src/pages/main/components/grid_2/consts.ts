@@ -21,7 +21,7 @@ export const COLUMN_INSTANCE_PLUG: TRawColumnItem = {
 export const ACTION_COLUMN: TColumnItem = {
   key: "action",
   name: "Действие",
-  // frozen: true,
+  frozen: true,
   headerRenderer: () => SettingsCellHeader({ onClick: () => {} }),
   formatter: ActionFormatter,
   headerCellClass: "cell-action",
@@ -32,7 +32,7 @@ export const ACTION_COLUMN: TColumnItem = {
 
 export const SELECT_COLUMN: TColumnItem = {
   ...SelectColumn,
-  frozen: false,
+  frozen: true,
   instance: COLUMN_INSTANCE_PLUG
 }
 

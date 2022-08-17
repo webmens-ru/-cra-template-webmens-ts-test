@@ -42,8 +42,10 @@ export const GridStyle = createGlobalStyle`
       }
 
       &.rdg-cell-resizable {
-        &:hover:after {
-          opacity: 1
+        &:hover {
+          &:after {
+            opacity: 1;
+          }
         }
         &::after {
           position: absolute;
@@ -56,6 +58,10 @@ export const GridStyle = createGlobalStyle`
           border-right: 1px solid rgba(0,0,0,.1);
           transition: opacity 200ms;
         }
+      }
+
+      &:hover .frozen-lock-icon {
+        opacity: .5;
       }
     }
   }
@@ -102,3 +108,17 @@ export const RightSideArrow = styled(LeftSideArrow)`
   right: -50px;
   transform: rotate(180deg);
 `;
+
+export const LockIcon = styled.img.attrs({ className: "frozen-lock-icon", alt: "", width: 16 })`
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  
+  opacity: 0;
+  transition: opacity 200ms;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1 !important;
+  }
+`
