@@ -1,11 +1,10 @@
-import { Loader, Toolbar } from "@webmens-ru/ui_lib";
-import { IListItem } from "@webmens-ru/ui_lib/dist/components/toolbar";
+import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
+import type { TCellItem, TRawColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { BlockItems } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
 import { useSaveSchemaMutation } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { setCheckboxes, setFilterResponse, setSchema } from "../mainSlice";
-import { Grid } from "./grid_2/Grid";
-import { TCellItem, TRawColumnItem, TRowID } from "./grid_2/types";
+import { setCheckboxes, setSchema } from "../mainSlice";
 
 export function GridWrapper() {
   const { mainSlice, mainApi } = useAppSelector((state) => state);
@@ -66,10 +65,10 @@ export function GridWrapper() {
     [dispatch, grid],
   );
 
-  const handleToolbarItemClick = (item: IListItem) => {
-    if (item.params && item.params.url !== null) {
-      dispatch(setFilterResponse(item.params.url))
-    }
+  const handleToolbarItemClick = (item: BlockItems) => {
+    // if (item.params && item.params.url !== null) {
+    //   dispatch(setFilterResponse(item.params.url))
+    // }
   }
   
 
