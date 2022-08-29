@@ -48,7 +48,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
   const itemClickHandler = async (item: IActionItem) => {
     let body = grid.grid!.filter((row) => {
       const id = typeof row.id === "object" ? row.id.title : row.id
-      return checkboxes.length ? checkboxes.includes(id) : true
+      return checkboxes.includes(id)
     })
 
     if (item.params && "columns" in item.params) {
