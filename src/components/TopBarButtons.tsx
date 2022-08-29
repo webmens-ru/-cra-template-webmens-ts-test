@@ -1,5 +1,6 @@
 import { Button } from "@webmens-ru/ui_lib";
 import { TColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
@@ -8,7 +9,7 @@ import { useLazyGetButtonAddQuery, useLazyGetDynamicButtonItemsQuery, useSendDat
 
 interface ITopBarButtonsProps {
   involvedState: {
-    schema: TColumnItem[]
+    schema: TRawColumnItem[]
     grid: IGridState;
     checkboxes: TRowID[]
   };
