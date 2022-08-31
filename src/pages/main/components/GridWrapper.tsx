@@ -1,10 +1,11 @@
 import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
 import type { TCellItem, TRawColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid_2";
-import { BlockItems } from "@webmens-ru/ui_lib/dist/components/toolbar";
+import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
 import { useSaveSchemaMutation } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { setCheckboxes, setSchema } from "../mainSlice";
+import { bxOpen } from "../../../app/utils/bx";
+import { setCheckboxes, setFilterResponse, setSchema } from "../mainSlice";
 
 export function GridWrapper() {
   const { mainSlice, mainApi } = useAppSelector((state) => state);
@@ -13,32 +14,7 @@ export function GridWrapper() {
   const [schemaMutation] = useSaveSchemaMutation();
 
   const onCellClick = useCallback((cell: TCellItem) => {
-    if (process.env.NODE_ENV === "production") {
-      console.log(cell);
-      
-      switch (cell.type) {
-        case "openPath":
-          BX24.openPath(cell.link, (res: any) => console.log(res));
-          break;
-        case "openApplication":
-          BX24.openApplication(cell, function() {
-            if (cell.updateOnCloseSlider) {
-              // dispatch(setTimeSliderOpened(Date.now()))
-              // TODO: Сделать функцию в хуке useData по вызову обновления
-            }
-          });
-          break;
-        case "openLink":
-          window.open(cell.link);
-          break;
-        default:
-          break;
-      }
-    } else if (cell.type === "openLink") {
-      window.open(cell.link);
-    } else {
-      console.log(cell);
-    }
+    bxOpen(cell.type, cell.link, cell)
   }, []);
 
   const handleSchemaMutation = (schema: any) => {
@@ -65,13 +41,19 @@ export function GridWrapper() {
     [dispatch, grid],
   );
 
-  const handleToolbarItemClick = (item: BlockItems) => {
-    // if (item.params && item.params.url !== null) {
-    //   dispatch(setFilterResponse(item.params.url))
-    // }
+  const handleMetricFilter = (item: IBlockItemMetricFilter) => {
+    console.log(item);
+    
+    if (item.params && item.params.url !== null) {
+      dispatch(setFilterResponse(item.params.url))
+    }
+  }
+
+  const handleMetricLink = (item: IBlockItemMetricLink) => {
+    // @ts-ignore
+    bxOpen(item.params.type, item.params.link, item.params)
   }
   
-
   if (mainSlice.isLoading) return <Loader />;
 
   return (
@@ -79,19 +61,11 @@ export function GridWrapper() {
       {grid?.header?.blocks && (
         <Toolbar 
           blocks={grid.header.blocks}
-          onItemClick={handleToolbarItemClick}
+          onMetricFilterClick={handleMetricFilter}
+          onMetricLinkClick={handleMetricLink}
+          onItemClick={console.log}
         />
       )}
-      {/* <Grid
-        column={column}
-        row={grid?.grid}
-        footer={grid?.footer}
-        height={140}
-        columnMutation={handleSchemaMutation}
-        isShowCheckboxes
-        onChangeCheckboxes={checkboxesHandler}
-        onCellClick={onCellClick}
-      /> */}
       <Grid 
         columns={column as TRawColumnItem[]}
         rows={grid.grid}
