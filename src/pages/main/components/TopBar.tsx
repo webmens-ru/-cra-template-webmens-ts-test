@@ -1,12 +1,12 @@
-import React from "react";
-import { FilterAlpha as Filter } from "@webmens-ru/ui_lib";
-import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter_2/types"; 
+// import { FilterAlpha as Filter } from "@webmens-ru/ui_lib";
+import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
 import { setCurrentFilter, useLazyGetDynamicSelectItemsQuery } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import CopyToClipboard from "../../../components/copyToClipboard";
+import { FilterAlpha as Filter } from "../../../components/filter_2";
+import { TopBarButtons } from "../../../components/TopBarButtons";
 import { useFilterQuery } from "../hooks/useFilterQuery";
 import ControlBar from "./control_bar";
-import { TopBarButtons } from "../../../components/TopBarButtons";
 
 export function TopBar() {
   const { mainSlice } = useAppSelector((state) => state);
