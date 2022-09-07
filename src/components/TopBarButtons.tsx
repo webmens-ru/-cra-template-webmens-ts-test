@@ -1,5 +1,6 @@
 import { Button } from "@webmens-ru/ui_lib";
 import { TColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
@@ -8,7 +9,7 @@ import { useLazyGetButtonAddQuery, useLazyGetDynamicButtonItemsQuery, useSendDat
 
 interface ITopBarButtonsProps {
   involvedState: {
-    schema: TColumnItem[]
+    schema: TRawColumnItem[]
     grid: IGridState;
     checkboxes: TRowID[]
   };
@@ -48,7 +49,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
   const itemClickHandler = async (item: IActionItem) => {
     let body = grid.grid!.filter((row) => {
       const id = typeof row.id === "object" ? row.id.title : row.id
-      return checkboxes.length ? checkboxes.includes(id) : true
+      return checkboxes.includes(id)
     })
 
     if (item.params && "columns" in item.params) {

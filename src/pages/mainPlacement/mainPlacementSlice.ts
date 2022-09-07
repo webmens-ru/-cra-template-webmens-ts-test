@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { TColumnItem, TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
+import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
 
 interface IState {
@@ -16,7 +17,7 @@ interface IState {
   entity: string;
   parentId: string;
   title: string;
-  schema: TColumnItem[]
+  schema: TRawColumnItem[]
 }
 
 export interface IGridState {
