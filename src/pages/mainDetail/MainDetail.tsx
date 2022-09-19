@@ -97,7 +97,6 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
         columns={mainDetail.schema}
         rows={mainDetail.grid.grid}
         footer={mainDetail.grid.footer}
-        height={100}
         onChangeCheckboxes={checkboxesHandler}
         columnMutation={handleSchemaMutation}
         onCellClick={onCellClick}

@@ -78,11 +78,9 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
   };
 
   const handleGearClick = async (item: any) => {
-
     const gridData = checkboxes.length === 0 || checkboxes.length === grid.grid?.length
       ? grid.grid
       : grid.grid?.filter((item) => checkboxes.some((check) => check === item.id || check === (item.id as any).title))
-
     const response = await axiosInst.post('/admin/excel/get-excel', {
       schema: schema.filter((item) => item.visible).sort((a, b) => a.order - b.order),
       grid: gridData || [],

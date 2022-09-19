@@ -53,6 +53,12 @@ export function GridWrapper() {
     // @ts-ignore
     bxOpen(item.params.type, item.params.link, item.params)
   }
+
+  let height;
+
+  (grid.header?.blocks) ? height = 190 : height = 160;
+
+  const windowInnerHeight = window.innerHeight
   
   if (mainSlice.isLoading) return <Loader />;
 
@@ -69,6 +75,7 @@ export function GridWrapper() {
       <Grid 
         columns={column as TRawColumnItem[]}
         rows={grid.grid}
+        height={windowInnerHeight - height}
         footer={grid.footer}
         columnMutation={handleSchemaMutation}
         onChangeCheckboxes={checkboxesHandler}
