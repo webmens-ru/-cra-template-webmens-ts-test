@@ -1,21 +1,19 @@
-import React, { useEffect } from "react";
-import { Loader } from "@webmens-ru/ui_lib";
+import { useEffect } from "react";
+import { setEntity, setParentId, setTitle, useLazyGetTitleQuery } from ".";
+import { useAppDispatch } from "../../app/store/hooks";
 import { GridWrapper } from "./components/GridWrapper";
 import { TopBar } from "./components/TopBar";
-import { useData } from "./hooks/useData";
-import { useAppDispatch } from "../../app/store/hooks";
-import { setEntity, setTitle, setParentId } from ".";
-import { useLazyGetTitleQuery } from ".";
+import { usePlacementData } from "./hooks/usePlacementData";
 
 export interface MainPlacementProps {
   entity: string,
   parentId: any
 }
 
-export default function MainPlacement({ entity, parentId}: MainPlacementProps) {
+export default function MainPlacement({ entity, parentId }: MainPlacementProps) {
   const dispatch = useAppDispatch();
   const [getTitle] = useLazyGetTitleQuery()
-  useData({entity, parentId});
+  usePlacementData({ entity, parentId });
 
   useEffect(() => {
     dispatch(setParentId(parentId));

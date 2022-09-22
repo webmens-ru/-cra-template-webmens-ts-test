@@ -1,18 +1,14 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo } from "react";
+import { useCallback, useLayoutEffect } from "react";
 import { setCurrentFilter, setIsLoading } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { getFilterResponse } from "../../../app/utils/filterResponse";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
 import {
-  useLazyGetFiltersQuery,
-  useLazyGetAllFieldsQuery,
-  useLazyGetSchemaQuery,
-  useLazyGetFieldsQuery,
-  useLazyGetGridQuery,
+  useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery, useLazyGetGridQuery, useLazyGetSchemaQuery
 } from "../mainPlacementApi";
-import { setGrid, setSchema } from "../mainPlacementSlice"
+import { setGrid, setSchema } from "../mainPlacementSlice";
 
-export const useData = ({entity, parentId}: {entity: string, parentId: any}) => {
+export const usePlacementData = ({ entity, parentId }: { entity: string, parentId: any }) => {
   const { mainPlacementSlice } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
