@@ -1,18 +1,8 @@
 import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { useCallback, useMemo } from "react";
 import {
-  setFilterResponse,
-  useAddFieldMutation,
-  useDeleteFieldMutation,
-  useCreateFilterMutation,
-  useUpdateFilterMutation,
-  useDeleteFilterMutation,
-  useLazyGetFieldsQuery,
-  useUpdateFiltersOrderMutation,
-  useUpdateFieldMutation,
-  useLazyGetGridQuery,
-  setIsLoading,
-  setGrid,
+  setFilterResponse, setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
+  useLazyGetFieldsQuery, useUpdateFieldMutation, useUpdateFilterMutation, useUpdateFiltersOrderMutation
 } from "..";
 import { axiosInst } from "../../../app/api/baseQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
