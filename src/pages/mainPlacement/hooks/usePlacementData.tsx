@@ -9,6 +9,7 @@ import {
 import { setGrid, setSchema } from "../mainPlacementSlice";
 
 export const usePlacementData = ({ entity, parentId }: { entity: string, parentId: any }) => {
+  
   const { mainPlacementSlice } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
@@ -48,14 +49,14 @@ export const usePlacementData = ({ entity, parentId }: { entity: string, parentI
       const filterResponse = getFilterResponse(correctFields);
       const grid = await getGrid({
         entity,
-        filter: `parentId=${mainPlacementSlice.parentId}&` + ((mainPlacementSlice.filterResponse !== null && mainPlacementSlice.filterResponse !== undefined) ? mainPlacementSlice.filterResponse : filterResponse),
+        filter: `parentId=${parentId}&` + ((mainPlacementSlice.filterResponse !== null && mainPlacementSlice.filterResponse !== undefined) ? mainPlacementSlice.filterResponse : filterResponse),
       });
 
       dispatch(setSchema(schema.data))
       dispatch(setGrid(grid.data))
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, entity, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, mainPlacementSlice.filterResponse, mainPlacementSlice.parentId]);
+  }, [dispatch, entity, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, mainPlacementSlice.filterResponse, parentId]);
 
   useLayoutEffect(() => {
     init();
