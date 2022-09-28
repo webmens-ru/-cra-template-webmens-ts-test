@@ -30,29 +30,17 @@ export const useFilterQuery = () => {
   const [createField] = useAddFieldMutation();
   const [deleteField] = useDeleteFieldMutation();
   const [getFieldsQuery] = useLazyGetFieldsQuery();
-  const [getGrid] = useLazyGetGridQuery();  
 
   const onSearch = useCallback(
-    async (fields: TField[]) => {
+    async (fields: TField[]) => {      
       dispatch(setIsLoading(true));
       const filterResponse = getFilterResponse(fields);
-      const grid = await getGrid({
-        entity: mainSlice.currentTab.params.entity,
-        filter: filterResponse,
-      });
       
       getFieldsQuery(mainSlice.currentFilter.id);
       dispatch(setFilterResponse(filterResponse));
-      dispatch(setGrid(grid.data))
       dispatch(setIsLoading(false));
     },
-    [
-      dispatch,
-      getFieldsQuery,
-      getGrid,
-      mainSlice.currentFilter,
-      mainSlice.currentTab,
-    ],
+    [dispatch, getFieldsQuery, mainSlice.currentFilter],
   );
 
   const updateField = async (filter: TField, param: string) => {
