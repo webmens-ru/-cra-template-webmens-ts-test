@@ -4,7 +4,8 @@ import { TColumnItem, TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/component
 import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
 
-interface IState {
+// TODO: Вынести в generic-типы
+export interface IState {
   currentFilter: TFilter;
   filterResponse: null | string;
   toolbarFilterResponse: null | string;
