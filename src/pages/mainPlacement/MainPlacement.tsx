@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { setCheckboxes, setEntity, setSchema, setTitle, useLazyGetTitleQuery, useSaveSchemaMutation } from ".";
+import { setCheckboxes, setEntity, setFilterResponse, setSchema, setTitle, useLazyGetTitleQuery, useSaveSchemaMutation } from ".";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import { GridWrapper } from "../../components/GridWrapper";
 import { TopBar } from "./components/TopBar";
@@ -34,6 +34,7 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
         onShemaMutation={schemaMutation}
         checkboxesSetter={setCheckboxes}
         schemaSetter={setSchema}
+        filterSetter={setFilterResponse}
       />
     </>
   );
