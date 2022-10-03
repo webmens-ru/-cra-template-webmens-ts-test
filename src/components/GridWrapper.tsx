@@ -3,8 +3,9 @@ import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { TCellItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
-import { BlockItems } from "@webmens-ru/ui_lib/dist/components/toolbar";
+import { BlockItems, IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
+import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
 
 // TODO: Изучить типизацию redux-toolkit
@@ -13,11 +14,12 @@ interface IGridWrapperProps {
   api: any;
   schemaSetter: ActionCreatorWithPayload<any>;
   checkboxesSetter: ActionCreatorWithPayload<any>;
+  filterSetter: ActionCreatorWithPayload<any>;
   dispatch: ThunkDispatch<any, any, any>;
   onShemaMutation: MutationTrigger<any>;
 }
 
-export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, dispatch, onShemaMutation }: IGridWrapperProps) {
+export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation }: IGridWrapperProps) {
   const onCellClick = useCallback((cell: TCellItem) => {
     if (process.env.NODE_ENV === "production") {
       console.log(cell);
@@ -71,12 +73,23 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, dispat
     [checkboxesSetter, dispatch, grid],
   );
 
-  const handleToolbarItemClick = (item: BlockItems) => {
-    // if (item.params && item.params.url !== null) {
-    //   dispatch(setFilterResponse(item.params.url))
-    // }
+  const handleMetricFilter = (item: IBlockItemMetricFilter) => {
+    console.log(item);
+    
+    if (item.params && item.params.url !== null) {
+      dispatch(filterSetter(item.params.url))
+    }
   }
 
+  const handleMetricLink = (item: IBlockItemMetricLink) => {
+    // @ts-ignore
+    bxOpen(item.params.type, item.params.link, item.params)
+  }
+  let height;
+
+  (grid?.header?.blocks) ? height = 190 : height = 160;
+
+  const windowInnerHeight = window.innerHeight
 
   if (slice.isLoading) return <Loader />;
 
@@ -85,13 +98,15 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, dispat
       {grid?.header?.blocks && (
         <Toolbar
           blocks={grid.header.blocks}
-          onItemClick={handleToolbarItemClick}
+          onMetricFilterClick={handleMetricFilter}
+          onMetricLinkClick={handleMetricLink}
         />
       )}
       <Grid
         columns={column}
         rows={grid?.grid}
         footer={grid?.footer}
+        height={windowInnerHeight - height}
         columnMutation={handleSchemaMutation}
         onChangeCheckboxes={checkboxesHandler}
         onCellClick={onCellClick}

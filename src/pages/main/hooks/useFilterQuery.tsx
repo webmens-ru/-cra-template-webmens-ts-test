@@ -24,6 +24,8 @@ export const useFilterQuery = () => {
   const onSearch = useCallback(
     async (fields: TField[]) => {      
       dispatch(setIsLoading(true));
+      console.log(fields);
+      
       const filterResponse = getFilterResponse(fields);
       
       getFieldsQuery(mainSlice.currentFilter.id);
