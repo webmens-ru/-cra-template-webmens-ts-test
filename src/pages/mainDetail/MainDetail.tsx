@@ -69,6 +69,8 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
     }
   };
 
+  const windowInnerHeight = window.innerHeight
+
   if (!mainDetail.inited) {
     return <Loader />;
   }
@@ -97,6 +99,7 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
         columns={mainDetail.schema}
         rows={mainDetail.grid.grid}
         footer={mainDetail.grid.footer}
+        height={windowInnerHeight - 46}
         onChangeCheckboxes={checkboxesHandler}
         columnMutation={handleSchemaMutation}
         onCellClick={onCellClick}
