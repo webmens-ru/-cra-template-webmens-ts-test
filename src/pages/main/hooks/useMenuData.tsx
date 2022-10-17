@@ -1,8 +1,8 @@
 import { useCallback, useLayoutEffect } from "react";
-import { useLazyGetTabsQuery } from "../mainApi";
 import { useAppDispatch } from "../../../app/store/hooks";
+import { Item } from "../../../components/menu/types";
+import { useLazyGetTabsQuery } from "../mainApi";
 import { setCurrentTab } from "../mainSlice";
-import { Item } from "@webmens-ru/ui_lib/dist/components/menu/types";
 
 export const useMenuData = (menuId: number = 1) => {
   const dispatch = useAppDispatch();

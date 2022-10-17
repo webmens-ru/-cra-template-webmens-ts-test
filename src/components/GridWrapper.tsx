@@ -3,7 +3,7 @@ import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { TCellItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
-import { BlockItems, IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
+import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
@@ -17,9 +17,10 @@ interface IGridWrapperProps {
   filterSetter: ActionCreatorWithPayload<any>;
   dispatch: ThunkDispatch<any, any, any>;
   onShemaMutation: MutationTrigger<any>;
+  onCloseSlider?: () => void
 }
 
-export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation }: IGridWrapperProps) {
+export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation, onCloseSlider }: IGridWrapperProps) {
   const onCellClick = useCallback((cell: TCellItem) => {
     if (process.env.NODE_ENV === "production") {
       console.log(cell);
@@ -30,9 +31,8 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
           break;
         case "openApplication":
           BX24.openApplication(cell, function () {
-            if (cell.updateOnCloseSlider) {
-              // dispatch(setTimeSliderOpened(Date.now()))
-              // TODO: Сделать функцию в хуке useData по вызову обновления
+            if (cell.updateOnCloseSlider && onCloseSlider) {
+              onCloseSlider()
             }
           });
           break;

@@ -72,5 +72,5 @@ export const useData = () => {
     init();
   }, [init]);
 
-  return { isCorrect };
+  return { isCorrect, reload: init };
 };
