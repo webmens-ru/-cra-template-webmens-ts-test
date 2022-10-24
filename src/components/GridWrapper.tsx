@@ -73,9 +73,7 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     [checkboxesSetter, dispatch, grid],
   );
 
-  const handleMetricFilter = (item: IBlockItemMetricFilter) => {
-    console.log(item);
-    
+  const handleMetricFilter = (item: IBlockItemMetricFilter) => {    
     if (item.params && item.params.url !== null) {
       dispatch(filterSetter(item.params.url))
     }
@@ -85,11 +83,8 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     // @ts-ignore
     bxOpen(item.params.type, item.params.link, item.params)
   }
-  let height;
 
-  (grid?.header?.blocks) ? height = 190 : height = 160;
-
-  const windowInnerHeight = window.innerHeight
+  const height = (grid?.header?.blocks) ? 190 : 160;
 
   if (slice.isLoading) return <Loader />;
 
@@ -106,7 +101,7 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
         columns={column}
         rows={grid?.grid}
         footer={grid?.footer}
-        height={windowInnerHeight - height}
+        height={window.innerHeight - height}
         columnMutation={handleSchemaMutation}
         onChangeCheckboxes={checkboxesHandler}
         onCellClick={onCellClick}

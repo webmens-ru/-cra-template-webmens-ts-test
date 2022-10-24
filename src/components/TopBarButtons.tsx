@@ -1,11 +1,13 @@
 import { Button } from "@webmens-ru/ui_lib";
-import { TColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
-import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
-import { useEffect } from "react";
+import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
+import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TRawColumnItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
 import { IGridState } from "../pages/main";
 import { useLazyGetButtonAddQuery, useLazyGetDynamicButtonItemsQuery, useSendDataOnButtonClickMutation } from "../pages/main/mainApi";
+import PopupAction, { PopupActionProps } from "./PopupAction";
 
 interface ITopBarButtonsProps {
   involvedState: {
@@ -30,6 +32,7 @@ interface IActionItemParams {
     type: string;
     documentName: string;
   };
+  popup?: PopupActionProps;
   columns: string[];
 }
 
@@ -37,6 +40,8 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
   const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
+  const [isShowPopup, setShowPopup] = useState(false)
+  const [popupAction, setPopupAction] = useState<{ handler: string, grid: TRowItem[], params: IActionItemParams } | null>(null)
   const { grid, checkboxes, schema } = involvedState
 
   useEffect(() => {
@@ -57,6 +62,11 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
       body = body.map(row => Object.fromEntries(
         Object.entries(row).filter(([key]) => item.params?.columns.includes(key))
       ))
+    }
+
+    if (item.params && item.params.popup) {
+      setShowPopup(true)
+      setPopupAction({ grid: body, params: item.params, handler: item.handler })
     }
 
     if (body.length) {
@@ -125,6 +135,27 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
       console.log(buttonAdd.data?.params);
     }
   };
+
+  const handlePopupSubmit = (values: FormValues) => {
+    if (popupAction) {
+      const body = { grid: popupAction.grid, form: values }
+      axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" }).then(response => {
+        if (popupAction.params.output && response.data) {
+          const link = document.createElement("a")
+          const title = popupAction.params.output.documentName
+          link.href = URL.createObjectURL(new Blob([response.data]))
+          link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
+          link.click()
+        }
+      })
+    }
+  }
+
+  const handleCloseModal = () => {
+    setShowPopup(false)
+    setPopupAction(null)
+  }
+
   return (
     <Container>
       {!!buttonAdd.data && (
@@ -140,9 +171,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
         variant="square"
         color="light"
         svgBefore="setting"
-        items={[
-          { label: "Выгрузка в Excel", value: "excel" }
-        ]}
+        items={[{ label: "Выгрузка в Excel", value: "excel" }]}
         dropdownDirection="left"
         itemsProps={{ onClick: handleGearClick }}
       />
@@ -156,6 +185,13 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
         >
           Действия
         </Button>
+      )}
+      {(isShowPopup && !!popupAction?.params.popup) && (
+        <PopupAction
+          {...popupAction.params.popup}
+          onClose={handleCloseModal}
+          onSubmit={handlePopupSubmit}
+        />
       )}
     </Container>
   );

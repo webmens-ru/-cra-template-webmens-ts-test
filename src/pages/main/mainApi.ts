@@ -1,7 +1,6 @@
-import { TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types"
-import { TColumnItem } from "@webmens-ru/ui_lib/dist/components/grid"
+import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
 import { baseQuery } from "../../app/api/baseQuery";
 
 export const mainApi = createApi({
@@ -123,7 +122,8 @@ export const mainApi = createApi({
     }),
     getDynamicButtonItems: build.query<{ label: string, title: string }[], string>({
       query: (entity) => ({
-        url: `/admin/ui/grid/action/entity-actions?entity=${entity}`
+        // url: `/admin/ui/grid/action/entity-actions?entity=${entity}`
+        url: `/${entity}/grid-actions`
       })
     }),
     sendDataOnButtonClick: build.mutation({

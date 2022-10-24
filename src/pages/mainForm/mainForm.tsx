@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Loader } from "@webmens-ru/ui_lib";
-import { Form } from "@webmens-ru/ui_lib"; 
-import { 
-  useGetValidationQuery, 
-  useGetFormFieldsQuery,
-  useGetFormTitleQuery,
-  useLazyGetFormValuesQuery
- } from "./mainFormApi";
+import { Form, Loader } from "@webmens-ru/ui_lib";
 import { FormMode, FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
+import { useEffect, useState } from "react";
 import { axiosInst } from "../../app/api/baseQuery";
+import {
+  useGetFormFieldsQuery,
+  useGetFormTitleQuery, useGetValidationQuery, useLazyGetFormValuesQuery
+} from "./mainFormApi";
 
 export interface MainFormProps {
   width?: string, 
@@ -62,7 +59,7 @@ export default function MainForm({width = "100%", mode = "view", entity, action 
           fields={formFields.data}
           values={form.values}
           mode={mode}
-          formTitle= {formTitle.data.name}
+          formTitle={formTitle.data.name}
           height="calc(100vh - 50px)"
           validationRules={validation.data}
           onSubmit={handleFormSubmit}
