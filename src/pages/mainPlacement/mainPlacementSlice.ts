@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
-import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { BurgerItem, TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
 
 // TODO: Вынести в generic-типы
@@ -27,6 +27,11 @@ export interface IGridState {
   };
   grid?: TRowItem[];
   footer?: TRowItem[];
+  options?: {
+    key: string;
+    actionColumnName: string;
+    actions: BurgerItem[]
+  }
 }
 
 const initialState: IState = {

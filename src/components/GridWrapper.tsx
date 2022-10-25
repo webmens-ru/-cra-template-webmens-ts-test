@@ -2,7 +2,7 @@ import { ActionCreatorWithPayload, ThunkDispatch } from "@reduxjs/toolkit";
 import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
-import { TCellItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
 import { bxOpen } from "../app/utils/bx";
@@ -21,6 +21,9 @@ interface IGridWrapperProps {
 }
 
 export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation, onCloseSlider }: IGridWrapperProps) {
+  const gridState = slice.grid
+  const burgerItems = gridState?.options?.actions || []  
+
   const onCellClick = useCallback((cell: TCellItem) => {
     if (process.env.NODE_ENV === "production") {
       console.log(cell);
@@ -47,7 +50,32 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     } else {
       console.log(cell);
     }
-  }, []);
+  }, [onCloseSlider]);
+
+  const handleBurgerClick = (item: BurgerItem, row: TRowItem) => {
+    const rowKey = gridState?.options?.key || "id"
+    const rowID = row[rowKey]    
+
+    new Promise<void>((resolve) => {
+      switch (item.type) {
+        case "openApplication":
+          BX24.openApplication({ ...item.params, [rowKey]: rowID }, resolve);
+          break;
+        case "openApplicationPortal":
+          BX24.openApplication({ ...item.params, [rowKey]: rowID, route: "portal" }, resolve)
+          break;
+        case "openPath":
+          BX24.openPath(item.handler.replace("{id}", rowID), resolve)
+          break;
+        case "trigger":
+          break;
+      }
+    }).then(() => {
+      if (item.params.updateOnCloseSlider && onCloseSlider) {
+        onCloseSlider()
+      }
+    })
+  }
 
   const handleSchemaMutation = (schema: any) => {
     onShemaMutation(schema).then(response => {
@@ -62,15 +90,13 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     [api.queries, slice.entity],
   );
 
-  const grid = slice.grid
-
   const checkboxesHandler = useCallback(
     (arr: TRowID[]) => {
-      if (grid) {
+      if (gridState) {
         dispatch(checkboxesSetter(arr));
       }
     },
-    [checkboxesSetter, dispatch, grid],
+    [checkboxesSetter, dispatch, gridState],
   );
 
   const handleMetricFilter = (item: IBlockItemMetricFilter) => {    
@@ -84,26 +110,29 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     bxOpen(item.params.type, item.params.link, item.params)
   }
 
-  const height = (grid?.header?.blocks) ? 190 : 160;
+  const height = (gridState?.header?.blocks) ? 190 : 160;
 
   if (slice.isLoading) return <Loader />;
 
   return (
     <>
-      {grid?.header?.blocks && (
+      {gridState?.header?.blocks && (
         <Toolbar
-          blocks={grid.header.blocks}
+          blocks={gridState.header.blocks}
           onMetricFilterClick={handleMetricFilter}
           onMetricLinkClick={handleMetricLink}
         />
       )}
       <Grid
         columns={column}
-        rows={grid?.grid}
-        footer={grid?.footer}
+        rows={gridState?.grid}
+        footer={gridState?.footer}
         height={window.innerHeight - height}
         columnMutation={handleSchemaMutation}
         onChangeCheckboxes={checkboxesHandler}
+        burgerItems={burgerItems}
+        // TODO: Убрать после обновления библиотеки
+        onBurgerItemClick={handleBurgerClick as unknown as any}
         onCellClick={onCellClick}
       />
     </>
