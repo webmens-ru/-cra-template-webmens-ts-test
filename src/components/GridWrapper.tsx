@@ -1,12 +1,15 @@
 import { ActionCreatorWithPayload, ThunkDispatch } from "@reduxjs/toolkit";
 import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
+import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { axiosInst } from "../app/api/baseQuery";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
+import PopupAction, { PopupActionProps } from "./PopupAction";
 
 // TODO: Изучить типизацию redux-toolkit
 interface IGridWrapperProps {
@@ -22,7 +25,10 @@ interface IGridWrapperProps {
 
 export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation, onCloseSlider }: IGridWrapperProps) {
   const gridState = slice.grid
-  const burgerItems = gridState?.options?.actions || []  
+  const rowKey = gridState?.options?.key || "id"
+  const burgerItems = gridState?.options?.actions || []
+  const [isShowPopup, setShowPopup] = useState(false)
+  const [popupAction, setPopupAction] = useState<{ row: TRowItem, popup: PopupActionProps, params: any, handler: string } | null>(null)
 
   const onCellClick = useCallback((cell: TCellItem) => {
     if (process.env.NODE_ENV === "production") {
@@ -53,8 +59,7 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
   }, [onCloseSlider]);
 
   const handleBurgerClick = (item: BurgerItem, row: TRowItem) => {
-    const rowKey = gridState?.options?.key || "id"
-    const rowID = row[rowKey]    
+    const rowID = row[rowKey]
 
     new Promise<void>((resolve) => {
       switch (item.type) {
@@ -62,12 +67,19 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
           BX24.openApplication({ ...item.params, [rowKey]: rowID }, resolve);
           break;
         case "openApplicationPortal":
-          BX24.openApplication({ ...item.params, [rowKey]: rowID, route: "portal" }, resolve)
+          // @ts-ignore
+          BX24.openApplication({ ...item.params, handler: item.params.handler.replace("{id}", rowID), [rowKey]: rowID, route: "portal" }, resolve)
           break;
         case "openPath":
           BX24.openPath(item.handler.replace("{id}", rowID), resolve)
           break;
         case "trigger":
+          console.log(item.params);
+
+          if (item.params.popup) {
+            setShowPopup(true)
+            setPopupAction({ popup: item.params.popup, row, params: item.params, handler: item.handler })
+          }
           break;
       }
     }).then(() => {
@@ -99,7 +111,7 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     [checkboxesSetter, dispatch, gridState],
   );
 
-  const handleMetricFilter = (item: IBlockItemMetricFilter) => {    
+  const handleMetricFilter = (item: IBlockItemMetricFilter) => {
     if (item.params && item.params.url !== null) {
       dispatch(filterSetter(item.params.url))
     }
@@ -110,12 +122,34 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     bxOpen(item.params.type, item.params.link, item.params)
   }
 
+  const handlePopupSubmit = (values?: FormValues) => {
+    if (popupAction) {
+      const body = { [rowKey]: popupAction.row[rowKey], form: values }
+      axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" }).then(response => {
+        if (popupAction.params.output && response.data) {
+          const link = document.createElement("a")
+          const title = popupAction.params.output.documentName
+          link.href = URL.createObjectURL(new Blob([response.data]))
+          link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
+          link.click()
+        }
+      })
+    }
+  }
+
   const height = (gridState?.header?.blocks) ? 190 : 160;
 
   if (slice.isLoading) return <Loader />;
 
   return (
     <>
+      {(isShowPopup && popupAction) && (
+        <PopupAction
+          {...popupAction.popup}
+          onClose={() => setShowPopup(false)}
+          onSubmit={handlePopupSubmit}
+        />
+      )}
       {gridState?.header?.blocks && (
         <Toolbar
           blocks={gridState.header.blocks}
