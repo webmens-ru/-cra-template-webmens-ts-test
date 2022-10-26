@@ -3,11 +3,14 @@
 declare global {
 
   type TPlacementOptions = {
-    url: string;
-    action: string;
+    handler?: string;
+    type: string; //TODO: Конкретные значения
+    title: string | number;
+    params?: any;
+    // action: string;
     entity: string;
     path: string;
-    menuId: number;
+    menuId?: number;
     [index: string]: any
   };
 

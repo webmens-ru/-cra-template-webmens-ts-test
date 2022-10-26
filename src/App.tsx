@@ -13,12 +13,12 @@ function App() {
   }, [])
   const switchPath = (opt: TPlacementOptions) => {
     try {
-      console.log(opt.path);
+      console.log(opt.params.path);
       switch (opt.path) {
         case "mainDetail":
-          return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
+          return <MainDetail title={opt.params.mainDetailTitle} entity={opt.params.entity} body={opt.params.queryParams} />;
         case "mainForm":
-          return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode}/>;
+          return <MainForm mode={opt.params.mode} entity={opt.params.entity} action={opt.params.action} id={opt?.id} canToggleMode={opt.params?.canToggleMode}/>;
         case "mainPlacement":
           return <MainPlacement entity={opt.entity} parentId={opt.parentId}/>;
         default:
