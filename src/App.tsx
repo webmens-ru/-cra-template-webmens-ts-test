@@ -17,13 +17,25 @@ function App() {
       console.log(path);
       switch (path) {
         case "mainDetail":
-          return <MainDetail title={opt.params.mainDetailTitle} entity={opt.params.entity} body={opt.params.queryParams} />;
+          const mainDetailsProps = "params" in opt.params ? opt.params.params : opt.params
+          return <MainDetail {...mainDetailsProps} />;
         case "mainForm":
-          return <MainForm mode={opt.params.mode} entity={opt.params.entity} action={opt.params.action} id={opt?.id} canToggleMode={opt.params?.canToggleMode}/>;
+          const mainFormProps = "params" in opt.params ? opt.params.params : {
+            ...opt.params,
+            id: opt?.id
+          }
+          return <MainForm {...mainFormProps} />;
         case "mainPlacement":
-          return <MainPlacement entity={opt.entity} parentId={opt.parentId}/>;
+          const mainPlacementProps = "params" in opt.params ? opt.params.params : {
+            entity: opt.entity,
+            parentId: opt.parentId
+          }
+          return <MainPlacement {...mainPlacementProps} />;
         default:
-          return <Main menuId={opt.menuId}/>
+          const mainProps = "params" in opt.params ? opt.params.params : {
+            menuId: opt.menuId
+          }
+          return <Main {...mainProps} />
       }
     } catch (error) {
       console.log([error, 'error']);
