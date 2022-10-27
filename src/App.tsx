@@ -17,25 +17,23 @@ function App() {
       console.log(path);
       switch (path) {
         case "mainDetail":
-          const mainDetailsProps = "params" in opt.params ? opt.params.params : opt.params
+          const mainDetailsProps = opt?.params?.params || opt.params
           return <MainDetail {...mainDetailsProps} />;
         case "mainForm":
-          const mainFormProps = "params" in opt.params ? opt.params.params : {
+          const mainFormProps = opt?.params?.params || {
             ...opt.params,
             id: opt?.id
           }
           return <MainForm {...mainFormProps} />;
         case "mainPlacement":
-          const mainPlacementProps = "params" in opt.params ? opt.params.params : {
+          const mainPlacementProps = opt?.params?.params || {
             entity: opt.entity,
             parentId: opt.parentId
           }
           return <MainPlacement {...mainPlacementProps} />;
         default:
-          const mainProps = "params" in opt.params ? opt.params.params : {
-            menuId: opt.menuId
-          }
-          return <Main {...mainProps} />
+          const menuId = opt.menuId || opt?.params?.params?.menuId
+          return <Main menuId={menuId} />
       }
     } catch (error) {
       console.log([error, 'error']);
