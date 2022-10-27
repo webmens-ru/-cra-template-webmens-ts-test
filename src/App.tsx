@@ -17,11 +17,18 @@ function App() {
       console.log(path);
       switch (path) {
         case "mainDetail":
-          const mainDetailsProps = opt?.params?.params || opt.params
+          const mainDetailsProps = opt?.params?.params || {
+            title: opt.params.mainDetailTitle,
+            entity: opt.params.entity,
+            body: opt.params.queryParams
+          }
           return <MainDetail {...mainDetailsProps} />;
         case "mainForm":
           const mainFormProps = opt?.params?.params || {
-            ...opt.params,
+            mode: opt.params.mode,
+            entity: opt.params.entity,
+            action: opt.params.action,
+            canToggleMode: opt.params.canToggleMode,
             id: opt?.id
           }
           return <MainForm {...mainFormProps} />;
