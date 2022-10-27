@@ -9,7 +9,7 @@ declare global {
     params?: any;
     // action: string;
     entity: string;
-    path: string;
+    path?: string;
     menuId?: number;
     [index: string]: any
   };

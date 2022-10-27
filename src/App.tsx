@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Main } from "./pages/main";
 import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
@@ -12,9 +12,10 @@ function App() {
     }
   }, [])
   const switchPath = (opt: TPlacementOptions) => {
+    const path: string = opt.path || opt.params.path
     try {
-      console.log(opt.params.path);
-      switch (opt.path) {
+      console.log(path);
+      switch (path) {
         case "mainDetail":
           return <MainDetail title={opt.params.mainDetailTitle} entity={opt.params.entity} body={opt.params.queryParams} />;
         case "mainForm":
