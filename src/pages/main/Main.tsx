@@ -34,6 +34,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
             schemaSetter={setSchema}
             filterSetter={setFilterResponse}
             onCloseSlider={reload}
+            onClosePopup={reload}
           />
         </>
       ) : (

@@ -12,7 +12,7 @@ function App() {
     }
   }, [])
   const switchPath = (opt: TPlacementOptions) => {
-    const path: string = opt.path || opt.params.path
+    const path: string = opt.path || opt?.params?.path
     try {
       console.log(path);
       switch (path) {
