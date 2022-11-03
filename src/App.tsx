@@ -24,14 +24,14 @@ function App() {
           }
           return <MainDetail {...mainDetailsProps} />;
         case "mainForm":
-          const mainFormProps = opt?.params?.params || {
-            mode: opt.params.mode,
-            entity: opt.params.entity,
-            action: opt.params.action,
-            canToggleMode: opt.params.canToggleMode,
-            id: opt?.id
+          if ('params' in opt) {
+            opt = {
+              ...opt,
+              ...opt.params
+            };
           }
-          return <MainForm {...mainFormProps} />;
+          console.log(opt);
+          return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode}/>;
         case "mainPlacement":
           const mainPlacementProps = opt?.params?.params || {
             entity: opt.entity,

@@ -61,17 +61,22 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
 
   const handleBurgerClick = (item: BurgerItem, row: TRowItem) => {
     const rowID = row[rowKey]
+    let id = rowID;
+    if (typeof rowID == 'object') {
+      id = rowID.title;
+    }
 
     new Promise<void>((resolve) => {
       switch (item.type) {
         case "openApplication":
-          BX24.openApplication({ ...item.params, [rowKey]: rowID }, resolve);
+          BX24.openApplication({ ...item.params, [rowKey]: id }, resolve);
           break;
         case "openApplicationPortal":
-          BX24.openApplication({ ...item.params, handler: item.params.handler.replace("{id}", rowID), [rowKey]: rowID, route: "portal" }, resolve)
+          // @ts-ignore
+          BX24.openApplication({ ...item.params, handler: item.params.handler.replace("{id}", id), [rowKey]: id, route: "portal" }, resolve)
           break;
         case "openPath":
-          BX24.openPath(item.handler.replace("{id}", rowID), resolve)
+          BX24.openPath(item.handler.replace("{id}", id), resolve)
           break;
         case "trigger":
           if (item.params.popup) {
