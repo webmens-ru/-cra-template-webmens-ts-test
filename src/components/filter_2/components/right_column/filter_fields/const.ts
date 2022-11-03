@@ -2,19 +2,19 @@ import { IDateFieldDataItem } from "../../../types";
 
 export const stringDropDownValues = [
   {
+    title: 'Не используется',
+    value: '',
+  },
+  {
     title: 'Точно',
     value: '=',
   },
   {
-    title: 'Не указан',
-    value: '',
-  },
-  {
-    title: 'Не задан',
+    title: 'Не заполнено',
     value: 'isNull',
   },
   {
-    title: 'Заполнен',
+    title: 'Заполнено',
     value: 'isNotNull',
   },
   {
@@ -23,18 +23,26 @@ export const stringDropDownValues = [
   },
   {
     title: 'Начинается с',
-    value: '%like',
+    value: 'like%',
   },
   {
     title: 'Заканчивается на',
-    value: 'like%',
+    value: '%like',
   },
 ];
 
 export const integerDropDownValues = [
   {
+    title: 'Не используется',
+    value: '',
+  },
+  {
     title: 'Не заполнено',
     value: 'isNull',
+  },
+  {
+    title: 'Заполнено',
+    value: 'isNotNull',
   },
   {
     title: 'Точно',
@@ -42,27 +50,27 @@ export const integerDropDownValues = [
   },
   {
     title: 'Не равно',
-    value: '=<>',
+    value: '<>',
   },
   {
     title: 'Диапазон',
-    value: '',
+    value: '', //TODO: Как передается?
   },
   {
     title: 'Больше чем',
-    value: '=>',
+    value: '>',
   },
   {
     title: 'Меньше чем',
-    value: '=<',
+    value: '<',
   },
   {
     title: 'Больше или равно',
-    value: '=>=',
+    value: '>=',
   },
   {
     title: 'Меньше или равно',
-    value: '=<=',
+    value: '<=',
   },
 ];
 
