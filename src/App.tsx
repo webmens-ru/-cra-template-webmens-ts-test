@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Main } from "./pages/main";
 import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
@@ -12,11 +12,17 @@ function App() {
     }
   }, [])
   const switchPath = (opt: TPlacementOptions) => {
+    const path: string = opt.path || opt?.params?.path
     try {
-      console.log(opt.path);
-      switch (opt.path) {
+      console.log(path);
+      switch (path) {
         case "mainDetail":
-          return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
+          const mainDetailsProps = opt?.params?.params || {
+            title: opt.params.mainDetailTitle,
+            entity: opt.params.entity,
+            body: opt.params.queryParams
+          }
+          return <MainDetail {...mainDetailsProps} />;
         case "mainForm":
           if ('params' in opt) {
             opt = {
@@ -27,9 +33,14 @@ function App() {
           console.log(opt);
           return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode}/>;
         case "mainPlacement":
-          return <MainPlacement entity={opt.entity} parentId={opt.parentId}/>;
+          const mainPlacementProps = opt?.params?.params || {
+            entity: opt.entity,
+            parentId: opt.parentId
+          }
+          return <MainPlacement {...mainPlacementProps} />;
         default:
-          return <Main menuId={opt.menuId}/>
+          const menuId = opt.menuId || opt?.params?.params?.menuId
+          return <Main menuId={menuId} />
       }
     } catch (error) {
       console.log([error, 'error']);

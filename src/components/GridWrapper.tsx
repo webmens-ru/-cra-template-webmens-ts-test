@@ -21,9 +21,10 @@ interface IGridWrapperProps {
   dispatch: ThunkDispatch<any, any, any>;
   onShemaMutation: MutationTrigger<any>;
   onCloseSlider?: () => void
+  onClosePopup?: () => void
 }
 
-export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation, onCloseSlider }: IGridWrapperProps) {
+export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
   const gridState = slice.grid
   const rowKey = gridState?.options?.key || "id"
   const burgerItems = gridState?.options?.actions || []
@@ -78,8 +79,6 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
           BX24.openPath(item.handler.replace("{id}", id), resolve)
           break;
         case "trigger":
-          console.log(item.params);
-
           if (item.params.popup) {
             setShowPopup(true)
             setPopupAction({ popup: item.params.popup, row, params: item.params, handler: item.handler })
@@ -136,6 +135,10 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
           link.href = URL.createObjectURL(new Blob([response.data]))
           link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
           link.click()
+        }
+
+        if (popupAction.params.updateOnCloseSlider && onClosePopup) {
+          onClosePopup()
         }
       })
     }

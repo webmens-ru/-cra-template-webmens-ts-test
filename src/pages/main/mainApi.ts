@@ -2,6 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
 import { baseQuery } from "../../app/api/baseQuery";
+import { PostFilterResponseFields } from './../../app/utils/postFilterResponse';
 
 export const mainApi = createApi({
   reducerPath: "mainApi",
@@ -115,6 +116,13 @@ export const mainApi = createApi({
         url: `${params.entity}/data?${params.filter}`,
       }),
     }),
+    getGridPost: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[]}, { entity: string, filter: PostFilterResponseFields }>({
+      query: (params) => ({
+        url: `${params.entity}/data`,
+        method: "POST",
+        body: params.filter
+      })
+    }),
     getDynamicSelectItems: build.query<TSelectDynamicItem[], string>({
       query: (code) => ({
         url: `select-dinamic/get-list?name=${code}`
@@ -157,6 +165,7 @@ export const {
   useLazyGetSchemaQuery,
   useSaveSchemaMutation,
   useLazyGetGridQuery,
+  useLazyGetGridPostQuery,
   useLazyGetDynamicSelectItemsQuery,
   useSendDataOnButtonClickMutation,
   useLazyGetDynamicButtonItemsQuery,

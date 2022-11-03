@@ -1,11 +1,9 @@
 import { useCallback, useLayoutEffect, useMemo } from "react";
 import { setCurrentFilter, setIsLoading } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { getFilterResponse } from "../../../app/utils/filterResponse";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
-import {
-  useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery, useLazyGetGridQuery, useLazyGetSchemaQuery
-} from "../mainApi";
+import { getFilterResponsePost, PostFilterResponseFields } from "../../../app/utils/postFilterResponse";
+import { useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery, useLazyGetGridPostQuery, useLazyGetGridQuery, useLazyGetSchemaQuery } from "../mainApi";
 import { setGrid, setSchema } from "../mainSlice";
 
 export const useData = () => {
@@ -17,6 +15,7 @@ export const useData = () => {
   const [getSchema] = useLazyGetSchemaQuery();
   const [getCurrentFiltersFields] = useLazyGetFieldsQuery();
   const [getGrid] = useLazyGetGridQuery();
+  const [getGridPost] = useLazyGetGridPostQuery()
 
   const isCorrect = useMemo(() => {
     return (
@@ -55,10 +54,10 @@ export const useData = () => {
           allFields.data,
         ).filter((f) => Boolean(f.visible));
 
-        const filterResponse = getFilterResponse(correctFields);
-        const grid = await getGrid({
+        const filterResponse = getFilterResponsePost(correctFields);
+        const grid = await getGridPost({
           entity,
-          filter: (mainSlice.filterResponse !== null && mainSlice.filterResponse !== undefined) ? mainSlice.filterResponse : filterResponse,
+          filter: ((mainSlice.filterResponse !== null && mainSlice.filterResponse !== undefined) ? mainSlice.filterResponse : filterResponse) as PostFilterResponseFields,
         });
 
         dispatch(setSchema(schema.data))
@@ -66,7 +65,7 @@ export const useData = () => {
       }
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, isCorrect, mainSlice.currentTab, mainSlice.filterResponse]);
+  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGridPost, getSchema, isCorrect, mainSlice.currentTab.params, mainSlice.filterResponse]);
 
   useLayoutEffect(() => {
     init();

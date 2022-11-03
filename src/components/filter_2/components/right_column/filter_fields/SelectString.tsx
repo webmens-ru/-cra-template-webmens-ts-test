@@ -2,10 +2,7 @@ import { Input, Select } from '@webmens-ru/ui_lib';
 import { IDataItem } from '@webmens-ru/ui_lib/dist/components/select/types';
 import { useState } from 'react';
 import { useCustomContext } from '../../../store/Context';
-import {
-  FilterFieldTitle,
-  SelectTextStyle
-} from '../../../styles';
+import { FilterFieldTitle, SelectTextStyle } from '../../../styles';
 import { IField } from '../../../types';
 import { useFieldsDraggable } from '../../../utils/useFieldsDraggble';
 import { stringDropDownValues } from './const';
@@ -24,18 +21,12 @@ export default function SelectStringField({
   const checkFirstValue = (value: string) => {
     dispatch({
       type: 'SET_FILTER_FIELD_VALUE',
-      field: {
-        ...item,
-        value: [item.value[0], value, item.value[2]],
-      },
+      field: { ...item, value: [item.value[0], value, item.value[2]] },
     });
   };
 
   const changeAttr = (valuesItem: IDataItem[]) => {
-    const field = {
-      ...item,
-      value: [`${valuesItem[0].value}`, item.value[1], item.value[2]],
-    };
+    const field = { ...item, value: [`${valuesItem[0].value}`, item.value[1], item.value[2]] };
     dispatch({
       type: "SET_FILTER_FIELD_VALUE",
       field,
@@ -45,10 +36,7 @@ export default function SelectStringField({
   };
 
   const hideField = () => {
-    const field = {
-      ...item,
-      visible: false,
-    };
+    const field = { ...item, visible: false };
     updateField(field, 'hide');
     dispatch({ type: 'UPDATE_FILTER_FIELD', field });
   };
@@ -62,7 +50,7 @@ export default function SelectStringField({
         <Select
           filterable={false}
           value={selectValue}
-          data={item?.params?.data || stringDropDownValues}
+          data={item?.params?.variants || stringDropDownValues}
           closeOnSelect={true}
           selectWidth="33%"
           onChange={changeAttr}
