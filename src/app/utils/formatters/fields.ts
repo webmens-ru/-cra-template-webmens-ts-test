@@ -13,6 +13,7 @@ type TAllFieldYii = {
   filterFieldOptions: [];
   code: string;
   params: any;
+  options: any;
 };
 
 type TFieldYii = {
@@ -43,7 +44,8 @@ export const concatFieldsAndAllFields = (
       queryKey: allField.code,
       code: allField.entityCode,
       visible: false,
-      params: allField.params
+      params: allField.params,
+      options: allField.options,
     };
     if (field) {
       result.id = field.id;

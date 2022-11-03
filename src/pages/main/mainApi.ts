@@ -120,7 +120,7 @@ export const mainApi = createApi({
       query: (params) => ({
         url: `${params.entity}/data`,
         method: "POST",
-        body: params.filter
+        body: {'filter': params.filter}
       })
     }),
     getDynamicSelectItems: build.query<TSelectDynamicItem[], string>({

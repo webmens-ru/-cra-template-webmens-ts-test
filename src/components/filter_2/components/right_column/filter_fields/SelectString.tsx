@@ -50,7 +50,7 @@ export default function SelectStringField({
         <Select
           filterable={false}
           value={selectValue}
-          data={item?.params?.variants || stringDropDownValues}
+          data={item?.options?.variants || stringDropDownValues}
           closeOnSelect={true}
           selectWidth="33%"
           onChange={changeAttr}
