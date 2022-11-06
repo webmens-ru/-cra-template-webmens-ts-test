@@ -1,10 +1,10 @@
 import { Input, Select } from '@webmens-ru/ui_lib';
 import { IDataItem } from '@webmens-ru/ui_lib/dist/components/select/types';
 import { useState } from 'react';
+import { useFieldsDraggable } from '../../../hooks/useFieldsDraggble';
 import { useCustomContext } from '../../../store/Context';
-import { FilterFieldTitle, SelectTextStyle } from '../../../styles';
+import { SelectTextStyle } from '../../../styles';
 import { IField } from '../../../types';
-import { useFieldsDraggable } from '../../../utils/useFieldsDraggble';
 import { integerDropDownValues } from './const';
 
 export default function SelectIntegerField({
@@ -39,50 +39,39 @@ export default function SelectIntegerField({
     updateField(field, "value");
   };
 
-  const hideField = () => {
-    const field = { ...item, visible: false };
-    updateField(field, 'hide');
-    dispatch({ type: 'UPDATE_FILTER_FIELD', field });
-  };
-
   return (
     <SelectTextStyle draggable={draggable} {...props}>
-      <FilterFieldTitle>{item.title}</FilterFieldTitle>
-      <div {...events}>
-        <Select
-          filterable={false}
-          value={selectValue}
-          data={item?.options?.variants || integerDropDownValues}
-          closeOnSelect={true}
-          selectWidth="33%"
-          onChange={changeAttr}
-        />
-        {selectValue.title === 'Диапазон' ? (
-          <>
-            <Input
-              width="33%"
-              value={item.value[1]}
-              onChange={checkFirstValue}
-              onBlur={() => updateField(item, 'value')}
-            />
-            <Input
-              width="33%"
-              value={item.value[2]}
-              onChange={checkSecondValue}
-              onBlur={() => updateField(item, 'value')}
-            />
-          </>
-        ) : (
+      <Select
+        filterable={false}
+        value={selectValue}
+        data={item?.options?.variants || integerDropDownValues}
+        closeOnSelect={true}
+        selectWidth="33%"
+        onChange={changeAttr}
+      />
+      {selectValue.title === 'Диапазон' ? (
+        <>
           <Input
-            width="67%"
+            width="33%"
             value={item.value[1]}
             onChange={checkFirstValue}
             onBlur={() => updateField(item, 'value')}
           />
-        )}
-      </div>
-      <span></span>
-      <span onClick={hideField}></span>
+          <Input
+            width="33%"
+            value={item.value[2]}
+            onChange={checkSecondValue}
+            onBlur={() => updateField(item, 'value')}
+          />
+        </>
+      ) : (
+        <Input
+          width="67%"
+          value={item.value[1]}
+          onChange={checkFirstValue}
+          onBlur={() => updateField(item, 'value')}
+        />
+      )}
     </SelectTextStyle>
   );
 }

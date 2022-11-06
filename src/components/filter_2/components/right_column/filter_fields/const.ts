@@ -1,3 +1,4 @@
+import { IDataItem } from '@webmens-ru/ui_lib/dist/components/select/types';
 import { IDateFieldDataItem } from "../../../types";
 
 export const stringDropDownValues = [
@@ -34,7 +35,7 @@ export const stringDropDownValues = [
 export const integerDropDownValues = [
   {
     title: 'Не используется',
-    value: '',
+    value: 'isNotUsed',
   },
   {
     title: 'Не заполнено',
@@ -54,7 +55,7 @@ export const integerDropDownValues = [
   },
   {
     title: 'Диапазон',
-    value: '', //TODO: Как передается?
+    value: 'range',
   },
   {
     title: 'Больше чем',
@@ -210,6 +211,17 @@ export const yearsDropDown = [
   { value: 20, title: '2020' },
   { value: 21, title: '2021' },
 ];
+
+export const getYearsDropDown = (): IDataItem[] => {
+  const currentYear = new Date().getFullYear()
+  const result: IDataItem[] = []
+  for (let i = -20; i < 6; i++) {
+    const year = currentYear + i
+    result.push({ value: year, title: year })
+  }
+
+  return result
+}
 
 export const quartersDropDown = [
   { value: 1, title: 'I' },

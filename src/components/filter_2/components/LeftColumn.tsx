@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
+import { useDragAndDrop } from "../hooks/useDragAndDrop";
 import { useCustomContext } from "../store/Context";
 import { TFilter } from "../types";
-import { useDragAndDrop } from "../utils/useDragAndDrop";
 
 export function LeftColumn() {
   const { state, dispatch } = useCustomContext();

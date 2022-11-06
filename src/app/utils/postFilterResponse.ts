@@ -8,17 +8,14 @@ export interface PostFilterResponse<ValueType> {
 }
 
 export interface PostFilterResponseFields {
-  [key: string]: PostFilterResponse<any>[]
+  [key: string]: PostFilterResponse<any>[] | null
 }
 
-export type ResponseOperator = "" | "=" | "in" | "isNull" | "isNotNull" | "%like%" | "%like" | "like%" | "=<>" | ">=" | "<=" | "=>=" | "=<=";
+export type ResponseOperator = "" | "=" | "in" | "isNull" | "isNotNull" | "isNotUsed" | "range" | "%like%" | "%like" | "like%" | "=<>" | ">=" | "<=" | "=>=" | "=<=";
 
 export const getFilterResponsePost = (fields: TField[]): PostFilterResponseFields => {
   const response: PostFilterResponseFields = {}
   fields.forEach((item) => {
-    if (item.value[0] === "isNull" || item.value[0] === "isNotNull") {
-      return { operator: item.value[0], value: null }
-    }
     switch (item.type) {
       case "date":
         response[item.queryKey] = getDateResponse(item.value)
@@ -43,8 +40,6 @@ export const getFilterResponsePost = (fields: TField[]): PostFilterResponseField
 }
 
 const getSelectResponse = (value: IDataItem[]): PostFilterResponse<Array<string | number>>[] => {
-  console.log(value);
-  
   const valueWithoutSpaces = value.filter(val => val)
 
   if (valueWithoutSpaces.length === 0) {
@@ -74,16 +69,25 @@ const getStringResponse = (item: string[]): PostFilterResponse<string>[] => {
   return [{ operator: operator as ResponseOperator, value }]
 };
 
-const getIntegerResponse = (item: string[]): PostFilterResponse<string>[] => {
-  if (!item || item.length === 0 || item[0] === "" || item[0] === "isNull") {
-    return [];
+const getIntegerResponse = (item: string[]): PostFilterResponse<string | null>[] | null => {
+  if (!item || item.length === 0 || item[0] === "" || item[0] === "isNotUsed") {
+    return null;
   }
 
-  const [, firstValue, secondValue] = item
-  return [
-    { operator: ">=", value: firstValue },
-    { operator: "<=", value: secondValue },
-  ]
+  const [operator, firstValue, secondValue] = item
+  switch (operator as ResponseOperator) {
+    case "isNull":
+    case "isNotNull":
+      return [{ operator: operator as ResponseOperator, value: null }]
+    case "range":
+      return [
+        { operator: ">=", value: firstValue },
+        { operator: "<=", value: secondValue }
+      ]
+    default:
+      return [{ operator: operator as ResponseOperator, value: firstValue }]
+  }
+
 };
 
 export const getDateResponse = (value: string[]): PostFilterResponse<string>[] => {
@@ -148,13 +152,13 @@ export const getDateResponse = (value: string[]): PostFilterResponse<string>[] =
       ]
     case "lastNDays":
       return [
-        { operator: ">=", value: `${autoYear(-value[1])}-${autoMonth(-value[1])}-${autoDays(-value[1] )}` },
+        { operator: ">=", value: `${autoYear(-value[1])}-${autoMonth(-value[1])}-${autoDays(-value[1])}` },
         { operator: "<=", value: `${autoYear(1)}-${autoMonth(1)}-${autoDays(1)}` }
       ]
     case "nextNDays":
       return [
         { operator: ">=", value: `${year}-${month}-${autoDays(0)}` },
-        { operator: "<=", value: `${autoYear(+value[1])}-${autoMonth(+value[1])}-${autoDays(+value[1] )}` }
+        { operator: "<=", value: `${autoYear(+value[1])}-${autoMonth(+value[1])}-${autoDays(+value[1])}` }
       ]
     case "month":
       return [
@@ -204,7 +208,7 @@ export const getDateResponse = (value: string[]): PostFilterResponse<string>[] =
     case "nextWeek":
       let nextMonday = 8 - date.getDay();
       return [
-        { operator: ">=", value: `${autoYear(nextMonday)}-${autoMonth(nextMonday)}-${autoDays(nextMonday )}` },
+        { operator: ">=", value: `${autoYear(nextMonday)}-${autoMonth(nextMonday)}-${autoDays(nextMonday)}` },
         { operator: "<=", value: `${autoYear(nextMonday + 7)}-${autoMonth(nextMonday + 7)}-${autoDays(nextMonday + 7)}` }
       ]
     case "nextMonth":

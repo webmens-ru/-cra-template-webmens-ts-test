@@ -4,19 +4,18 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useCustomContext } from '../../../store/Context';
 import {
   DateFieldContainer,
-  DateInput,
-  FilterFieldTitle
+  DateInput
 } from '../../../styles';
 import { IField, IThreeField, ITwoField } from '../../../types';
-import { useFieldsDraggable } from '../../../utils/useFieldsDraggble';
 import {
   dateDropDown,
+  getYearsDropDown,
   monthsDropDown,
   quartersDropDown,
   yearsDropDown
 } from './const';
 
-export default function DateField({ item, updateField, ...props }: IField) {
+export default function DateField({ item, updateField }: IField) {
   const [dropDownValue, setDropDownValue] = useState<IDataItem>(() => {
     const list: IDataItem[] = item?.params?.data || dateDropDown;
     return (
@@ -89,14 +88,9 @@ export default function DateField({ item, updateField, ...props }: IField) {
     }
   }, [dropDownValue, item, setDDV, updateValue]);
 
-  const { draggable, events } = useFieldsDraggable();
-
   return (
-    <DateFieldContainer draggable={draggable} {...props}>
-      <FilterFieldTitle>{item.title}</FilterFieldTitle>
-      <div {...events}>{currentComponent}</div>
-      <span></span>
-      <span onClick={() => updateField(item, 'hide')}></span>
+    <DateFieldContainer>
+      {currentComponent}
     </DateFieldContainer>
   );
 }
@@ -147,14 +141,14 @@ function TwoField({ value, setValue, updateValue, item }: ITwoField) {
     [updateValue, value.title]
   );
 
-  switch (value.title) {
-    case 'Год':
+  switch (value.value) {
+    case 'year':
       return (
         <>
           <Select
             filterable={false}
             value={value}
-            data={dateDropDown}
+            data={item?.params?.data || dateDropDown}
             closeOnSelect={true}
             selectWidth="49%"
             onChange={setValue}
@@ -162,20 +156,20 @@ function TwoField({ value, setValue, updateValue, item }: ITwoField) {
           <Select
             filterable={false}
             value={selectYear}
-            data={yearsDropDown}
+            data={getYearsDropDown()}
             closeOnSelect={true}
             selectWidth="49%"
             onChange={setYear}
           />
         </>
       );
-    case 'Точная дата':
+    case 'exactDate':
       return (
         <>
           <Select
             filterable={false}
             value={value}
-            data={dateDropDown}
+            data={item?.params?.data || dateDropDown}
             closeOnSelect={true}
             selectWidth="49%"
             onChange={setValue}

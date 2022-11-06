@@ -2,9 +2,8 @@ import { Input, Select } from '@webmens-ru/ui_lib';
 import { IDataItem } from '@webmens-ru/ui_lib/dist/components/select/types';
 import { useState } from 'react';
 import { useCustomContext } from '../../../store/Context';
-import { FilterFieldTitle, SelectTextStyle } from '../../../styles';
+import { SelectTextStyle } from '../../../styles';
 import { IField } from '../../../types';
-import { useFieldsDraggable } from '../../../utils/useFieldsDraggble';
 import { stringDropDownValues } from './const';
 
 export default function SelectStringField({
@@ -15,7 +14,7 @@ export default function SelectStringField({
   const { dispatch } = useCustomContext();
   const [selectValue, setSelectValue] = useState<IDataItem>(
     stringDropDownValues.find((val) => val.value === item.value[0]) ||
-      stringDropDownValues[0]
+    stringDropDownValues[0]
   );
 
   const checkFirstValue = (value: string) => {
@@ -35,35 +34,22 @@ export default function SelectStringField({
     updateField(field, "value");
   };
 
-  const hideField = () => {
-    const field = { ...item, visible: false };
-    updateField(field, 'hide');
-    dispatch({ type: 'UPDATE_FILTER_FIELD', field });
-  };
-
-  const { draggable, events } = useFieldsDraggable();
-
   return (
-    <SelectTextStyle draggable={draggable} {...props}>
-      <FilterFieldTitle>{item.title}</FilterFieldTitle>
-      <div {...events}>
-        <Select
-          filterable={false}
-          value={selectValue}
-          data={item?.options?.variants || stringDropDownValues}
-          closeOnSelect={true}
-          selectWidth="33%"
-          onChange={changeAttr}
-        />
-        <Input
-          width="67%"
-          value={item.value[1]}
-          onChange={checkFirstValue}
-          onBlur={() => updateField(item, 'value')}
-        />
-      </div>
-      <span></span>
-      <span onClick={hideField}></span>
+    <SelectTextStyle {...props}>
+      <Select
+        filterable={false}
+        value={selectValue}
+        data={item?.options?.variants || stringDropDownValues}
+        closeOnSelect={true}
+        selectWidth="33%"
+        onChange={changeAttr}
+      />
+      <Input
+        width="67%"
+        value={item.value[1]}
+        onChange={checkFirstValue}
+        onBlur={() => updateField(item, 'value')}
+      />
     </SelectTextStyle>
   );
 }

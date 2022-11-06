@@ -1,12 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
-import {
-  TField,
-  TFilter,
-  TFilterFieldsItem,
-  TGetSelectItems,
-  TProps,
-  TUpdateFilter
-} from "../types";
+import { TField, TFilter, TGetSelectItems, TProps, TUpdateFilter } from "../types";
 import { propsFormatter } from "../utils/propsFormatter";
 
 interface IState {
@@ -62,7 +55,7 @@ type Action =
   | { type: "SET_IS_CREATE_FILTER"; isCreate: boolean }
   | { type: "SAVE_CREATE_FILTER" }
   | { type: "DELETE_CURRENT_FILTER" }
-  | { type: "SET_FILTER_FIELDS"; fields: TFilterFieldsItem[] }
+  | { type: "SET_FILTER_FIELDS"; fields: TField[] }
   | { type: "UPDATE_FILTER_FIELD"; field: TField }
   | { type: "SET_FILTER_FIELD_VALUE"; field: TField };
 
@@ -79,6 +72,8 @@ const reducer = (state: IState, action: Action) => {
         ...state,
         currentFilter: action.filter,
       };
+    case "SET_FILTER_FIELDS":
+      return { ...state, fields: action.fields }
     case "SET_IS_SETUP": {
       return {
         ...state,

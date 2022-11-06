@@ -1,8 +1,11 @@
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { LeftColumn } from './components/LeftColumn';
 import { RightColumn } from './components/RightColumn';
 import { useShowControl } from './hooks/useShowControl';
+import useSquares from './hooks/useSquares';
 import { FilterContextProvider, useCustomContext } from './store/Context';
-import { FilterContainer, FilterMenuContainer, PopUp } from './styles';
+import { FilterContainer, FilterMenuContainer, PopUp, SquareItem, SquaresContainer } from './styles';
 import { TProps } from './types';
 
 /**
@@ -44,26 +47,32 @@ export function FilterAlpha(props: TProps) {
 }
 
 function Provider() {
-  const { state, dispatch } = useCustomContext();
+  const { state } = useCustomContext();
   const { isShow, setShow } = useShowControl();
-
-  const deleteCurrentFilter = () => {
-    dispatch({ type: 'DELETE_CURRENT_FILTER' });
-  };
+  const { squares, validFieldsCount } = useSquares()
 
   if (!state.currentFilter) {
     return null;
   }
 
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <FilterContainer>
         <div onClick={() => setShow(true)}>
-          {state.currentFilter.title === '' ? (
-            <div>
-              {state.currentFilter.title}
-              <button onClick={deleteCurrentFilter}></button>
-            </div>
+          {squares.length ? (
+            <>
+              <SquaresContainer>
+                {squares.map((item, index) => (
+                  <SquareItem key={index} title={`${item.title}: ${item.value}`} >
+                    <span children={`${item.title}: ${item.value}`} />
+                  </SquareItem>
+                ))}
+                {validFieldsCount > 2 && (
+                  <SquareItem children={`И еще ${validFieldsCount - squares.length}`} />
+                )}
+              </SquaresContainer>
+              <p>+ поиск</p>
+            </>
           ) : (
             <p>Фильтр + поиск</p>
           )}
@@ -75,6 +84,6 @@ function Provider() {
         </FilterMenuContainer>
       </FilterContainer>
       {isShow && <PopUp onClick={() => setShow(false)} />}
-    </>
+    </DndProvider>
   );
 }

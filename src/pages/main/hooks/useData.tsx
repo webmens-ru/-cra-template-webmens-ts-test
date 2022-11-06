@@ -41,6 +41,8 @@ export const useData = () => {
       if (filters.data) {
         currentFilter =
           filters.data.find((f) => Boolean(f.visible)) || filters.data[0];
+        console.log(filters.data);
+        
       }
 
       if (currentFilter && "id" in currentFilter) {

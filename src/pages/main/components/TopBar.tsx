@@ -14,6 +14,8 @@ export function TopBar() {
   const filterProps = useFilterQuery();  
 
   const setFilter = (filter: TFilter) => {
+    console.log(filter);
+    
     dispatch(setCurrentFilter(filter));
   };
 
@@ -29,7 +31,6 @@ export function TopBar() {
       <CopyToClipboard append={window._PARAMS_.placementOptions} />
       <Filter
         currentFilter={mainSlice.currentFilter}
-        setCurrentFilter={setFilter}
         {...filterProps}
         onClearFilter={() => filterProps.onSearch([])}
         getSelectItems={getSelectItems}

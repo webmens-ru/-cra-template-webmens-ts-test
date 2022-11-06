@@ -1,7 +1,8 @@
 import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
 import { useCallback, useMemo } from "react";
 import {
-  setFilterResponse, setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
+  setCurrentFilter as setFilter, setFilterResponse, setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
   useLazyGetFieldsQuery, useUpdateFieldMutation, useUpdateFilterMutation, useUpdateFiltersOrderMutation
 } from "..";
 import { axiosInst } from "../../../app/api/baseQuery";
@@ -23,17 +24,14 @@ export const useFilterQuery = () => {
 
   const onSearch = useCallback(async (fields: TField[]) => {
     dispatch(setIsLoading(true));
-    console.log(fields);
 
     const filterResponse = getFilterResponsePost(fields);
-    console.log(filterResponse);
+    console.log(mainSlice.currentFilter.id)
 
     getFieldsQuery(mainSlice.currentFilter.id);
     dispatch(setFilterResponse(filterResponse));
     dispatch(setIsLoading(false));
-  },
-    [dispatch, getFieldsQuery, mainSlice.currentFilter],
-  );
+  }, [dispatch, getFieldsQuery, mainSlice.currentFilter]);
 
   const updateField = async (filter: TField, param: string) => {
     if (param === "hide") {
@@ -56,6 +54,14 @@ export const useFilterQuery = () => {
       updateFieldMut(filter);
     }
   };
+
+  const setCurrentFilter = (filter: TFilter) => {
+    console.log(filter);
+    
+    getFieldsQuery(filter.id).then(response => {
+      dispatch(setFilter(filter));
+    })
+  }
 
   const filters = useMemo<any>(
     () =>
@@ -94,5 +100,6 @@ export const useFilterQuery = () => {
     updateFieldsOrder,
     updateField,
     onSearch,
+    setCurrentFilter
   };
 };
