@@ -39,10 +39,7 @@ export const useData = () => {
       ]);
 
       if (filters.data) {
-        currentFilter =
-          filters.data.find((f) => Boolean(f.visible)) || filters.data[0];
-        console.log(filters.data);
-        
+        currentFilter = mainSlice.currentFilter || filters.data.find((f) => Boolean(f.visible)) || filters.data[0]; 
       }
 
       if (currentFilter && "id" in currentFilter) {

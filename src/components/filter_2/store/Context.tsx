@@ -9,7 +9,7 @@ interface IState {
   createFilter: (f: TFilter) => void;
   updateFilter: (f: TUpdateFilter) => void;
   deleteFilter: (f: TFilter) => void;
-  updateFiltersOrder: (f: TFilter[]) => void;
+  updateFiltersOrder: (f: Array<{id: number, order: number}>) => void;
   fields: TField[];
   updateField: (f: TField, param: string) => void;
   updateFieldsOrder: (f: TField[]) => void;
@@ -49,6 +49,7 @@ type Action =
   | { type: "INITIAL"; props: TProps }
   | { type: "SET_CURRENT_FILTER"; filter: TFilter }
   | { type: "SET_IS_SETUP"; isSetup: boolean }
+  | { type: "SET_FILTERS", filters: TFilter[] }
   | { type: "SET_FILTER_TEMPLATE_VALUE"; title: string }
   | { type: "SET_RENAME_FILTER"; filter: TFilter }
   | { type: "SAVE_RENAME_FILTER" }
@@ -72,6 +73,8 @@ const reducer = (state: IState, action: Action) => {
         ...state,
         currentFilter: action.filter,
       };
+    case "SET_FILTERS":
+      return { ...state, filters: action.filters }
     case "SET_FILTER_FIELDS":
       return { ...state, fields: action.fields }
     case "SET_IS_SETUP": {

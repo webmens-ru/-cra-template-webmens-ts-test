@@ -4,6 +4,10 @@ import spriteSvg from "../../assets/svg/sprite-interface.min.svg";
 export const MenuItemContainer = styled.div`
   display: grid;
   grid-template: 100% / 20px 158px 20px 20px;
+
+  &:last-of-type input {
+    border-bottom: 1px solid #e7eaec;
+  }
 `
 
 export const MenuItemDragHandle = styled.div`
@@ -24,10 +28,11 @@ export const MenuItemInput = styled.input.attrs({ type: "text" })<{current: bool
   font-weight: 600;
   text-transform: uppercase;
   list-style: none;
-  cursor: pointer;
+  transition: color 200ms ease;
+  cursor: ${({ current }) => current ? "default" : "pointer"};
 
   &:hover {
-    color: #000;
+    color: ${({ current }) => current ? "#0fa7d7" : "#000"};
   }
 `
 

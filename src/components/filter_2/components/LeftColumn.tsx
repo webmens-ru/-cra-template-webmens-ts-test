@@ -1,10 +1,31 @@
-import React, { useEffect, useRef } from "react";
-import { useDragAndDrop } from "../hooks/useDragAndDrop";
+import { useRef } from "react";
 import { useCustomContext } from "../store/Context";
 import { TFilter } from "../types";
+import MenuItem from "./menu_item";
 
 export function LeftColumn() {
   const { state, dispatch } = useCustomContext();
+  const createFilterRef = useRef<HTMLInputElement>(null);
+
+  console.log(state.filters.map(item => item.title));
+  
+
+  const handleMoveItems = (dragItem: TFilter, hoverItem: TFilter) => {
+    const draggedItem = { ...dragItem, order: hoverItem.order }
+    const hoverredItem = { ...hoverItem, order: dragItem.order }    
+
+    if (draggedItem.order === hoverredItem.order) {
+      hoverredItem.order += 1
+    }
+
+    const reorderedFilters = [
+      ...state.filters.filter((filter) => filter.id !== dragItem.id && filter.id !== hoverItem.id),
+      draggedItem,
+      hoverredItem
+    ]
+
+    dispatch({ type: "SET_FILTERS", filters: reorderedFilters })
+  }
 
   const setNewCurrentFilter = (filter: TFilter) => {
     dispatch({ type: "SET_CURRENT_FILTER", filter });
@@ -15,20 +36,15 @@ export function LeftColumn() {
   };
 
   const setRenameFilter = (filter: TFilter) => {
-    dispatch({
-      type: "SET_RENAME_FILTER",
-      filter,
-    });
+    dispatch({ type: "SET_RENAME_FILTER", filter });
   };
 
-  const setFilterTemplateValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: "SET_FILTER_TEMPLATE_VALUE", title: e.target.value });
+  const setFilterTemplateValue = (title: string) => {
+    dispatch({ type: "SET_FILTER_TEMPLATE_VALUE", title });
   };
-
-  const createFilterRef = useRef<HTMLInputElement>(null);
 
   const setIsCreateFilter = () => {
-    dispatch({ type: "SET_IS_CREATE_FILTER", isCreate: true });
+    dispatch({ type: "SET_IS_CREATE_FILTER", isCreate: true });    
     setTimeout(() => {
       if (createFilterRef.current) {
         createFilterRef.current.focus();
@@ -36,59 +52,21 @@ export function LeftColumn() {
     }, 200);
   };
 
-  const {
-    draggableItems,
-    setDraggableItems,
-    onDragStart,
-    onDragEnter,
-    onDragEnd,
-  } = useDragAndDrop(state.updateFiltersOrder);
-
-  useEffect(() => {
-    setDraggableItems(state.filters.slice().sort((a, b) => a.order - b.order));
-  }, [setDraggableItems, state.filters]);
-
   return (
     <menu>
       <h3>Фильтры</h3>
-      {draggableItems
+      {state.filters
         .filter((f) => Boolean(f.visible))
-        .map((item, index) => (
-          <div
-            style={{
-              background:
-                state.filterTemplate.id === item.id ? "#fff" : "transparent",
-            }}
-            key={index}
-            draggable={state.isSetup}
-            onDragStart={() => onDragStart(item)}
-            onDragEnter={(e) => onDragEnter(e, item)}
-            onDragEnd={onDragEnd}
-          >
-            {state.isSetup && <button></button>}
-            <input
-              key={index}
-              type="text"
-              value={
-                state.filterTemplate.id === item.id
-                  ? state.filterTemplate.title
-                  : item.title
-              }
-              onChange={setFilterTemplateValue}
-              readOnly={item.id !== state.filterTemplate.id}
-              onClick={() => (state.isSetup ? null : setNewCurrentFilter(item))}
-              style={{
-                color:
-                  item.id === state.currentFilter.id ? "#0fa7d7" : "#535c69",
-              }}
-            />
-            {state.isSetup && (
-              <button onClick={() => setRenameFilter(item)}></button>
-            )}
-            {state.isSetup && (
-              <button onClick={() => state.deleteFilter(item.id)}></button>
-            )}
-          </div>
+        .sort((a, b) => a.order - b.order)
+        .map((item) => (
+          <MenuItem
+            key={item.id}
+            menuItem={item}
+            onChangeFilterTemplateName={setFilterTemplateValue}
+            onRename={setRenameFilter}
+            onPickFilter={setNewCurrentFilter}
+            onMoveItem={handleMoveItems}
+          />
         ))}
       {state.isCreateFilter && (
         <div key="000">
@@ -96,12 +74,12 @@ export function LeftColumn() {
             ref={createFilterRef}
             type="text"
             value={state.filterTemplate.title || ''}
-            onChange={setFilterTemplateValue}
+            onChange={(e) => setFilterTemplateValue(e.target.value)}
           />
         </div>
       )}
-      <button onClick={setIsCreateFilter}>Сохранить фильтр</button>
-      <button onClick={setIsSetup}></button>
+      <button children="Сохранить фильтр" onClick={setIsCreateFilter} />
+      <button onClick={setIsSetup} />
     </menu>
   );
 }

@@ -8,7 +8,7 @@ export type TProps = {
   createFilter?: (f: TFilter) => void;
   updateFilter?: (f: TUpdateFilter) => void;
   deleteFilter?: (f: TFilter) => void;
-  updateFiltersOrder?: (f: TFilter[]) => void;
+  updateFiltersOrder?: (f: Array<{id: number, order: number}>) => void;
   fields?: TField[];
   updateField?: (f: TField, param: string) => void;
   updateFieldsOrder?: (f: TField[]) => void;

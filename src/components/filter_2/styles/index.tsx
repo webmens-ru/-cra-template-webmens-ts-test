@@ -73,46 +73,6 @@ export const FilterMenuContainer = styled.div`
       text-align: center;
       text-transform: uppercase;
     }
-    & > div {
-      display: grid;
-      grid-template: 100% / 20px 158px 20px 20px;
-      & > button:nth-of-type(1) {
-        margin: auto 3px;
-        width: 15px;
-        height: 15px;
-        background: url(${spriteSvg}) no-repeat 0 -201px;
-        cursor: move;
-      }
-      & > input {
-        grid-column: 2;
-        padding: 10px 5px;
-        width: 100%;
-        list-style: none;
-        font-weight: 600;
-        font-size: 12px;
-        text-transform: uppercase;
-        cursor: pointer;
-        border-top: 1px solid #e7eaec;
-        &:hover {
-          color: #000;
-        }
-      }
-      & > button:nth-of-type(2) {
-        margin: auto 3px;
-        width: 15px;
-        height: 15px;
-        background: url(${spriteSvg}) no-repeat 0 3px/80%;
-      }
-      & > button:nth-of-type(3) {
-        margin: auto 3px;
-        width: 15px;
-        height: 15px;
-        background: url(${spriteSvg}) no-repeat 0 -12px/80%;
-      }
-      &:last-of-type input {
-        border-bottom: 1px solid #e7eaec;
-      }
-    }
 
     & > input {
       padding: 10px 5px;

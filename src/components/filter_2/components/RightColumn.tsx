@@ -25,6 +25,8 @@ export function RightColumn({
   };
 
   const saveChanges = () => {
+    console.log(state.isEditFilter);
+    
     if (state.isCreateFilter) {
       dispatch({ type: "SAVE_CREATE_FILTER" });
       state.createFilter({
@@ -38,6 +40,7 @@ export function RightColumn({
       state.updateFilter(state.filterTemplate);
     } else {
       dispatch({ type: "SET_IS_SETUP", isSetup: false });
+      state.updateFiltersOrder(state.filters.map(filter => ({ id: filter.id, order: filter.order })))
     }
   };
 
