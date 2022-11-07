@@ -17,7 +17,7 @@ import {
 
 export default function DateField({ item, updateField }: IField) {
   const [dropDownValue, setDropDownValue] = useState<IDataItem>(() => {
-    const list: IDataItem[] = item?.params?.data || dateDropDown;
+    const list: IDataItem[] = item?.options?.variants || dateDropDown;
     return (
       list.find(
         (dateItem) => dateItem.value === item.value[0]
@@ -79,7 +79,7 @@ export default function DateField({ item, updateField }: IField) {
           <Select
             filterable={false}
             value={dropDownValue}
-            data={item?.params?.data || dateDropDown}
+            data={item?.options?.variants || dateDropDown}
             closeOnSelect={true}
             selectWidth="100%"
             onChange={setDDV}
@@ -148,7 +148,7 @@ function TwoField({ value, setValue, updateValue, item }: ITwoField) {
           <Select
             filterable={false}
             value={value}
-            data={item?.params?.data || dateDropDown}
+            data={item?.options?.variants || dateDropDown}
             closeOnSelect={true}
             selectWidth="49%"
             onChange={setValue}
@@ -169,7 +169,7 @@ function TwoField({ value, setValue, updateValue, item }: ITwoField) {
           <Select
             filterable={false}
             value={value}
-            data={item?.params?.data || dateDropDown}
+            data={item?.options?.variants || dateDropDown}
             closeOnSelect={true}
             selectWidth="49%"
             onChange={setValue}
@@ -190,7 +190,7 @@ function TwoField({ value, setValue, updateValue, item }: ITwoField) {
           <Select
             filterable={false}
             value={value}
-            data={item?.params?.data || dateDropDown}
+            data={item?.options?.variants || dateDropDown}
             closeOnSelect={true}
             selectWidth="49%"
             onChange={setValue}
@@ -214,7 +214,7 @@ function ThreeField({ value, setValue, updateValue, item }: IThreeField) {
     <Select
       filterable={false}
       value={value}
-      data={item?.params?.data || dateDropDown}
+      data={item?.options?.variants || dateDropDown}
       closeOnSelect={true}
       selectWidth="32%"
       onChange={setValue}
@@ -241,7 +241,7 @@ function ThreeField({ value, setValue, updateValue, item }: IThreeField) {
       <Select
         filterable={false}
         value={selectYear}
-        data={item?.params?.data || yearsDropDown}
+        data={item?.params?.data || getYearsDropDown()}
         closeOnSelect={true}
         selectWidth="32%"
         onChange={setYear}
