@@ -39,9 +39,9 @@ export const useData = () => {
       ]);
 
       if (filters.data) {
-        currentFilter = mainSlice.currentFilter || filters.data.find((f) => Boolean(f.visible)) || filters.data[0]; 
+        currentFilter = (Object.keys(mainSlice.currentFilter).length === 0 ? undefined : mainSlice.currentFilter) || filters.data.find((f) => Boolean(f.visible)) || filters.data[0];
       }
-
+      
       if (currentFilter && "id" in currentFilter) {
         dispatch(setCurrentFilter(currentFilter));
         currentFields = await getCurrentFiltersFields(currentFilter.id);
