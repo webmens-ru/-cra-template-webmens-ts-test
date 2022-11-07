@@ -40,7 +40,8 @@ const getFieldValue = (field: TField): string => {
         new Date(secondValue).toLocaleDateString()
       ]
       switch (operator as DateFieldOperator) {
-        case "exactDate": return firstDate
+        case "exactDate":
+          return firstDate
         case "range":
           if (!firstValue && !!secondValue) {
             return `Раньше чем ${secondDate}`
@@ -51,25 +52,32 @@ const getFieldValue = (field: TField): string => {
           }
         case "lastNDays":
         case "nextNDays":
-          const NDaysTitle = dateDropDown.find(item => item.value === operator)!.title as string
-          return NDaysTitle.replace("N", firstValue.toString())
+          // const NDaysTitle = dateDropDown.find(item => item.value === operator)!.title as string
+          // return NDaysTitle.replace("N", firstValue.toString())
+          return '';
         case "month":
+          const month = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+          return (firstValue) ? `${month[firstValue - 1]}` : ``
         case "quarter":
-          return `${firstValue.title} ${secondValue.title}`
+          const quarter = ['I Квартал', 'II Квартал', 'III Квартал', 'IV Квартал'];
+          return (firstValue) ? `${quarter[firstValue - 1]}` : ``
         case "year":
-          return `${firstValue.title}`
+          // return `${firstValue.title}`
+          return '';
         default:
-          return dateDropDown.find(item => item.value === operator)!.title as string
+          // return dateDropDown.find(item => item.value === operator)!.title as string
+          return '';
       }
     case 'select':
     case 'multiple_select':
     case 'select_dynamic':
     case 'multiple_select_dynamic':
-      if (field?.params?.multiple) {
-        return field.value.map((item: any): string => item.title).join(", ")
-      } else {
-        return firstValue[0].title
-      }
+      // if (field?.params?.multiple) {
+      //   return field.value.map((item: any): string => item.title).join(", ")
+      // } else {
+      //   return firstValue[0].title
+      // }
+      return '';
     default: return ""
   }
 }
