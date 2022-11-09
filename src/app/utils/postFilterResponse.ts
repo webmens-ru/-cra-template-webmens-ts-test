@@ -61,7 +61,7 @@ const getMultiplySelectResponse = (value: IDataItem[]): PostFilterResponse<Array
 };
 
 const getStringResponse = (item: string[]): PostFilterResponse<string>[] => {
-  if (item.length === 0 || item[0] === "" || !item || (item[0] === "=" && !item[1])) {
+  if (item.length === 0 || item[0] === "" || item[0] === "isNotUsed" || !item || (item[0] === "=" && !item[1])) {
     return [];
   }
 

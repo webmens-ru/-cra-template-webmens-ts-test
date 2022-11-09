@@ -4,7 +4,7 @@ import { IDateFieldDataItem } from "../../../types";
 export const stringDropDownValues = [
   {
     title: 'Не используется',
-    value: '',
+    value: 'isNotUsed',
   },
   {
     title: 'Точно',
