@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { setCheckboxes, setEntity, setFilterResponse, setSchema, setTitle, useLazyGetTitleQuery, useSaveSchemaMutation } from ".";
+import { setCheckboxes, setEntity, setFilterResponse, setSchema, setTitle, useLazyGetTitleQuery, useSaveSchemaMutation, setParentId } from ".";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import { GridWrapper } from "../../components/GridWrapper";
 import { TopBar } from "./components/TopBar";
@@ -19,6 +19,7 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
 
   useEffect(() => {
     dispatch(setEntity(entity));
+    dispatch(setParentId(parentId));
     getTitle(entity).then((response) => {
       dispatch(setTitle(response.data.name))
     })
