@@ -36,7 +36,34 @@ export default function SelectStringField({
 
   return (
     <SelectTextStyle {...props}>
-      <Select
+      {selectValue.value === 'isNotUsed' || selectValue.value === 'isNull' || selectValue.value === 'isNotNull' ? (
+        <Select
+          filterable={false}
+          value={selectValue}
+          data={item?.options?.variants || stringDropDownValues}
+          closeOnSelect={true}
+          selectWidth="100%"
+          onChange={changeAttr}
+        />
+      ) : (
+        <>
+          <Select
+            filterable={false}
+            value={selectValue}
+            data={item?.options?.variants || stringDropDownValues}
+            closeOnSelect={true}
+            selectWidth="33%"
+            onChange={changeAttr}
+          />
+          <Input
+            width="67%"
+            value={item.value[1]}
+            onChange={checkFirstValue}
+            onBlur={() => updateField(item, 'value')}
+          />
+        </>
+      )}
+      {/* <Select
         filterable={false}
         value={selectValue}
         data={item?.options?.variants || stringDropDownValues}
@@ -49,7 +76,7 @@ export default function SelectStringField({
         value={item.value[1]}
         onChange={checkFirstValue}
         onBlur={() => updateField(item, 'value')}
-      />
+      /> */}
     </SelectTextStyle>
   );
 }

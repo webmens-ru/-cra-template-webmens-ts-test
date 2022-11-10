@@ -39,8 +39,20 @@ export default function SelectIntegerField({
     updateField(field, "value");
   };
 
-  return (
-    <SelectTextStyle draggable={draggable} {...props}>
+  let field;
+
+  if (selectValue.value === 'isNotUsed' || selectValue.value === 'isNull' || selectValue.value === 'isNotNull') {
+    field = <Select
+      filterable={false}
+      value={selectValue}
+      data={item?.options?.variants || integerDropDownValues}
+      closeOnSelect={true}
+      selectWidth="100%"
+      onChange={changeAttr}
+    />
+  } else if (selectValue.value === 'range') {
+    field = 
+    <>
       <Select
         filterable={false}
         value={selectValue}
@@ -49,7 +61,50 @@ export default function SelectIntegerField({
         selectWidth="33%"
         onChange={changeAttr}
       />
-      {selectValue.title === 'Диапазон' ? (
+      <Input
+        width="33%"
+        value={item.value[1]}
+        onChange={checkFirstValue}
+        onBlur={() => updateField(item, 'value')}
+      />
+      <Input
+        width="33%"
+        value={item.value[2]}
+        onChange={checkSecondValue}
+        onBlur={() => updateField(item, 'value')}
+      />
+    </>
+  } else {
+    field = <>
+      <Select
+        filterable={false}
+        value={selectValue}
+        data={item?.options?.variants || integerDropDownValues}
+        closeOnSelect={true}
+        selectWidth="33%"
+        onChange={changeAttr}
+      />
+      <Input
+          width="67%"
+          value={item.value[1]}
+          onChange={checkFirstValue}
+          onBlur={() => updateField(item, 'value')}
+        />
+    </>
+  }
+
+  return (
+    <SelectTextStyle draggable={draggable} {...props}>
+      {field}
+      {/* <Select
+        filterable={false}
+        value={selectValue}
+        data={item?.options?.variants || integerDropDownValues}
+        closeOnSelect={true}
+        selectWidth="33%"
+        onChange={changeAttr}
+      />
+      {selectValue.value === 'range' ? (
         <>
           <Input
             width="33%"
@@ -71,7 +126,7 @@ export default function SelectIntegerField({
           onChange={checkFirstValue}
           onBlur={() => updateField(item, 'value')}
         />
-      )}
+      )} */}
     </SelectTextStyle>
   );
 }
