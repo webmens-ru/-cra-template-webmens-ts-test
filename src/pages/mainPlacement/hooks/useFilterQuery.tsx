@@ -8,6 +8,7 @@ import { axiosInst } from "../../../app/api/baseQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { getFilterResponse } from "../../../app/utils/filterResponse";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
+import { getFilterResponsePost } from "../../../app/utils/postFilterResponse";
 
 export const useFilterQuery = ({ parentId }: { parentId: number }) => {
   const dispatch = useAppDispatch();
@@ -24,7 +25,7 @@ export const useFilterQuery = ({ parentId }: { parentId: number }) => {
   const onSearch = useCallback(
     async (fields: TField[]) => {      
       dispatch(setIsLoading(true));      
-      const filterResponse = getFilterResponse(fields);
+      const filterResponse = getFilterResponsePost(fields);
       
       getFieldsQuery(mainPlacementSlice.currentFilter.id);
       dispatch(setFilterResponse(filterResponse));

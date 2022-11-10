@@ -3,8 +3,9 @@ import { setCurrentFilter, setIsLoading } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { getFilterResponse } from "../../../app/utils/filterResponse";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
+import { getFilterResponsePost, PostFilterResponseFields } from "../../../app/utils/postFilterResponse";
 import {
-  useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery, useLazyGetGridQuery, useLazyGetSchemaQuery
+  useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery, useLazyGetGridPostQuery, useLazyGetGridQuery, useLazyGetSchemaQuery
 } from "../mainPlacementApi";
 import { setGrid, setSchema } from "../mainPlacementSlice";
 
@@ -17,7 +18,7 @@ export const usePlacementData = ({ entity, parentId }: { entity: string, parentI
   const [getAllFields] = useLazyGetAllFieldsQuery();
   const [getSchema] = useLazyGetSchemaQuery();
   const [getCurrentFiltersFields] = useLazyGetFieldsQuery();
-  const [getGrid] = useLazyGetGridQuery();
+  const [getGridPost] = useLazyGetGridPostQuery();
 
   const init = useCallback(async () => {
     dispatch(setIsLoading(true));
@@ -46,17 +47,32 @@ export const usePlacementData = ({ entity, parentId }: { entity: string, parentI
         allFields.data,
       ).filter((f) => Boolean(f.visible));
 
-      const filterResponse = getFilterResponse(correctFields);
-      const grid = await getGrid({
+      // const filterResponse = {
+      //   ...getFilterResponsePost(correctFields),
+      //   parentId: {
+      //     operator: "=",
+      //     value: "parentId"
+      //   } 
+      // } as PostFilterResponseFields;
+      
+      const filterResponse = getFilterResponsePost(correctFields);
+      console.log(filterResponse)
+      const grid = await getGridPost({
         entity,
-        filter: `parentId=${parentId}&` + ((mainPlacementSlice.filterResponse !== null && mainPlacementSlice.filterResponse !== undefined) ? mainPlacementSlice.filterResponse : filterResponse),
+        filter: {
+          ...filterResponse,
+          parentId: [{
+                operator: "=",
+                value: parentId
+              }]
+        } as PostFilterResponseFields,
       });
 
       dispatch(setSchema(schema.data))
       dispatch(setGrid(grid.data))
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, entity, getAllFields, getCurrentFiltersFields, getFilters, getGrid, getSchema, mainPlacementSlice.filterResponse, parentId]);
+  }, [dispatch, entity, getAllFields, getCurrentFiltersFields, getFilters, getGridPost, getSchema, mainPlacementSlice.filterResponse, parentId]);
 
   useLayoutEffect(() => {
     init();
