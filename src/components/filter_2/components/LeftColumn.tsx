@@ -7,9 +7,6 @@ export function LeftColumn() {
   const { state, dispatch } = useCustomContext();
   const createFilterRef = useRef<HTMLInputElement>(null);
 
-  console.log(state.filters.map(item => item.title));
-  
-
   const handleMoveItems = (dragItem: TFilter, hoverItem: TFilter) => {
     const draggedItem = { ...dragItem, order: hoverItem.order }
     const hoverredItem = { ...hoverItem, order: dragItem.order }    

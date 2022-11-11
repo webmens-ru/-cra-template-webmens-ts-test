@@ -13,7 +13,6 @@ function App() {
   }, [])
   const switchPath = (opt: TPlacementOptions) => {
     try {
-      console.log(opt.path);
       switch (opt.path) {
         case "mainDetail":
           return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
