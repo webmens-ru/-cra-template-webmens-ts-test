@@ -56,7 +56,6 @@ export const usePlacementData = ({ entity, parentId }: { entity: string, parentI
       // } as PostFilterResponseFields;
       
       const filterResponse = getFilterResponsePost(correctFields);
-      console.log(filterResponse)
       const grid = await getGridPost({
         entity,
         filter: {
@@ -77,4 +76,6 @@ export const usePlacementData = ({ entity, parentId }: { entity: string, parentI
   useLayoutEffect(() => {
     init();
   }, [init]);
+
+  return {reload: init };
 };

@@ -7,7 +7,12 @@ import { TopBarButtons } from "../../../components/TopBarButtons";
 import { useFilterQuery } from "../hooks/useFilterQuery";
 import ControlBar from "./control_bar";
 
-export function TopBar() {
+interface ITopBarProps {
+  onCloseSlider?: () => void
+  onClosePopup?: () => void
+}
+
+export function TopBar({onCloseSlider, onClosePopup} : ITopBarProps) {
   const { mainSlice } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
@@ -39,6 +44,8 @@ export function TopBar() {
         involvedState={mainSlice} 
         entity={mainSlice.currentTab?.params?.entity} 
         excelTitle={mainSlice.currentTab.title}
+        onCloseSlider={onCloseSlider}
+        onClosePopup={onClosePopup}
       />
     </ControlBar>
   );

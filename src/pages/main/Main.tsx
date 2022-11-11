@@ -24,7 +24,10 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
       <Menu items={tabs.data} setItem={setTab} itemsMutation={itemsMutation} />
       {isCorrect ? (
         <>
-          <TopBar />
+          <TopBar
+            onCloseSlider={reload}
+            onClosePopup={reload}
+          />
           <GridWrapper
             slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
             api={mainApi}

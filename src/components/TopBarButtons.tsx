@@ -18,6 +18,8 @@ interface ITopBarButtonsProps {
   };
   excelTitle?: string;
   entity?: string;
+  onCloseSlider?: () => void;
+  onClosePopup?: () => void;
 }
 
 interface IActionItem {
@@ -35,9 +37,10 @@ interface IActionItemParams {
   };
   popup?: PopupActionProps;
   columns: string[];
+  updateOnCloseSlider?: boolean;
 }
 
-export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButtonsProps) {
+export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider, onClosePopup }: ITopBarButtonsProps) {
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
   const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
@@ -54,20 +57,20 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
 
   const itemClickHandler = async (item: IActionItem) => {
     let body = grid.grid!.filter((row) => {
-      const id = typeof row.id === "object" ? row.id.title : row.id
-      return checkboxes.includes(id)
+      const id = typeof row.id === "object" ? row.id.title : row.id;
+      return checkboxes.includes(id);
     })
 
     if (item.params && "columns" in item.params) {
       // @ts-ignore
       body = body.map(row => Object.fromEntries(
         Object.entries(row).filter(([key]) => item.params?.columns.includes(key))
-      ))
+      ));
     }
 
     if (item.params && item.params.popup && body.length) {
-      setShowPopup(true)
-      setPopupAction({ grid: body, params: item.params, handler: item.handler })
+      setShowPopup(true);
+      setPopupAction({ grid: body, params: item.params, handler: item.handler });
     }
 
     if (body.length && !item.params?.popup) {
@@ -76,16 +79,22 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
           responseType: item.params.output.type
         })
 
-        const link = document.createElement("a")
-        const title = item.params?.output?.documentName //TODO: Брать название из item.params?.output?.documentName/Title 
-        link.href = URL.createObjectURL(new Blob([response.data]))
-        link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
-        link.click()
+        const link = document.createElement("a");
+        const title = item.params?.output?.documentName;
+        link.href = URL.createObjectURL(new Blob([response.data]));
+        link.download = title;
+        link.click();
+        if (item.params.updateOnCloseSlider && onCloseSlider) {
+          onCloseSlider()
+        }
       } else {
-        sendData({ url: item.handler, body });
+        await sendData({ url: item.handler, body }).then(() => {
+          if (item.params?.updateOnCloseSlider && onCloseSlider) {
+            onCloseSlider()
+          }
+        });
       }
     }
-
   };
 
   const handleGearClick = async (item: any) => {
@@ -108,19 +117,21 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
   }
 
   const buttonAddOnClick = async () => {
-    console.log(buttonAdd.data, 'buttonAdd.data')
     if (process.env.NODE_ENV === "production") {
       console.log();
 
       switch (buttonAdd.data?.params.type) {
         case "openPath":
-          BX24.openPath(buttonAdd.data?.params.link, (res: any) => console.log(res));
+          BX24.openPath(buttonAdd.data?.params.link, function () {
+            if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+              onCloseSlider();
+            }
+          });
           break;
         case "openApplication":
           BX24.openApplication(buttonAdd.data?.params, function () {
-            if (buttonAdd.data?.params.updateOnCloseSlider) {
-              // dispatch(setTimeSliderOpened(Date.now()))
-              // TODO: Сделать функцию в хуке useData по вызову обновления
+            if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+              onCloseSlider();
             }
           });
           break;
@@ -147,6 +158,10 @@ export function TopBarButtons({ involvedState, excelTitle, entity }: ITopBarButt
           link.href = URL.createObjectURL(new Blob([response.data]))
           link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
           link.click()
+        }
+
+        if (popupAction.params.updateOnCloseSlider && onClosePopup) {
+          onClosePopup()
         }
       })
     }

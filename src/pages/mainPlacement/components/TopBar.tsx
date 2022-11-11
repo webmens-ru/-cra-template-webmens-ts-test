@@ -6,7 +6,13 @@ import { TopBarButtons } from "../../../components/TopBarButtons";
 import { useFilterQuery } from "../hooks/useFilterQuery";
 import ControlBar from "./control_bar";
 
-export function TopBar({ parentId }: { parentId: number }) {
+interface ITopBarProps {
+  onCloseSlider?: () => void;
+  onClosePopup?: () => void;
+  parentId: number;
+}
+
+export function TopBar({ parentId, onCloseSlider, onClosePopup } : ITopBarProps) {
   const { mainPlacementSlice } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
@@ -36,6 +42,8 @@ export function TopBar({ parentId }: { parentId: number }) {
         involvedState={mainPlacementSlice} 
         entity={mainPlacementSlice.entity} 
         excelTitle={mainPlacementSlice.title}
+        onCloseSlider={onCloseSlider}
+        onClosePopup={onClosePopup}
       />
     </ControlBar>
   );

@@ -15,8 +15,8 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
   const { mainPlacementSlice, mainPlacementApi } = useAppSelector((state) => state)  
   const [schemaMutation] = useSaveSchemaMutation()
   const [getTitle] = useLazyGetTitleQuery()
-  usePlacementData({ entity, parentId });
-
+  const { reload } = usePlacementData({ entity, parentId });
+  BX24.resizeWindow(window.innerWidth, 850);
   useEffect(() => {
     dispatch(setEntity(entity));
     dispatch(setParentId(parentId));
@@ -27,7 +27,11 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
 
   return (
     <>
-      <TopBar parentId={parentId} />
+      <TopBar
+        parentId={parentId}
+        onCloseSlider={reload}
+        onClosePopup={reload}
+      />
       <GridWrapper
         slice={mainPlacementSlice}
         api={mainPlacementApi}
@@ -36,6 +40,8 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
         checkboxesSetter={setCheckboxes}
         schemaSetter={setSchema}
         filterSetter={setFilterResponse}
+        onCloseSlider={reload}
+        onClosePopup={reload}
       />
     </>
   );
