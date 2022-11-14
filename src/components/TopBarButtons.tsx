@@ -53,7 +53,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
       getItems(entity);
       getButtonAdd({entity, parentId});
     }
-  }, [getItems, getButtonAdd, entity]);
+  }, [getItems, getButtonAdd, entity, parentId]);
 
   const itemClickHandler = async (item: IActionItem) => {
     let body = grid.grid!.filter((row) => {
@@ -118,8 +118,6 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
 
   const buttonAddOnClick = async () => {
     if (process.env.NODE_ENV === "production") {
-      console.log();
-
       switch (buttonAdd.data?.params.type) {
         case "openPath":
           BX24.openPath(buttonAdd.data?.params.link, function () {
@@ -151,19 +149,23 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
   const handlePopupSubmit = (values: FormValues) => {
     if (popupAction) {
       const body = { grid: popupAction.grid, form: values }
-      axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" }).then(response => {
-        if (popupAction.params.output && response.data) {
-          const link = document.createElement("a")
-          const title = popupAction.params.output.documentName
-          link.href = URL.createObjectURL(new Blob([response.data]))
-          link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
-          link.click()
-        }
+      return axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+    } else {
+      return Promise.all([])
+    }
+  }
 
-        if (popupAction.params.updateOnCloseSlider && onClosePopup) {
-          onClosePopup()
-        }
-      })
+  const afterPopupSubmit = (response: any) => {
+    if (popupAction && popupAction.params.output && response.data) {
+      const link = document.createElement("a")
+      const title = popupAction.params.output.documentName
+      link.href = URL.createObjectURL(new Blob([response.data]))
+      link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
+      link.click()
+    }
+
+    if (popupAction && popupAction.params.updateOnCloseSlider && onClosePopup) {
+      onClosePopup()
     }
   }
 
@@ -193,20 +195,20 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
       />
       {!!items.data?.length && (
         <Button
+          children="Действия"
           variant="dropdown"
           color="light"
           items={items.data}
           itemsProps={{ onClick: itemClickHandler }}
           dropdownDirection="left"
-        >
-          Действия
-        </Button>
+        />
       )}
       {(isShowPopup && !!popupAction?.params.popup) && (
         <PopupAction
           {...popupAction.params.popup}
           onClose={handleCloseModal}
           onSubmit={handlePopupSubmit}
+          onAfterSubmit={afterPopupSubmit}
         />
       )}
     </Container>

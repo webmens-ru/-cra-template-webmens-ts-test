@@ -128,19 +128,23 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
   const handlePopupSubmit = (values?: FormValues) => {
     if (popupAction) {
       const body = { [rowKey]: popupAction.row[rowKey], form: values }
-      axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" }).then(response => {
-        if (popupAction.params.output && response.data) {
-          const link = document.createElement("a")
-          const title = popupAction.params.output.documentName
-          link.href = URL.createObjectURL(new Blob([response.data]))
-          link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
-          link.click()
-        }
+      return axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+    } else {
+      return Promise.all([])
+    }
+  }
 
-        if (popupAction.params.updateOnCloseSlider && onClosePopup) {
-          onClosePopup()
-        }
-      })
+  const afterPopupSubmit = (response: any) => {
+    if (popupAction && popupAction.params.output && response.data) {
+      const link = document.createElement("a")
+      const title = popupAction.params.output.documentName
+      link.href = URL.createObjectURL(new Blob([response.data]))
+      link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
+      link.click()
+    }
+
+    if (popupAction && popupAction.params.updateOnCloseSlider && onClosePopup) {
+      onClosePopup()
     }
   }
 
@@ -155,6 +159,7 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
           {...popupAction.popup}
           onClose={() => setShowPopup(false)}
           onSubmit={handlePopupSubmit}
+          onAfterSubmit={afterPopupSubmit}
         />
       )}
       {gridState?.header?.blocks && (
