@@ -163,7 +163,7 @@ export const getDateResponse = (value: string[]): PostFilterResponse<string>[] =
     case "month":
       return [
         { operator: ">=", value: `${value[2] || year}-${value[1] || month}-${1}` },
-        { operator: "<", value: `${(+value[1] || month) === 12 ? year + 1 : year}-${(+value[1] || month) === 12 ? 1 : (+value[1] || month) + 1}-1` }
+        { operator: "<", value: `${((+value[1] || month) === 12 ? +value[2] + 1 : value[2]) || year}-${(+value[1] || month) === 12 ? 1 : (+value[1] || month) + 1}-1` }
       ]
     case "quarter":
       // let [cm, nm] = value[1] === "1" ? [1, 4] : value[1] === "2" ? [4, 7] : value[1] === "3" ? [7, 10] : [10, 1]

@@ -1,4 +1,4 @@
-import { FilterAlpha as Filter } from "../../../components/filter_2/Filter2";
+import { FilterAlpha as Filter } from "@webmens-ru/ui_lib";
 import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
 import { setCurrentFilter, useLazyGetDynamicSelectItemsQuery } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
