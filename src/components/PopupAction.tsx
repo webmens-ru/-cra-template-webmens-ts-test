@@ -39,8 +39,12 @@ export default function PopupAction({ title, body, buttons, width = '50%', heigh
     }
   }
 
-  const handleSubmit = () => {
-    formHandlers.current?.submit()
+  const handleSubmit = async () => {
+    const isSuccess = await formHandlers.current?.submit()
+    
+    if (isSuccess) {
+      onClose()
+    }
   }
 
   const buildFooter = () => {    
