@@ -21,6 +21,7 @@ export const getFilterResponsePost = (fields: TField[]): PostFilterResponseField
         response[item.queryKey] = getDateResponse(item.value)
         break;
       case "integer":
+      case "number":
         response[item.queryKey] = getIntegerResponse(item.value);
         break;
       case "string":

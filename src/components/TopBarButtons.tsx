@@ -98,9 +98,12 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
   };
 
   const handleGearClick = async (item: any) => {
-    const gridData = checkboxes.length === 0 || checkboxes.length === grid.grid?.length
+    console.log(grid.grid, 'grid.grid');
+    const gridData = checkboxes.length == 0 || checkboxes.length == grid.grid?.length
       ? grid.grid
-      : grid.grid?.filter((item) => checkboxes.some((check) => check === item.id || check === (item.id as any).title))
+      : grid.grid?.filter((item) => checkboxes.some((check) => check == item.id || check == (item.id as any).title))
+    console.log(gridData, 'gridData');
+    console.log(checkboxes, 'checkboxes');
     const response = await axiosInst.post('/admin/excel/get-excel', {
       schema: schema.filter((item) => item.visible).sort((a, b) => a.order - b.order),
       grid: gridData || [],
@@ -146,7 +149,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
     }
   };
 
-  const handlePopupSubmit = (values: FormValues) => {
+  const handlePopupSubmit = (values?: FormValues) => {
     if (popupAction) {
       const body = { grid: popupAction.grid, form: values }
       return axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })

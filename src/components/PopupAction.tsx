@@ -15,7 +15,7 @@ export interface PopupActionProps {
   width?: string | number;
   height?: string | number;
   onClose: () => void;
-  onSubmit: (values: FormValues) => Promise<any>;
+  onSubmit: (values?: FormValues) => Promise<any>;
   onAfterSubmit: (response: any) => void;
 }
 
@@ -40,11 +40,23 @@ export default function PopupAction({ title, body, buttons, width = '50%', heigh
   }
 
   const handleSubmit = async () => {
-    const isSuccess = await formHandlers.current?.submit()
+    if (body.form) {
+      const isSuccess = await formHandlers.current?.submit()
     
-    if (isSuccess) {
-      onClose()
+      if (isSuccess) {
+        onClose()
+      }
     }
+
+    if (body.text) {
+      const isSuccess = await onSubmit();
+    
+      if (isSuccess) {
+        onAfterSubmit(isSuccess)
+        onClose()
+      }
+    }
+    
   }
 
   const buildFooter = () => {    
