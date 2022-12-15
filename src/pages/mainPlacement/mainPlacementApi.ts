@@ -141,7 +141,7 @@ export const mainPlacementApi = createApi({
         body,
       }),
     }),
-    getButtonAdd: build.query<{title: string, params: any}, string>({ //TODO: params: any
+    getButtonAdd: build.query<{title: string, params: any, items: any}, string>({ //TODO: params: any
       query: (entity) => ({
         url: `${entity}/get-button-add`,
       }),

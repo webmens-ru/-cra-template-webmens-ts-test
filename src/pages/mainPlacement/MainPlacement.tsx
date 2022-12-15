@@ -21,7 +21,7 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
     dispatch(setEntity(entity));
     dispatch(setParentId(parentId));
     getTitle(entity).then((response) => {
-      dispatch(setTitle(response.data.name))
+      dispatch(setTitle(response?.data.name))
     })
   }, [dispatch, entity, getTitle])
 

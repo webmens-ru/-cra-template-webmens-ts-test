@@ -45,7 +45,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
   const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
   const [isShowPopup, setShowPopup] = useState(false)
-  const [popupAction, setPopupAction] = useState<{ handler: string, grid: TRowItem[], params: IActionItemParams } | null>(null)
+  const [popupAction, setPopupAction] = useState<{ handler: string, grid?: TRowItem[], params: IActionItemParams } | null>(null)
   const { grid, checkboxes, schema, parentId } = involvedState
 
   useEffect(() => {
@@ -97,13 +97,37 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
     }
   };
 
+  const addButtonItemClickHandler = async (item: IActionItem) => {
+    // let body = grid.grid!.filter((row) => {
+    //   const id = typeof row.id === "object" ? row.id.title : row.id;
+    //   return checkboxes.includes(id);
+    // })
+
+    // if (item.params && "columns" in item.params) {
+    //   // @ts-ignore
+    //   body = body.map(row => Object.fromEntries(
+    //     Object.entries(row).filter(([key]) => item.params?.columns.includes(key))
+    //   ));
+    // }
+
+    if (item.params && item.params.popup) {
+      setShowPopup(true);
+      setPopupAction({ params: item.params, handler: item.handler });
+    }
+
+    if (!item.params?.popup) {
+      await sendData({ url: item.handler, body: {} }).then(() => {
+        if (item.params?.updateOnCloseSlider && onCloseSlider) {
+          onCloseSlider()
+        }
+      });
+  }
+  };
+
   const handleGearClick = async (item: any) => {
-    console.log(grid.grid, 'grid.grid');
     const gridData = checkboxes.length == 0 || checkboxes.length == grid.grid?.length
       ? grid.grid
       : grid.grid?.filter((item) => checkboxes.some((check) => check == item.id || check == (item.id as any).title))
-    console.log(gridData, 'gridData');
-    console.log(checkboxes, 'checkboxes');
     const response = await axiosInst.post('/admin/excel/get-excel', {
       schema: schema.filter((item) => item.visible).sort((a, b) => a.order - b.order),
       grid: gridData || [],
@@ -179,10 +203,22 @@ export function TopBarButtons({ involvedState, excelTitle, entity, onCloseSlider
 
   return (
     <Container>
-      {!!buttonAdd.data && (
+      {!!buttonAdd.data && !buttonAdd.data?.items && (
         <Button
           color="success"
           svgBefore="black-plus"
+          buttonProps={{ onClick: buttonAddOnClick }}
+        >
+          {buttonAdd.data?.title}
+        </Button>
+      )}
+      {!!buttonAdd.data && !!buttonAdd.data?.items && (
+        <Button
+          color="success"
+          svgBefore="black-plus"
+          items={buttonAdd.data.items}
+          dropdownDirection="left"
+          itemsProps={{ onClick: addButtonItemClickHandler }}
           buttonProps={{ onClick: buttonAddOnClick }}
         >
           {buttonAdd.data?.title}

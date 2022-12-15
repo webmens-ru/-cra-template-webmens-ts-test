@@ -141,7 +141,7 @@ export const mainApi = createApi({
         body,
       }),
     }),
-    getButtonAdd: build.query<{title: string, params: any}, {entity: string, parentId:string | number | undefined}>({ //TODO: params: any
+    getButtonAdd: build.query<{title: string, params: any, items: any}, {entity: string, parentId:string | number | undefined}>({
       query: ({entity, parentId}) => ({
         url: `${entity}/get-button-add`,
         method: "POST",
