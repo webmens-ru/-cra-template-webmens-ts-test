@@ -77,6 +77,7 @@ export default function PopupAction({ title, body, buttons, width = '50%', heigh
       showBackdrop={false}
       style={{ width, height }}
       onClose={onClose}
+      bodyModalClass={'modal-select'}
     />
   )
 }
