@@ -39,17 +39,10 @@ function App() {
     return switchPath(window._PARAMS_.placementOptions);
   }
   if (process.env.NODE_ENV === "development") {
-    const pathArr = window.location.pathname
-      .replace("/", "")
-      .split("&")
-      .map((item) => item.split("="))
-      .flat();
-    const pathObj: any = {};
-    for (let i = 0; i < pathArr.length; i += 2) {
-      pathObj[pathArr[i]] = pathArr[i + 1];
-    }
+    const urlParams = new URLSearchParams(document.location.search)
+    const objParams = Object.fromEntries(urlParams) as TPlacementOptions
 
-    return switchPath(pathObj);
+    return switchPath(objParams);
   }
   return <Main />;
 }
