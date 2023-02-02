@@ -116,6 +116,13 @@ export const mainApi = createApi({
         url: `${params.entity}/data?${params.filter}`,
       }),
     }),
+    editRow: build.mutation<any, { entity: string, id: string | number, key: string, value: any }>({
+      query: ({ entity, id, key, value }) => ({
+        url: `${entity}/edit-row`,
+        method: "POST",
+        body: { id, [key]: value }
+      }),      
+    }),
     getGridPost: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[]}, { entity: string, filter: PostFilterResponseFields }>({
       query: (params) => ({
         url: `${params.entity}/data`,
@@ -171,5 +178,6 @@ export const {
   useLazyGetDynamicSelectItemsQuery,
   useSendDataOnButtonClickMutation,
   useLazyGetDynamicButtonItemsQuery,
-  useLazyGetButtonAddQuery
+  useLazyGetButtonAddQuery,
+  useEditRowMutation
 } = mainApi;

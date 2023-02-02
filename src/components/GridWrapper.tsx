@@ -20,11 +20,12 @@ interface IGridWrapperProps {
   filterSetter: ActionCreatorWithPayload<any>;
   dispatch: ThunkDispatch<any, any, any>;
   onShemaMutation: MutationTrigger<any>;
+  onRowMutation?: MutationTrigger<any>;
   onCloseSlider?: () => void
   onClosePopup?: () => void
 }
 
-export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
+export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
   const gridState = slice.grid
   const rowKey = gridState?.options?.key || "id"
   const burgerItems = gridState?.options?.actions || []
@@ -96,6 +97,12 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     onShemaMutation(schema).then(response => {
       dispatch(schemaSetter(schema))
     })
+  }
+
+  const handleRowMutation = (row: TRowItem, key: string, value: any) => {
+    if (onRowMutation) {
+      onRowMutation({ id: row[rowKey], key, value, entity: slice.entity })
+    }
   }
 
   const column = useMemo<any>(
@@ -176,9 +183,9 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
         height={window.innerHeight - height}
         columnMutation={handleSchemaMutation}
         onChangeCheckboxes={checkboxesHandler}
+        onRowMutation={handleRowMutation}
         burgerItems={burgerItems}
-        // TODO: Убрать после обновления библиотеки
-        onBurgerItemClick={handleBurgerClick as unknown as any}
+        onBurgerItemClick={handleBurgerClick}
         onCellClick={onCellClick}
       />
     </>

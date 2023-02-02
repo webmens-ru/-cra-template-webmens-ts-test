@@ -4,6 +4,7 @@ import { TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/
 import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { Item } from "@webmens-ru/ui_lib/dist/components/menu/types";
 import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
+import { mainApi } from './mainApi';
 
 interface IState {
   currentTab: Item;
@@ -73,6 +74,21 @@ export const mainSlice = createSlice({
     setTimeSliderOpened: (state, { payload }) => {
       state.lastTimeSliderOpened = payload
     },
+  },
+  extraReducers(builder) {
+    builder
+      .addMatcher(mainApi.endpoints.editRow.matchRejected, (state, action) => {
+        console.log(action.payload)
+        const data = action.payload?.data as any
+        if (data && "error" in data) {
+          const errorKeys = Object.keys(data.error)
+          
+          if (errorKeys.length) {
+            alert(data.error[errorKeys[0]][0])
+          }
+        }
+        
+      })
   },
 });
 

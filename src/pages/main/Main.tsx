@@ -1,5 +1,5 @@
 import { Loader } from "@webmens-ru/ui_lib";
-import { setCheckboxes, setFilterResponse, setSchema, useSaveSchemaMutation, useSetTabsMutation } from ".";
+import { setCheckboxes, setFilterResponse, setSchema, useEditRowMutation, useSaveSchemaMutation, useSetTabsMutation } from ".";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { GridWrapper } from "../../components/GridWrapper";
@@ -15,6 +15,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
   const { tabs, setTab } = useMenuData(menuId);
   const [itemsMutation] = useSetTabsMutation();
   const [schemaMutation] = useSaveSchemaMutation()
+  const [rowMutation] = useEditRowMutation()
   const { isCorrect, reload } = useData();
 
   if (tabs.isLoading) return <Loader />;
@@ -33,6 +34,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
             api={mainApi}
             dispatch={dispatch}
             onShemaMutation={schemaMutation}
+            onRowMutation={rowMutation}
             checkboxesSetter={setCheckboxes}
             schemaSetter={setSchema}
             filterSetter={setFilterResponse}
