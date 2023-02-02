@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Main } from "./pages/main";
+import { MainCard } from "./pages/mainCard";
 import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
@@ -25,7 +26,9 @@ function App() {
           }
           return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode}/>;
         case "mainPlacement":
-          return <MainPlacement entity={opt.entity} parentId={opt.parentId}/>;
+          return <MainPlacement entity={opt.entity} parentId={opt.parentId} />;
+        case "mainCard":
+          return <MainCard />
         default:
           return <Main menuId={opt.menuId}/>
       }
