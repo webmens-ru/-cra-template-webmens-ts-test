@@ -40,18 +40,17 @@ export const getFilterResponsePost = (fields: TField[]): PostFilterResponseField
   return response
 }
 
-const getSelectResponse = (value: IDataItem[]): PostFilterResponse<Array<string | number>>[] => {
+const getSelectResponse = (value: IDataItem[]): PostFilterResponse<Array<string | number> | string | number>[] => {
   const valueWithoutSpaces = value.filter(val => val)
 
   if (valueWithoutSpaces.length === 0) {
     return [];
   }
-  if (valueWithoutSpaces.length > 1) {
-    return getMultiplySelectResponse(valueWithoutSpaces)
+  if (valueWithoutSpaces.length === 1) {
+    return [{ operator: "=", value: valueWithoutSpaces[0].value }];
   }
-  return [
-    { operator: "=", value: value.map(item => item.value) }
-  ];
+
+  return getMultiplySelectResponse(valueWithoutSpaces)
 };
 
 const getMultiplySelectResponse = (value: IDataItem[]): PostFilterResponse<Array<string | number>>[] => {
