@@ -26,6 +26,7 @@ export interface IGridState {
   };
   grid?: TRowItem[];
   footer?: TRowItem[];
+  options?: any;
 }
 
 const initialState: IState = {

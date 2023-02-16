@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useReducer } from "react";
-import styled from "styled-components";
 import { Grid2 as Grid, Loader } from "@webmens-ru/ui_lib";
-import { initialState, reducer } from "./reducer";
-import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TCellItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { useCallback, useEffect, useReducer } from "react";
+import styled from "styled-components";
 import { TopBarButtons } from "../../components/TopBarButtons";
 import {
   useLazyGetGridQuery,
   useLazyGetSchemaQuery,
   useSaveSchemaMutation,
 } from "./mainDetailApi";
-import { TCellItem, TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { initialState, reducer } from "./reducer";
 
 export interface MainDetailProps {
   title?: string,
@@ -44,7 +44,7 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
         }
       })
     })
-  }, []);
+  }, [body, entity, getGrid, getSchema]);
 
   const handleSchemaMutation = (schema: any) => {
     schemaMutation(schema).then(response => {
@@ -100,6 +100,7 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
         rows={mainDetail.grid.grid}
         footer={mainDetail.grid.footer}
         height={windowInnerHeight - 46}
+        burgerItems={mainDetail.grid?.options?.actions}
         onChangeCheckboxes={checkboxesHandler}
         columnMutation={handleSchemaMutation}
         onCellClick={onCellClick}
