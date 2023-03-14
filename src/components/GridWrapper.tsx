@@ -22,11 +22,12 @@ interface IGridWrapperProps {
   dispatch?: ThunkDispatch<any, any, any>;
   onShemaMutation: MutationTrigger<any>;
   onRowMutation?: MutationTrigger<any>;
+  height?: number;
   onCloseSlider?: () => void
   onClosePopup?: () => void
 }
 
-export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSetter, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
+export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSetter, height, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
   const dispatch = useAppDispatch()
   const gridState = slice.grid
   const rowKey = gridState?.options?.key || "id"
@@ -150,7 +151,7 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
     }
   }
 
-  const height = (gridState?.header?.blocks) ? 190 : 160;
+  const calcHeight = (gridState?.header?.blocks) ? 190 : 160;
 
   if (slice.isLoading) return <Loader />;
 
@@ -175,7 +176,7 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         columns={slice.schema}
         rows={gridState?.grid}
         footer={gridState?.footer}
-        height={window.innerHeight - height}
+        height={height || calcHeight}
         columnMutation={handleSchemaMutation}
         onChangeCheckboxes={checkboxesHandler}
         onRowMutation={handleRowMutation}
