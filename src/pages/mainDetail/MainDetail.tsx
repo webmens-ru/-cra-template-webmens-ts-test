@@ -1,15 +1,18 @@
 import { Grid2 as Grid, Loader } from "@webmens-ru/ui_lib";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { TCellItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect } from "react";
 import styled from "styled-components";
+import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
+import { GridWrapper } from "../../components/GridWrapper";
 import { TopBarButtons } from "../../components/TopBarButtons";
 import {
+  mainDetailApi,
   useLazyGetGridQuery,
   useLazyGetSchemaQuery,
   useSaveSchemaMutation,
 } from "./mainDetailApi";
-import { initialState, reducer } from "./reducer";
+import { setCheckboxes, setGrid, setIsLoading, setSchema } from "./mainDetailSlice";
 
 export interface MainDetailProps {
   title?: string,
@@ -18,33 +21,35 @@ export interface MainDetailProps {
 }
 
 export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
-  const [mainDetail, dispatch] = useReducer(reducer, initialState)
+  const dispatch = useAppDispatch()
+  const mainDetail = useAppSelector(store => store.mainDetailSlice)
+
   const [getSchema] = useLazyGetSchemaQuery();
   const [getGrid] = useLazyGetGridQuery();
   const [schemaMutation] = useSaveSchemaMutation();
 
-  const checkboxesHandler = useCallback(
-    (checkboxes: TRowID[]) => {
-      if (mainDetail.grid) {
-        dispatch({ type: "SET_CHECKBOXES", checkboxes });
-      }
-    },
-    [mainDetail.grid],
-  );
-
-  useEffect(() => {
+  const loadData = () => {
+    dispatch(setIsLoading(true))
     Promise.all([
       getSchema(entity),
       getGrid({ entity, body })
     ]).then(([schema, grid]) => {
-      dispatch({
-        type: "INIT", payload: {
-          schema: schema.data,
-          grid: grid.data,
-        }
-      })
+      dispatch(setSchema(schema.data))
+      dispatch(setGrid(grid.data))
+      dispatch(setIsLoading(false))
     })
-  }, [body, entity, getGrid, getSchema]);
+  }
+
+  const checkboxesHandler = useCallback(
+    (checkboxes: TRowID[]) => {
+      if (mainDetail.grid) {
+        dispatch(setCheckboxes(checkboxes));
+      }
+    },
+    [dispatch, mainDetail.grid],
+  );
+
+  useEffect(loadData, [body, dispatch, entity, getGrid, getSchema]);
 
   const handleSchemaMutation = (schema: any) => {
     schemaMutation(schema).then(response => {
@@ -71,7 +76,7 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
 
   const windowInnerHeight = window.innerHeight
 
-  if (!mainDetail.inited) {
+  if (!mainDetail.isLoading) {
     return <Loader />;
   }
 
@@ -104,6 +109,14 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
         onChangeCheckboxes={checkboxesHandler}
         columnMutation={handleSchemaMutation}
         onCellClick={onCellClick}
+      />
+      <GridWrapper
+        slice={{ ...mainDetail, entity }}
+        api={mainDetailApi}
+        onShemaMutation={schemaMutation}
+        checkboxesSetter={setCheckboxes}
+        schemaSetter={setSchema}
+        onClosePopup={loadData}
       />
     </>
   );

@@ -7,6 +7,7 @@ import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/compone
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo, useState } from "react";
 import { axiosInst } from "../app/api/baseQuery";
+import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
 import PopupAction, { PopupActionProps } from "./PopupAction";
@@ -17,15 +18,16 @@ interface IGridWrapperProps {
   api: any;
   schemaSetter: ActionCreatorWithPayload<any>;
   checkboxesSetter: ActionCreatorWithPayload<any>;
-  filterSetter: ActionCreatorWithPayload<any>;
-  dispatch: ThunkDispatch<any, any, any>;
+  filterSetter?: ActionCreatorWithPayload<any>;
+  dispatch?: ThunkDispatch<any, any, any>;
   onShemaMutation: MutationTrigger<any>;
   onRowMutation?: MutationTrigger<any>;
   onCloseSlider?: () => void
   onClosePopup?: () => void
 }
 
-export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, dispatch, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
+export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
+  const dispatch = useAppDispatch()
   const gridState = slice.grid
   const rowKey = gridState?.options?.key || "id"
   const burgerItems = gridState?.options?.actions || []
@@ -122,7 +124,7 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
   );
 
   const handleMetricFilter = (item: IBlockItemMetricFilter) => {
-    if (item.params && item.params.url !== null) {
+    if (filterSetter && item.params && item.params.url !== null) {
       dispatch(filterSetter(item.params.url))
     }
   }
