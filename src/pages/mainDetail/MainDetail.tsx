@@ -6,12 +6,7 @@ import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import { GridWrapper } from "../../components/GridWrapper";
 import { TopBarButtons } from "../../components/TopBarButtons";
-import {
-  mainDetailApi,
-  useLazyGetGridQuery,
-  useLazyGetSchemaQuery,
-  useSaveSchemaMutation,
-} from "./mainDetailApi";
+import { useLazyGetGridQuery, useLazyGetSchemaQuery, useSaveSchemaMutation } from "./mainDetailApi";
 import { setCheckboxes, setGrid, setIsLoading, setSchema } from "./mainDetailSlice";
 
 export interface MainDetailProps {
@@ -112,7 +107,6 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
       />
       <GridWrapper
         slice={{ ...mainDetail, entity }}
-        api={mainDetailApi}
         onShemaMutation={schemaMutation}
         checkboxesSetter={setCheckboxes}
         schemaSetter={setSchema}

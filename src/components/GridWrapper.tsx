@@ -5,7 +5,7 @@ import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { axiosInst } from "../app/api/baseQuery";
 import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
@@ -15,7 +15,7 @@ import PopupAction, { PopupActionProps } from "./PopupAction";
 // TODO: Изучить типизацию redux-toolkit
 interface IGridWrapperProps {
   slice: Partial<IState>;
-  api: any;
+  api?: any;
   schemaSetter: ActionCreatorWithPayload<any>;
   checkboxesSetter: ActionCreatorWithPayload<any>;
   filterSetter?: ActionCreatorWithPayload<any>;
@@ -26,7 +26,7 @@ interface IGridWrapperProps {
   onClosePopup?: () => void
 }
 
-export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filterSetter, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
+export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSetter, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
   const dispatch = useAppDispatch()
   const gridState = slice.grid
   const rowKey = gridState?.options?.key || "id"
@@ -107,13 +107,6 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
     }
   }
 
-  const column = useMemo<any>(
-    () =>
-      api.queries[`getSchema("${slice.entity}")`]
-        ?.data,
-    [api.queries, slice.entity],
-  );
-
   const checkboxesHandler = useCallback(
     (arr: TRowID[]) => {
       if (gridState) {
@@ -179,7 +172,7 @@ export function GridWrapper({ slice, api, schemaSetter, checkboxesSetter, filter
         />
       )}
       <Grid
-        columns={column}
+        columns={slice.schema}
         rows={gridState?.grid}
         footer={gridState?.footer}
         height={window.innerHeight - height}
