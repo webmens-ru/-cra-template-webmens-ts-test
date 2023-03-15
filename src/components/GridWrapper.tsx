@@ -176,7 +176,7 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         columns={slice.schema}
         rows={gridState?.grid}
         footer={gridState?.footer}
-        height={height || calcHeight}
+        height={height || window.innerHeight - calcHeight}
         columnMutation={handleSchemaMutation}
         onChangeCheckboxes={checkboxesHandler}
         onRowMutation={handleRowMutation}
