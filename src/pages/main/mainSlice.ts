@@ -3,6 +3,7 @@ import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
 import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { Item } from "@webmens-ru/ui_lib/dist/components/menu/types";
+import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/pagination";
 import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
 import { mainApi } from './mainApi';
 
@@ -18,6 +19,7 @@ interface IState {
   isError: boolean;
   grid: IGridState;
   schema: TRawColumnItem[]
+  pagination: PaginationProps
 }
 
 export interface IGridState {
@@ -40,7 +42,11 @@ const initialState: IState = {
   isLoading: true,
   isError: false,
   grid: {},
-  schema: []
+  schema: [],
+  pagination: {
+    totalCount: 100,
+    currentPage: 1
+  }
 };
 
 export const mainSlice = createSlice({
@@ -75,6 +81,12 @@ export const mainSlice = createSlice({
     setTimeSliderOpened: (state, { payload }) => {
       state.lastTimeSliderOpened = payload
     },
+    setPagination: (state, { payload }) => {
+      state.pagination = payload
+    },
+    setPage: (state, { payload }) => {
+      state.pagination.currentPage = payload
+    }
   },
   extraReducers(builder) {
     builder
@@ -102,5 +114,7 @@ export const {
   setCheckboxes,
   setGrid,
   setTimeSliderOpened,
-  setSchema
+  setSchema,
+  setPagination,
+  setPage
 } = mainSlice.actions;

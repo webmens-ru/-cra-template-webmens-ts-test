@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { setCheckboxes, setEntity, setFilterResponse, setSchema, setTitle, useLazyGetTitleQuery, useSaveSchemaMutation, setParentId } from ".";
+import { setCheckboxes, setEntity, setFilterResponse, setParentId, setSchema, setTitle, useLazyGetTitleQuery, useSaveSchemaMutation } from ".";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import { GridWrapper } from "../../components/GridWrapper";
 import { TopBar } from "./components/TopBar";
@@ -16,14 +16,16 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
   const [schemaMutation] = useSaveSchemaMutation()
   const [getTitle] = useLazyGetTitleQuery()
   const { reload } = usePlacementData({ entity, parentId });
+  
   BX24.resizeWindow(window.innerWidth, 850);
+
   useEffect(() => {
     dispatch(setEntity(entity));
     dispatch(setParentId(parentId));
     getTitle(entity).then((response) => {
       dispatch(setTitle(response?.data.name))
     })
-  }, [dispatch, entity, getTitle])
+  }, [dispatch, entity, getTitle, parentId])
 
   return (
     <>
@@ -35,7 +37,6 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
       <GridWrapper
         slice={mainPlacementSlice}
         api={mainPlacementApi}
-        dispatch={dispatch}
         onShemaMutation={schemaMutation}
         checkboxesSetter={setCheckboxes}
         schemaSetter={setSchema}

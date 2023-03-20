@@ -1,5 +1,5 @@
 import { Loader } from "@webmens-ru/ui_lib";
-import { setCheckboxes, setFilterResponse, setSchema, useEditRowMutation, useSaveSchemaMutation, useSetTabsMutation } from ".";
+import { setCheckboxes, setFilterResponse, setPage, setSchema, useEditRowMutation, useSaveSchemaMutation, useSetTabsMutation } from ".";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { GridWrapper } from "../../components/GridWrapper";
@@ -32,7 +32,6 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
           <GridWrapper
             slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
             api={mainApi}
-            dispatch={dispatch}
             onShemaMutation={schemaMutation}
             onRowMutation={rowMutation}
             checkboxesSetter={setCheckboxes}
@@ -40,6 +39,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
             filterSetter={setFilterResponse}
             onCloseSlider={reload}
             onClosePopup={reload}
+            onNavigate={(page) => dispatch(setPage(page))}
           />
         </>
       ) : (

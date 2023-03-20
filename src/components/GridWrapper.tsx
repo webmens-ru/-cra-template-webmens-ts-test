@@ -1,9 +1,10 @@
-import { ActionCreatorWithPayload, ThunkDispatch } from "@reduxjs/toolkit";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
 import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/pagination";
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useState } from "react";
 import { axiosInst } from "../app/api/baseQuery";
@@ -19,15 +20,15 @@ interface IGridWrapperProps {
   schemaSetter: ActionCreatorWithPayload<any>;
   checkboxesSetter: ActionCreatorWithPayload<any>;
   filterSetter?: ActionCreatorWithPayload<any>;
-  dispatch?: ThunkDispatch<any, any, any>;
   onShemaMutation: MutationTrigger<any>;
   onRowMutation?: MutationTrigger<any>;
   height?: number;
   onCloseSlider?: () => void
   onClosePopup?: () => void
+  onNavigate?: (page: number) => void
 }
 
-export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSetter, height, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup }: IGridWrapperProps) {
+export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSetter, height, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup, onNavigate }: IGridWrapperProps) {
   const dispatch = useAppDispatch()
   const gridState = slice.grid
   const rowKey = gridState?.options?.key || "id"
@@ -183,6 +184,10 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         burgerItems={burgerItems}
         onBurgerItemClick={handleBurgerClick}
         onCellClick={onCellClick}
+        pagination={{
+          ...slice.pagination as PaginationProps,
+          onNavigate
+        }}
       />
     </>
   );

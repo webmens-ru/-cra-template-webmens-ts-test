@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
+import { PaginationProps } from '@webmens-ru/ui_lib/dist/components/pagination';
 import { baseQuery } from "../../app/api/baseQuery";
 import { PostFilterResponseFields } from './../../app/utils/postFilterResponse';
 
@@ -123,9 +124,10 @@ export const mainApi = createApi({
         body: { id, [key]: value }
       }),      
     }),
-    getGridPost: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[]}, { entity: string, filter: PostFilterResponseFields }>({
+    getGridPost: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[], pagination: PaginationProps}, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
       query: (params) => ({
         url: `${params.entity}/data`,
+        params: { page: params.pagination?.currentPage, perPage: params.pagination?.perPage },
         method: "POST",
         body: {'filter': params.filter}
       })
