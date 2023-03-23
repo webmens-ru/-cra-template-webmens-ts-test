@@ -4,9 +4,8 @@ import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
 import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
-import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/pagination";
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { axiosInst } from "../app/api/baseQuery";
 import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
@@ -35,6 +34,12 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
   const burgerItems = gridState?.options?.actions || []
   const [isShowPopup, setShowPopup] = useState(false)
   const [popupAction, setPopupAction] = useState<{ row: TRowItem, popup: PopupActionProps, params: any, handler: string } | null>(null)
+
+  const pagination = useMemo(() => {
+    if (slice.pagination) {
+      return { ...slice.pagination, onNavigate }
+    }
+  }, [onNavigate, slice.pagination])
 
   const onCellClick = useCallback((cell: TCellItem) => {
     if (process.env.NODE_ENV === "production") {
@@ -184,10 +189,7 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         burgerItems={burgerItems}
         onBurgerItemClick={handleBurgerClick}
         onCellClick={onCellClick}
-        pagination={{
-          ...slice.pagination as PaginationProps,
-          onNavigate
-        }}
+        pagination={pagination}
       />
     </>
   );

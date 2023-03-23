@@ -19,7 +19,7 @@ interface IState {
   isError: boolean;
   grid: IGridState;
   schema: TRawColumnItem[]
-  pagination: PaginationProps
+  pagination?: PaginationProps
 }
 
 export interface IGridState {
@@ -42,11 +42,7 @@ const initialState: IState = {
   isLoading: true,
   isError: false,
   grid: {},
-  schema: [],
-  pagination: {
-    totalCount: 100,
-    currentPage: 1
-  }
+  schema: []
 };
 
 export const mainSlice = createSlice({
@@ -85,6 +81,7 @@ export const mainSlice = createSlice({
       state.pagination = payload
     },
     setPage: (state, { payload }) => {
+      // @ts-ignore
       state.pagination.currentPage = payload
     }
   },
