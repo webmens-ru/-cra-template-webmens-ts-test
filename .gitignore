@@ -24,3 +24,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 public/index.html
+.idea/-cra-template-webmens-ts-test.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
