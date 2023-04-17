@@ -13,10 +13,20 @@ export interface MainFormProps {
   entity: string, 
   action?: string, 
   id?: any,
-  canToggleMode?: boolean
+  canToggleMode?: boolean,
+  defaultValue?: any,
 }
 
-export default function MainForm({width = "100%", mode = "view", entity, action = "update", id = 0, canToggleMode = true}: MainFormProps) {
+export default function MainForm(
+    {
+      width = "100%",
+      mode = "view",
+      entity,
+      action = "update",
+      id = 0,
+      canToggleMode = true,
+      defaultValue = {}
+    }: MainFormProps) {
   const [getValues] = useLazyGetFormValuesQuery()
   const formFields = useGetFormFieldsQuery(entity);
   const validation = useGetValidationQuery(entity);
@@ -26,13 +36,18 @@ export default function MainForm({width = "100%", mode = "view", entity, action 
 
   useEffect(() => {
     if (id == 0 || action === "create") {
-      setForm({ values: {}, isLoading: false })
+      if(defaultValue){
+        setForm({ values: defaultValue, isLoading: false })
+      }else{
+        setForm({ values: {}, isLoading: false })
+      }
+
     } else {
       getValues({ entity, id }).then((response: { data: FormValues; }) => {
         setForm({ values: response.data, isLoading: false })
       })
     }
-  }, [action, entity, getValues, id])
+  }, [action, entity, getValues, id, defaultValue])
   
   const handleFormSubmit = (form: FormValues) => {
     console.log(form);

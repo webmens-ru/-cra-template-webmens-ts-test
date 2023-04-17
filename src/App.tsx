@@ -17,13 +17,14 @@ function App() {
         case "mainDetail":
           return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
         case "mainForm":
+          console.log(opt)
           if ('params' in opt) {
             opt = {
               ...opt,
               ...opt.params
             };
           }
-          return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode}/>;
+          return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode} defaultValue={opt?.defaultValue}/>;
         case "mainPlacement":
           return <MainPlacement entity={opt.entity} parentId={opt.parentId}/>;
         default:
