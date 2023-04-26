@@ -1,6 +1,6 @@
 import {Form, Loader} from "@webmens-ru/ui_lib";
 import {FormMode, FormValues} from "@webmens-ru/ui_lib/dist/components/form/types";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useCallback} from "react";
 import {axiosInst} from "../../app/api/baseQuery";
 import {
     useGetFormFieldsQuery,
@@ -44,20 +44,23 @@ export default function MainForm(
             } else {
                 setForm({values: {}, isLoading: false})
             }
-
-        } else {
+        }else{
             getValues({entity, id}).then((response: { data: FormValues; }) => {
                 setForm({values: response.data, isLoading: false})
             })
         }
-    }, [action, entity, getValues, id, defaultValue])
+    }, [action, entity, id, getValues])
 
-    const handleFormSubmit = (form: FormValues) => {
-        const url = (action === "create") ? `${entity}/${action}` : `${entity}/${action}?id=${form.id}`
+    const handleFormSubmit = (formValues: FormValues) => {
+        const url = (action === "create") ? `${entity}/${action}` : `${entity}/${action}?id=${formValues.id}`
+        setForm({values:formValues, isLoading: true})
+        console.log(form.isLoading)
         return axiosInst({
             url: url,
             method: "POST",
-            data: form,
+            data: formValues,
+        }).then(()=>{
+            setForm({values:formValues, isLoading: false})
         })
     }
 
