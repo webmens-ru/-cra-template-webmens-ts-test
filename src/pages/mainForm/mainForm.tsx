@@ -61,7 +61,11 @@ export default function MainForm(
             data: formValues,
         }).then(()=>{
             setForm({values:formValues, isLoading: false})
-        })
+        }).catch(
+            ()=>{
+                setForm({values:formValues, isLoading: false})
+            }
+        )
     }
 
     const handleAfterSubmit = () => {
