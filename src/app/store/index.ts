@@ -1,6 +1,7 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { mainApi } from "../../pages/main/mainApi";
 import { mainSlice } from "../../pages/main/mainSlice";
+import { mainCardApi } from "../../pages/mainCard/mainCardApi";
 import { mainDetailApi } from "../../pages/mainDetail/mainDetailApi";
 import { mainDetailSlice } from "../../pages/mainDetail/mainDetailSlice";
 import { mainFormApi } from "../../pages/mainForm/mainFormApi";
@@ -16,12 +17,14 @@ export const store = configureStore({
     [mainPlacementApi.reducerPath]: mainPlacementApi.reducer,
     [mainDetailApi.reducerPath]: mainDetailApi.reducer,
     [mainFormApi.reducerPath]: mainFormApi.reducer,
+    [mainCardApi.reducerPath]: mainCardApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(mainApi.middleware)
       .concat(mainPlacementApi.middleware)
       .concat(mainDetailApi.middleware)
+      .concat(mainCardApi.middleware)
 });
 
 export type AppDispatch = typeof store.dispatch;

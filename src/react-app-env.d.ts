@@ -5,7 +5,7 @@ declare global {
   type TPlacementOptions = {
     handler?: string;
     type: string; //TODO: Конкретные значения
-    title: string | number;
+    title: string;
     params?: any;
     // action: string;
     entity: string;

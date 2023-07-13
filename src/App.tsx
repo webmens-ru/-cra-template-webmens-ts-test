@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Main } from "./pages/main";
+import MainCard from "./pages/mainCard/MainCard";
 import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
@@ -26,7 +27,11 @@ function App() {
           }
           return <MainForm mode={opt.mode} entity={opt.entity} action={opt.action} id={opt?.id} canToggleMode={opt?.canToggleMode} defaultValue={opt?.defaultValue}/>;
         case "mainPlacement":
-          return <MainPlacement entity={opt.entity} parentId={opt.parentId}/>;
+          return <MainPlacement entity={opt.entity} parentId={opt.parentId} />;
+        case "mainCard":
+        case "mainCardChildren":
+          // return <MainCard entity={opt.entity} parentId={opt.id} menuId={opt.menuId} path={opt.path} title={opt.title} />
+          return <MainCard entity={"this-year-form"} parentId={86} menuId={7} path={opt.path} />
         default:
           return <Main menuId={opt.menuId}/>
       }
@@ -49,6 +54,8 @@ function App() {
     for (let i = 0; i < pathArr.length; i += 2) {
       pathObj[pathArr[i]] = pathArr[i + 1];
     }
+
+    console.log(pathObj)
 
     return switchPath(pathObj);
   }
