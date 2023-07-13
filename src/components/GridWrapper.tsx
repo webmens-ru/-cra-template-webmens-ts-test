@@ -1,12 +1,14 @@
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
+import { Grid2 as Grid, Loader, Toolbar, useNotification } from "@webmens-ru/ui_lib";
 import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
+import { AxiosError } from "axios";
 import { useCallback, useMemo, useState } from "react";
 import { axiosInst } from "../app/api/baseQuery";
+import { ErrorResponse } from "../app/model/query";
 import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
@@ -34,6 +36,7 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
   const burgerItems = gridState?.options?.actions || []
   const [isShowPopup, setShowPopup] = useState(false)
   const [popupAction, setPopupAction] = useState<{ row: TRowItem, popup: PopupActionProps, params: any, handler: string } | null>(null)
+  const [notificationContext, notificationApi] = useNotification()
 
   const pagination = useMemo(() => {
     if (slice.pagination) {
@@ -137,7 +140,14 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
   const handlePopupSubmit = (values?: FormValues) => {
     if (popupAction) {
       const body = { [rowKey]: popupAction.row[rowKey], form: values }
-      return axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+      return axiosInst
+        .post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+        .catch((err: AxiosError<ErrorResponse>) => {
+          setShowPopup(false)
+          if (err.response?.data && "notification" in err.response.data) {
+            notificationApi.show(err.response.data.notification)
+          }
+        })
     } else {
       return Promise.all([])
     }
@@ -163,6 +173,7 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
 
   return (
     <>
+      {notificationContext}
       {(isShowPopup && popupAction) && (
         <PopupAction
           {...popupAction.popup}
