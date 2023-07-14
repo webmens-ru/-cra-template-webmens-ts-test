@@ -30,8 +30,8 @@ function App() {
           return <MainPlacement entity={opt.entity} parentId={opt.parentId} />;
         case "mainCard":
         case "mainCardChildren":
-          // return <MainCard entity={opt.entity} parentId={opt.id} menuId={opt.menuId} path={opt.path} title={opt.title} />
-          return <MainCard entity={"this-year-form"} parentId={86} menuId={7} path={opt.path} />
+          return <MainCard entity={opt.params.entity} parentId={opt.id} menuId={opt.params.menuId} path={opt.path} form={opt.params} />
+          // return <MainCard entity={"this-year-form"} parentId={86} menuId={7} path={opt.path} />
         default:
           return <Main menuId={opt.menuId}/>
       }
