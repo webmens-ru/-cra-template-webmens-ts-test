@@ -20,6 +20,7 @@ export interface MainFormProps {
   id?: any,
   canToggleMode?: boolean,
   defaultValue?: any,
+  closeSliderOnSubmit?: boolean,
   onAfterSubmit?: (values: any) => void;
 }
 
@@ -32,6 +33,7 @@ export default function MainForm(
     action = "update",
     id = 0,
     canToggleMode = true,
+    closeSliderOnSubmit = true,
     defaultValue = {},
     onAfterSubmit = () => {}
   }: MainFormProps) {
@@ -50,10 +52,15 @@ export default function MainForm(
 
     const url = (action === "create") ? `${entity}/${action}` : `${entity}/${action}?id=${formValues.id}`
     const submitRequest = axiosInst.post(url, formValues)
-      .then(() => {
-        setForm({ values: formValues, isLoading: false })
+      .then((response) => {
+        const values = {
+          ...formValues,
+          id: action === "create" ? response.data.id : formValues.id
+        }
+        
+        setForm({ values, isLoading: false })
         setSubmitError({ error: false, data: undefined })
-        onAfterSubmit(formValues)
+        onAfterSubmit(values)
       }).catch(({ response }: AxiosError<ErrorResponse>) => {
         setForm({ values: formValues, isLoading: false })
         setSubmitError({ error: true, data: response?.data })
@@ -63,7 +70,8 @@ export default function MainForm(
   }
 
   const handleAfterSubmit = () => {
-    if (!submitError.error && process.env.NODE_ENV === "production") {
+    console.log(submitError, closeSliderOnSubmit)
+    if (!submitError.error && closeSliderOnSubmit && process.env.NODE_ENV === "production") {
       BX24.closeApplication()
     } else if (submitError.data && submitError.data.notification) {
       notificationApi.show(submitError.data.notification)
@@ -72,7 +80,7 @@ export default function MainForm(
 
   useEffect(() => {
     if (id !== 0 && action !== "create") {
-      setForm({ values: {}, isLoading: true })
+      setForm({ ...form, isLoading: true })
       getValues({ entity, id }).then((response: { data: FormValues; }) => {
         setForm({ values: response.data, isLoading: false })
       })

@@ -1,4 +1,5 @@
 import { Loader, Menu } from "@webmens-ru/ui_lib";
+import { FormMode } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { useMenuData } from "../../app/hooks/useMenuData";
 import MainForm, { MainFormProps } from "../mainForm/mainForm";
@@ -17,15 +18,22 @@ interface MainCardProps {
 }
 
 export default function MainCard(props: MainCardProps) {
-  const { data: title } = useGetPageTitleQuery({ id: props.parentId, entity: props.entity })
+  const [parentId, setParentId] = useState(props.parentId)
+  const [currentTab, setCurrentTab] = useState<any>(null)
+  const [onCreateState, setOnCreateState] = useState<boolean>(!parentId)
+  const [formMode, setFormMode] = useState<FormMode>(onCreateState ? "edit" : props.form?.mode || "view")
+
+  const { data: title } = useGetPageTitleQuery({ id: parentId, entity: props.entity })
   const [getActionButtons, actionButtons] = useLazyGetActionButtonsQuery()
   const { tabs, setTab } = useMenuData(props.menuId);
 
-  const [currentTab, setCurrentTab] = useState<any>(null)
-  const [onCreateState, setOnCreateState] = useState<boolean>(!props.parentId)
+  const handleFormSubmit = (values: any) => {
+    setOnCreateState(false)
+    setFormMode("view")
 
-  const handleFormSubmit = () => {
-
+    if ("id" in values) {
+      setParentId(values.id)
+    }
   }
 
   const renderContentByPath = useCallback(() => {
@@ -40,23 +48,25 @@ export default function MainCard(props: MainCardProps) {
             height="80%"
             {...props.form}
             entity={props.entity}
-            id={props.parentId}
+            id={parentId}
+            action={parentId ? "update" : "create"}
+            mode={formMode}
             onAfterSubmit={handleFormSubmit}
           />
         )
       case "mainCardChildren":
-        return <MainPlacement entity={currentTab.params.entity} parentId={props.parentId} />
+        return <MainPlacement entity={currentTab.params.entity} parentId={parentId} />
       default:
         // TODO: Вернуть текст с ошибкой
         return "error"
     }
-  }, [currentTab, props.entity, props.form, props.parentId, tabs.isLoading])
+  }, [currentTab, formMode, parentId, props.entity, props.form, tabs.isLoading])
 
   useLayoutEffect(() => {
-    if (props.parentId) {
-      getActionButtons({ entity: props.entity, id: props.parentId })
+    if (parentId) {
+      getActionButtons({ entity: props.entity, id: parentId })
     }
-  }, [getActionButtons, props.entity, props.parentId])
+  }, [getActionButtons, props.entity, parentId])
 
   useEffect(() => {
     if (tabs.isSuccess) {
