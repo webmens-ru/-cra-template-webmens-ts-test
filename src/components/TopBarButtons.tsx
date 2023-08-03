@@ -1,17 +1,17 @@
-import {Button} from "@webmens-ru/ui_lib";
-import {FormValues} from "@webmens-ru/ui_lib/dist/components/form/types";
-import {TRowID} from "@webmens-ru/ui_lib/dist/components/grid";
-import {TRawColumnItem, TRowItem} from "@webmens-ru/ui_lib/dist/components/grid_2";
-import {useEffect, useState} from "react";
+import { Button } from "@webmens-ru/ui_lib";
+import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
+import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TRawColumnItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import {axiosInst} from "../app/api/baseQuery";
-import {IGridState} from "../pages/main";
+import { axiosInst } from "../app/api/baseQuery";
+import { IGridState } from "../pages/main";
 import {
     useLazyGetButtonAddQuery,
     useLazyGetDynamicButtonItemsQuery,
     useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
-import PopupAction, {PopupActionProps} from "./PopupAction";
+import PopupAction, { PopupActionProps } from "./PopupAction";
 
 interface ITopBarButtonsProps {
     involvedState: {
@@ -22,6 +22,7 @@ interface ITopBarButtonsProps {
     };
     excelTitle?: string;
     entity?: string;
+    parentId?: string | number;
     onCloseSlider?: () => void;
     onClosePopup?: () => void;
 }
@@ -45,7 +46,7 @@ interface IActionItemParams {
     allowActionIsSelectedEmpty?: false;
 }
 
-export function TopBarButtons({involvedState, excelTitle, entity, onCloseSlider, onClosePopup}: ITopBarButtonsProps) {
+export function TopBarButtons({involvedState, excelTitle, entity, parentId: propParentId, onCloseSlider, onClosePopup}: ITopBarButtonsProps) {
     const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
     const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
     const [sendData] = useSendDataOnButtonClickMutation();
@@ -55,11 +56,12 @@ export function TopBarButtons({involvedState, excelTitle, entity, onCloseSlider,
 
     useEffect(() => {
         if (entity) {
-            getItems(entity);
+            getItems({ entity, parentId: propParentId });
             getButtonAdd({entity, parentId});
         }
-    }, [getItems, getButtonAdd, entity, parentId]);
+    }, [getItems, getButtonAdd, entity, parentId, propParentId]);
 
+    // TODO: Добавить обработку gridEmpty
     const itemClickHandler = async (item: IActionItem) => {
         let body = item.params?.allowActionIsSelectedEmpty
             ?grid.grid
