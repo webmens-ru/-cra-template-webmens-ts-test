@@ -42,6 +42,7 @@ interface IActionItemParams {
     popup?: PopupActionProps;
     columns: string[];
     updateOnCloseSlider?: boolean;
+    allowActionIsSelectedEmpty?: false;
 }
 
 export function TopBarButtons({involvedState, excelTitle, entity, onCloseSlider, onClosePopup}: ITopBarButtonsProps) {
@@ -60,7 +61,9 @@ export function TopBarButtons({involvedState, excelTitle, entity, onCloseSlider,
     }, [getItems, getButtonAdd, entity, parentId]);
 
     const itemClickHandler = async (item: IActionItem) => {
-        let body = grid.grid!.filter((row) => {
+        let body = item.params?.allowActionIsSelectedEmpty
+            ?grid.grid
+            :grid.grid!.filter((row) => {
             const id = typeof row.id === "object" ? row.id.title : row.id;
             return checkboxes.includes(id);
         })
@@ -72,12 +75,12 @@ export function TopBarButtons({involvedState, excelTitle, entity, onCloseSlider,
             ));
         }
 
-        if (item.params && item.params.popup && body.length) {
+        if (item.params && item.params.popup && body?.length) {
             setShowPopup(true);
             setPopupAction({grid: body, params: item.params, handler: item.handler});
         }
 
-        if (body.length && !item.params?.popup) {
+        if (body?.length && !item.params?.popup) {
             if (item.params?.output?.type === "blob") {
                 const response = await axiosInst.post(item.handler, body, {
                     responseType: item.params.output.type
