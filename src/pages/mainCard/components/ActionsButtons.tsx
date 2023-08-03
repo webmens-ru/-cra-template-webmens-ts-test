@@ -10,10 +10,11 @@ import { useSendDataOnButtonClickMutation } from "../../main";
 interface ActionButtonsProps {
   actions: Array<ActionButton>;
   disabled?: boolean;
+  parentId?: string | number;
   onClosePopup?: () => void
 }
 
-export default function ActionButtons({ actions, disabled, onClosePopup }: ActionButtonsProps) {
+export default function ActionButtons({ actions, disabled, parentId, onClosePopup }: ActionButtonsProps) {
   const [sendData] = useSendDataOnButtonClickMutation();
   const [notificationContext, notificationApi] = useNotification()
 
@@ -29,7 +30,7 @@ export default function ActionButtons({ actions, disabled, onClosePopup }: Actio
     }
 
     if (!item.params?.popup) {
-      await sendData({ url: item.handler, body: {} })
+      await sendData({ url: item.handler, body: { parentId } })
         .then((response: any) => {
           if (response.data && response.data.notification)
             notificationApi.show(response.data.notification)
@@ -42,7 +43,7 @@ export default function ActionButtons({ actions, disabled, onClosePopup }: Actio
 
   const handlePopupSubmit = (values?: FormValues) => {
     if (popupAction) {
-      const body = { form: values }
+      const body = { form: values, parentId }
       return axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
     } else {
       return Promise.all([])

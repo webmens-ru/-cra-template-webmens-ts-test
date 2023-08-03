@@ -42,6 +42,7 @@ export function TopBar({ parentId, onCloseSlider, onClosePopup } : ITopBarProps)
         involvedState={mainPlacementSlice} 
         entity={mainPlacementSlice.entity} 
         excelTitle={mainPlacementSlice.title}
+        parentId={parentId}
         onCloseSlider={onCloseSlider}
         onClosePopup={onClosePopup}
       />
