@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import { GridWrapper } from "../../components/GridWrapper";
 import { TopBar } from "./components/TopBar";
 import { usePlacementData } from "./hooks/usePlacementData";
+import {MainContainer, setPage} from "../main";
+import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 
 export interface MainPlacementProps {
   entity: string,
@@ -30,22 +32,31 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
   }, [dispatch, entity, getTitle, parentId])
 
   return (
-    <>
-      <TopBar
-        parentId={parentId}
-        onCloseSlider={reload}
-        onClosePopup={reload}
-      />
-      <GridWrapper
-        slice={mainPlacementSlice}
-        api={mainPlacementApi}
-        onShemaMutation={schemaMutation}
-        checkboxesSetter={setCheckboxes}
-        schemaSetter={setSchema}
-        filterSetter={setFilterResponse}
-        onCloseSlider={reload}
-        onClosePopup={reload}
-      />
-    </>
+      <>
+        {parentId ? (
+            <>
+              <TopBar
+                  parentId={parentId}
+                  onCloseSlider={reload}
+                  onClosePopup={reload}
+              />
+              <GridWrapper
+                  slice={mainPlacementSlice}
+                  api={mainPlacementApi}
+                  onShemaMutation={schemaMutation}
+                  checkboxesSetter={setCheckboxes}
+                  schemaSetter={setSchema}
+                  filterSetter={setFilterResponse}
+                  onCloseSlider={reload}
+                  onClosePopup={reload}
+              />
+            </>
+        ) : (
+            <MainContainer>
+              <img src={webmensLogo} alt="webmens logo" />
+            </MainContainer>
+        )}
+      </>
+
   );
 }
