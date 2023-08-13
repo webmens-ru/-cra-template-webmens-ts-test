@@ -19,9 +19,9 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
   const [getTitle] = useLazyGetTitleQuery()
   const { reload } = usePlacementData({ entity, parentId });
   
-  if (process.env.NODE_ENV === "production") {
-    BX24.resizeWindow(window.innerWidth, 850);
-  }
+  // if (process.env.NODE_ENV === "production") {
+  //   BX24.resizeWindow(window.innerWidth, 850);
+  // }
 
   useEffect(() => {
     dispatch(setEntity(entity));

@@ -7,14 +7,14 @@ import MainPlacement from "./pages/mainPlacement/MainPlacement";
 
 function App() {
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
-      const size = BX24.getScrollSize()
-      BX24.resizeWindow(size.scrollWidth, size.scrollHeight - 5)
-    }
+    // if (process.env.NODE_ENV === "production") {
+    //   const size = BX24.getScrollSize()
+    //   BX24.resizeWindow(size.scrollWidth, size.scrollHeight - 5)
+    // }
   }, [])
 
-  const stringToBoolean = (value?: string) => {
-    if (value === undefined || value === null) return value
+  const stringToBoolean = (value?: string|boolean) => {
+    if (value === undefined || value === null|| value === true|| value === false ) return value
 
     return value === "true"
   }
@@ -54,7 +54,13 @@ function App() {
               entity={opt.params.entity}
               menuId={opt.params.menuId}
               path={opt.path}
-              form={{ entity: opt.params.entity, mode: opt.params.mode, action: opt.params.action, canToggleMode: stringToBoolean(opt.params.canToggleMode), closeSliderOnSubmit: stringToBoolean(opt.params.closeSliderOnSubmit) }}
+              form={{
+                entity: opt.params.entity,
+                mode: opt.params.mode,
+                action: opt.params.action,
+                canToggleMode: stringToBoolean(opt.params.canToggleMode),
+                closeSliderOnSubmit: stringToBoolean(opt.params.closeSliderOnSubmit)
+              }}
             />
           )
         default:
