@@ -6,6 +6,7 @@ import MainForm from "./pages/mainForm/mainForm";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
 
 function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
+  console.log(placementOptions)
   useEffect(() => {
     // if (process.env.NODE_ENV === "production") {
     //   const size = BX24.getScrollSize()
@@ -20,7 +21,7 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
   }
 
   const switchPath = (opt: TPlacementOptions) => {
-    console.log(opt.path)
+
     try {
       switch (opt.path) {
         case "mainDetail":
