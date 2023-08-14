@@ -72,7 +72,7 @@ export default function MainForm(
   const handleAfterSubmit = () => {
     console.log(submitError, closeSliderOnSubmit)
     if (!submitError.error && closeSliderOnSubmit && process.env.NODE_ENV === "production") {
-      BX24.closeApplication()
+      // BX24.closeApplication()
     } else if (submitError.data && submitError.data.notification) {
       notificationApi.show(submitError.data.notification)
     }

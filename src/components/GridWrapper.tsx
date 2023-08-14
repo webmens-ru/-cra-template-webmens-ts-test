@@ -56,14 +56,14 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
 
       switch (cell.type) {
         case "openPath":
-          BX24.openPath(cell.link, (res: any) => console.log(res));
-          break;
+          // BX24.openPath(cell.link, (res: any) => console.log(res));
+          // break;
         case "openApplication":
-          BX24.openApplication(cell, function () {
-            if (cell.updateOnCloseSlider && onCloseSlider) {
-              onCloseSlider()
-            }
-          });
+          // BX24.openApplication(cell, function () {
+          //   if (cell.updateOnCloseSlider && onCloseSlider) {
+          //     onCloseSlider()
+          //   }
+          // });
           break;
         case "openLink":
           window.open(cell.link);

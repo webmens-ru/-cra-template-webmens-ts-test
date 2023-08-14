@@ -19,15 +19,15 @@ export function GridWrapper() {
       
       switch (cell.type) {
         case "openPath":
-          BX24.openPath(cell.link, (res: any) => console.log(res));
+          // BX24.openPath(cell.link, (res: any) => console.log(res));
           break;
         case "openApplication":
-          BX24.openApplication(cell, function() {
-            if (cell.updateOnCloseSlider) {
-              // dispatch(setTimeSliderOpened(Date.now()))
-              // TODO: Сделать функцию в хуке useData по вызову обновления
-            }
-          });
+          // BX24.openApplication(cell, function() {
+          //   if (cell.updateOnCloseSlider) {
+          //     // dispatch(setTimeSliderOpened(Date.now()))
+          //     // TODO: Сделать функцию в хуке useData по вызову обновления
+          //   }
+          // });
           break;
         case "openLink":
           window.open(cell.link);

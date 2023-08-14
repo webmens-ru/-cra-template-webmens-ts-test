@@ -156,18 +156,18 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
         if (process.env.NODE_ENV === "production") {
             switch (buttonAdd.data?.params.type) {
                 case "openPath":
-                    BX24.openPath(buttonAdd.data?.params.link, function () {
-                        if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
-                            onCloseSlider();
-                        }
-                    });
+                    // BX24.openPath(buttonAdd.data?.params.link, function () {
+                    //     if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+                    //         onCloseSlider();
+                    //     }
+                    // });
                     break;
                 case "openApplication":
-                    BX24.openApplication(buttonAdd.data?.params, function () {
-                        if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
-                            onCloseSlider();
-                        }
-                    });
+                    // BX24.openApplication(buttonAdd.data?.params, function () {
+                    //     if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+                    //         onCloseSlider();
+                    //     }
+                    // });
                     break;
                 case "openLink":
                     window.open(buttonAdd.data?.params.link);

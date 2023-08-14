@@ -10,7 +10,7 @@ export const useSetTab = (dispatch: (act: Action) => void) => {
         break;
       case 'openPath':
         if (process.env.NODE_ENV === 'production') {
-          BX24.openPath(item.params.url);
+          // BX24.openPath(item.params.url);
         } else {
           window.open(item.params.url, '_blank')?.focus();
         }
@@ -20,7 +20,7 @@ export const useSetTab = (dispatch: (act: Action) => void) => {
         break;
       case 'openApplication':
         if (process.env.NODE_ENV === 'production') {
-          BX24.openApplication(item.params);
+          // BX24.openApplication(item.params);
         } else {
           let url = '';
           for (const [key, value] of Object.entries(item.params)) {
