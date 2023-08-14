@@ -51,14 +51,20 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
   }, [onNavigate, slice.pagination])
 
   const onCellClick = useCallback((cell: TCellItem) => {
-    if (process.env.NODE_ENV === "production") {
+    // if (process.env.NODE_ENV === "production") {
       console.log(cell);
-
+      let sliderProps: SliderProps = {}
       switch (cell.type) {
         case "openPath":
           // BX24.openPath(cell.link, (res: any) => console.log(res));
           // break;
         case "openApplication":
+          console.log(62)
+          sliderProps = {
+            type: "content",
+            placementOptions: { ...cell }
+          }
+          setShowSlider(true);
           // BX24.openApplication(cell, function () {
           //   if (cell.updateOnCloseSlider && onCloseSlider) {
           //     onCloseSlider()
@@ -71,11 +77,13 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         default:
           break;
       }
-    } else if (cell.type === "openLink") {
-      window.open(cell.link);
-    } else {
-      console.log(cell);
-    }
+
+
+    // } else if (cell.type === "openLink") {
+    //   window.open(cell.link);
+    // } else {
+    //   console.log(cell);
+    // }
   }, [onCloseSlider]);
 
   const handleBurgerClick = (item: BurgerItem, row: TRowItem) => {
