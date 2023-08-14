@@ -5,7 +5,7 @@ import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
 
-function App() {
+function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
   useEffect(() => {
     // if (process.env.NODE_ENV === "production") {
     //   const size = BX24.getScrollSize()
@@ -72,7 +72,7 @@ function App() {
     }
   };
 
-  return switchPath(window._PARAMS_.placementOptions);
+  return switchPath(placementOptions || window._PARAMS_.placementOptions);
 
   // if (process.env.NODE_ENV === "production") {
   //   return switchPath(window._PARAMS_.placementOptions);

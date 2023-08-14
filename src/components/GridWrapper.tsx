@@ -13,6 +13,7 @@ import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
 import PopupAction, { PopupActionProps } from "./PopupAction";
+import { Slider, SliderProps } from "./slider";
 
 // TODO: Изучить типизацию redux-toolkit
 interface IGridWrapperProps {
@@ -34,8 +35,13 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
   const gridState = slice.grid
   const rowKey = gridState?.options?.key || "id"
   const burgerItems = gridState?.options?.actions || []
+
+  const [selectedBurgerItem, setSelectedBurgerItem] = useState<any>()
   const [isShowPopup, setShowPopup] = useState(false)
   const [popupAction, setPopupAction] = useState<{ row: TRowItem, popup: PopupActionProps, params: any, handler: string } | null>(null)
+  const [showSlider, setShowSlider] = useState(false)
+  const [sliderProps, setSliderProps] = useState({})
+
   const [notificationContext, notificationApi] = useNotification()
 
   const pagination = useMemo(() => {
@@ -73,36 +79,43 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
   }, [onCloseSlider]);
 
   const handleBurgerClick = (item: BurgerItem, row: TRowItem) => {
+    let sliderProps: SliderProps = {}
     const rowID = row[rowKey]
     let id = rowID;
     if (typeof rowID == 'object') {
       id = rowID.title;
     }
 
-    new Promise<void>((resolve) => {
-      switch (item.type) {
-        case "openApplication":
-          BX24.openApplication({ ...item.params, [rowKey]: id }, resolve);
-          break;
-        case "openApplicationPortal":
-          // @ts-ignore
-          BX24.openApplication({ ...item.params, handler: item.params.handler.replace("{id}", id), [rowKey]: id, route: "portal" }, resolve)
-          break;
-        case "openPath":
-          BX24.openPath(item.handler.replace("{id}", id), resolve)
-          break;
-        case "trigger":
-          if (item.params.popup) {
-            setShowPopup(true)
-            setPopupAction({ popup: item.params.popup, row, params: item.params, handler: item.handler })
-          }
-          break;
-      }
-    }).then(() => {
-      if (item.params.updateOnCloseSlider && onCloseSlider) {
-        onCloseSlider()
-      }
-    })
+    switch (item.type) {
+      case "openApplication":
+        sliderProps = {
+          type: "content",
+          placementOptions: { ...item.params, [rowKey]: id }
+        }
+        break;
+      case "openApplicationPortal":
+        // @ts-ignore
+        sliderProps = {
+          type: "content",
+          placementOptions: { ...item.params, handler: item.params.handler.replace("{id}", id), [rowKey]: id, route: "portal" }
+        }
+        break;
+      case "openPath":
+        sliderProps = {
+          type: "iframe",
+          typeParams: { iframeUrl: item.handler.replace("{id}", id) }
+        }
+        break;
+      case "trigger":
+        if (item.params.popup) {
+          setShowPopup(true)
+          setPopupAction({ popup: item.params.popup, row, params: item.params, handler: item.handler })
+        }
+        break;
+    }
+
+    setSelectedBurgerItem(item)
+    setSliderProps(sliderProps)
   }
 
   const handleSchemaMutation = (schema: any) => {
@@ -167,6 +180,14 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
     }
   }
 
+  const handleCloseSlider = () => {
+    setShowSlider(false)
+
+    if (selectedBurgerItem.params.updateOnCloseSlider && onCloseSlider) {
+      onCloseSlider()
+    }
+  }
+
   const calcHeight = (gridState?.header?.blocks) ? 190 : 160;
 
   if (slice.isLoading) return <Loader />;
@@ -189,6 +210,11 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
           onMetricLinkClick={handleMetricLink}
         />
       )}
+      <Slider
+        {...sliderProps}
+        show={showSlider}
+        onClose={handleCloseSlider}
+      />
       <Grid
         columns={slice.schema}
         rows={gridState?.grid}
