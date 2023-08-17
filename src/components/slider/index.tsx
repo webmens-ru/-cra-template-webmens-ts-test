@@ -1,8 +1,8 @@
 import { BodyPortal } from "@webmens-ru/ui_lib";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
-import App from "../../App";
-import { SliderCloseBlock, SliderContainer, SliderContent, SliderIframeContainer } from "./styles";
+import { IframePostForm, SliderCloseBlock, SliderContainer, SliderContent, SliderIframeContainer } from "./styles";
+import { createIframeFields } from "./utils";
 
 export type SliderContentType = "content" | "iframe"
 
@@ -25,6 +25,7 @@ export const DEFAULT_ZINDEX = 2000
 
 export function Slider({ type = "iframe", show, width = "600px", title, timeout = 300, typeParams, placementOptions, onClose }: SliderProps) {
   const cssRef = useRef(null)
+  const formIframeRef = useRef<HTMLFormElement>(null)
 
   const zIndex = useMemo((): number => {
     const root = document.querySelectorAll("#wm-slider-root")
@@ -37,6 +38,19 @@ export function Slider({ type = "iframe", show, width = "600px", title, timeout 
 
     return zIndex
   }, [show])
+
+  useEffect(() => {
+    if (type === "iframe" && typeParams?.iframeUrl && formIframeRef.current) {
+
+      for (let [name, value] of Object.entries(placementOptions)) {
+        console.log(name, value)
+        createIframeFields(name, value as any, formIframeRef.current)
+      }
+      
+      formIframeRef.current.submit()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placementOptions, type, typeParams?.iframeUrl])
 
   return (
     <BodyPortal container={ROOT_ID} >
@@ -51,11 +65,18 @@ export function Slider({ type = "iframe", show, width = "600px", title, timeout 
             <SliderCloseBlock timeout={timeout} children={title} onClick={onClose} />
             {show && (
               <SliderContent type={type}>
-                {type === "iframe" && (
-                  <SliderIframeContainer src={typeParams?.iframeUrl} />
+                {(type === "iframe" && typeParams?.iframeUrl) && (
+                  <IframePostForm
+                    ref={formIframeRef}
+                    action={typeParams.iframeUrl}
+                    method="post"
+                    target="wm-slider-iframe"
+                  >
+                    <SliderIframeContainer name="wm-slider-iframe" />
+                  </IframePostForm>
                 )}
-                {(type === "content") && (
-                  <App placementOptions={placementOptions} />
+                {(type === "content" && typeParams?.content) && (
+                  <>{ typeParams.content }</>
                 )}
               </SliderContent>
             )}

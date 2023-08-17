@@ -1,21 +1,24 @@
-export function createRootEl(containerId: string): HTMLElement {
-  const rootEl = document.createElement("div")
-  const offsetHeight = document.documentElement.offsetHeight
+export const createIframeFields = (name: string, value: string | number | Object, root: HTMLFormElement | null, parentName?: string) => {
+  if (!root) return
 
-  rootEl.id = containerId
-  rootEl.style.zIndex = "1250"
-  rootEl.style.left = "0"
-  rootEl.style.top = "0"
-  rootEl.style.right = "0"
-  rootEl.style.height = offsetHeight.toString()
+  const newName = parentName ? `${parentName}[${name}]` : name
 
-  return rootEl
-}
+  if (typeof value !== "string" && typeof value !== "number") {
+    const entries = Object.entries(value)
 
-export function getRootEl(containerId: string): HTMLElement {
-  const el = document.getElementById(containerId)
+    for (let [childName, childValue] of entries) {
+      createIframeFields(childName, childValue, root, newName)
+    }
 
-  return el || createRootEl(containerId)
+    return
+  }
+
+  const input = document.createElement("input")
+  input.name = newName
+  input.value = value.toString()
+  input.type = "hidden"
+
+  root.append(input)
 }
 
 export function procentWidthToPx(width: string): string {

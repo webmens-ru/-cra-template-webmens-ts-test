@@ -100,6 +100,11 @@ export const SliderCloseBlock = styled.div.attrs({ className: "close-block" }) <
   } 
 `
 
+export const IframePostForm = styled.form`
+  height: 100%;
+  width: 100%;
+`
+
 export const SliderContent = styled.div<{ type: SliderContentType }>`
   width: 100%;
   height: 100%;
