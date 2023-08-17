@@ -36,7 +36,6 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
   const rowKey = gridState?.options?.key || "id"
   const burgerItems = gridState?.options?.actions || []
 
-  const [selectedBurgerItem, setSelectedBurgerItem] = useState<any>()
   const [isShowPopup, setShowPopup] = useState(false)
   const [popupAction, setPopupAction] = useState<{ row: TRowItem, popup: PopupActionProps, params: any, handler: string } | null>(null)
   const [showSlider, setShowSlider] = useState(false)
@@ -50,41 +49,42 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
     }
   }, [onNavigate, slice.pagination])
 
-  const onCellClick = useCallback((cell: TCellItem) => {
+  const onCellClick = (cell: TCellItem) => {
     // if (process.env.NODE_ENV === "production") {
-      console.log(cell);
-      let sliderProps: SliderProps = {}
-      switch (cell.type) {
-        case "openPath":
-          // BX24.openPath(cell.link, (res: any) => console.log(res));
-          // break;
-        case "openApplication":
-          console.log(62)
-          sliderProps = {
-            type: "content",
-            placementOptions: { ...cell }
-          }
-          setShowSlider(true);
-          // BX24.openApplication(cell, function () {
-          //   if (cell.updateOnCloseSlider && onCloseSlider) {
-          //     onCloseSlider()
-          //   }
-          // });
-          break;
-        case "openLink":
-          window.open(cell.link);
-          break;
-        default:
-          break;
-      }
-
+    let sliderProps: SliderProps = {}
+    switch (cell.type) {
+      case "openPath":
+      // BX24.openPath(cell.link, (res: any) => console.log(res));
+      break;
+      case "openApplication":
+        sliderProps = {
+          type: "iframe",
+          typeParams: { iframeUrl: "https://appv1.taxivisor.ru/app" },
+          placementOptions: { ...cell },
+          // TODO: Добавить обработчик закрытия
+          onClose: () => handleCloseSlider(cell.updateOnCloseSlider)
+        }
+        setSliderProps(sliderProps)
+        setShowSlider(true);
+        // BX24.openApplication(cell, function () {
+        //   if (cell.updateOnCloseSlider && onCloseSlider) {
+        //     onCloseSlider()
+        //   }
+        // });
+        break;
+      case "openLink":
+        window.open(cell.link);
+        break;
+      default:
+        break;
+    }
 
     // } else if (cell.type === "openLink") {
     //   window.open(cell.link);
     // } else {
     //   console.log(cell);
     // }
-  }, [onCloseSlider]);
+  }
 
   const handleBurgerClick = (item: BurgerItem, row: TRowItem) => {
     let sliderProps: SliderProps = {}
@@ -122,7 +122,6 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         break;
     }
 
-    setSelectedBurgerItem(item)
     setSliderProps(sliderProps)
   }
 
@@ -188,10 +187,10 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
     }
   }
 
-  const handleCloseSlider = () => {
+  const handleCloseSlider = (updateOnClose: boolean = true) => {
     setShowSlider(false)
 
-    if (selectedBurgerItem.params.updateOnCloseSlider && onCloseSlider) {
+    if (updateOnClose && onCloseSlider) {
       onCloseSlider()
     }
   }
@@ -221,7 +220,6 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
       <Slider
         {...sliderProps}
         show={showSlider}
-        onClose={handleCloseSlider}
       />
       <Grid
         columns={slice.schema}
