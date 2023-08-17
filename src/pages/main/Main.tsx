@@ -1,9 +1,8 @@
-import { Loader } from "@webmens-ru/ui_lib";
+import { Loader, Menu } from "@webmens-ru/ui_lib";
 import { setCheckboxes, setFilterResponse, setPage, setSchema, useEditRowMutation, useSaveSchemaMutation, useSetTabsMutation } from ".";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { GridWrapper } from "../../components/GridWrapper";
-import { Menu } from "../../components/menu";
 import { TopBar } from "./components/TopBar";
 import { useData } from "./hooks/useData";
 import { useMenuData } from "./hooks/useMenuData";
