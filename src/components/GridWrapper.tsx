@@ -59,8 +59,9 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
       case "openApplication":
         sliderProps = {
           type: "iframe",
-          typeParams: { iframeUrl: "https://appv1.taxivisor.ru/app" },
+          typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
           placementOptions: { ...cell },
+          width:cell.bx24_width,
           // TODO: Добавить обработчик закрытия
           onClose: () => handleCloseSlider(cell.updateOnCloseSlider)
         }
@@ -97,9 +98,15 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
     switch (item.type) {
       case "openApplication":
         sliderProps = {
-          type: "content",
-          placementOptions: { ...item.params, [rowKey]: id }
+          type: "iframe",
+          typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
+          placementOptions: { ...item.params, [rowKey]: id },
+          width: item.params.width,
+          // TODO: Добавить обработчик закрытия
+          onClose: () => handleCloseSlider(item.params.updateOnCloseSlider)
         }
+        setSliderProps(sliderProps)
+        setShowSlider(true);
         break;
       case "openApplicationPortal":
         // @ts-ignore
@@ -122,7 +129,7 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         break;
     }
 
-    setSliderProps(sliderProps)
+    // setSliderProps(sliderProps)
   }
 
   const handleSchemaMutation = (schema: any) => {
