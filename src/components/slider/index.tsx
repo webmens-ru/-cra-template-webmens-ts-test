@@ -23,8 +23,7 @@ export interface SliderProps {
 const ROOT_ID = "wm-slider-root"
 export const DEFAULT_ZINDEX = 2000
 
-export function Slider({ type = "iframe", show, width = "600px", title, timeout = 300, typeParams, placementOptions, onClose }: SliderProps) {
-  const formatWidth = (width: string | number): string => typeof width === 'number' ? width + 'px' : width.toString();
+export function Slider({ type = "iframe", show, width = "600px", title, timeout = 300, typeParams, placementOptions, onClose }: SliderProps) {  
   const cssRef = useRef(null)
   const formIframeRef = useRef<HTMLFormElement>(null)
 
@@ -39,6 +38,8 @@ export function Slider({ type = "iframe", show, width = "600px", title, timeout 
 
     return zIndex
   }, [show])
+
+  const formatWidth = (width: string | number): string => typeof width === 'number' ? width + 'px' : width;
 
   useEffect(() => {
     if (type === "iframe" && typeParams?.iframeUrl && formIframeRef.current) {

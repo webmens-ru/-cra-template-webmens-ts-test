@@ -12,7 +12,7 @@ import {
     useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
 import PopupAction, { PopupActionProps } from "./PopupAction";
-import {Slider, SliderProps} from "./slider";
+import { Slider, SliderProps } from "./slider";
 
 interface ITopBarButtonsProps {
     involvedState: {
@@ -55,14 +55,7 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
     const [popupAction, setPopupAction] = useState<{ handler: string, grid?: TRowItem[], params: IActionItemParams } | null>(null)
     const {grid, checkboxes, schema, parentId} = involvedState
     const [showSlider, setShowSlider] = useState(false)
-    const [sliderProps, setSliderProps] = useState({})
-
-    useEffect(() => {
-        if (entity) {
-            getItems({ entity, parentId: propParentId });
-            getButtonAdd({entity, parentId});
-        }
-    }, [getItems, getButtonAdd, entity, parentId, propParentId]);
+    const [sliderProps, setSliderProps] = useState<SliderProps>({})
 
     // TODO: Добавить обработку gridEmpty
     const itemClickHandler = async (item: IActionItem) => {
@@ -236,6 +229,13 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
         setShowPopup(false)
         setPopupAction(null)
     }
+
+    useEffect(() => {
+        if (entity) {
+            getItems({ entity, parentId: propParentId });
+            getButtonAdd({entity, parentId});
+        }
+    }, [getItems, getButtonAdd, entity, parentId, propParentId]);
 
     return (
         <Container>
