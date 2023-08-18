@@ -3,6 +3,7 @@ import { Main } from "./pages/main";
 import MainCard from "./pages/mainCard/MainCard";
 import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
+import MainIframe from "./pages/mainIframe/mainIframe";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
 
 function App() {
@@ -20,9 +21,8 @@ function App() {
   }
 
   const switchPath = (opt: TPlacementOptions) => {
-    console.log(opt.path)
     try {
-      switch (opt.path) {
+      switch (opt?.path) {
         case "mainDetail":
           return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
         case "mainForm":
@@ -57,6 +57,8 @@ function App() {
               form={{ entity: opt.params.entity, mode: opt.params.mode, action: opt.params.action, canToggleMode: stringToBoolean(opt.params.canToggleMode), closeSliderOnSubmit: stringToBoolean(opt.params.closeSliderOnSubmit) }}
             />
           )
+        case "mainIframe":
+          return <MainIframe src={opt.params.link} />
         default:
           return <Main menuId={opt.menuId}/>
       }
@@ -66,27 +68,25 @@ function App() {
     }
   };
 
-  return switchPath(window._PARAMS_.placementOptions);
+  if (process.env.NODE_ENV === "production") {
+    return switchPath(window._PARAMS_.placementOptions);
+  }
+  if (process.env.NODE_ENV === "development") {
+    const pathArr = window.location.pathname
+      .replace("/", "")
+      .split("&")
+      .map((item) => item.split("="))
+      .flat();
+    const pathObj: any = {};
+    for (let i = 0; i < pathArr.length; i += 2) {
+      pathObj[pathArr[i]] = pathArr[i + 1];
+    }
 
-  // if (process.env.NODE_ENV === "production") {
-  //   return switchPath(window._PARAMS_.placementOptions);
-  // }
-  // if (process.env.NODE_ENV === "development") {
-  //   const pathArr = window.location.pathname
-  //     .replace("/", "")
-  //     .split("&")
-  //     .map((item) => item.split("="))
-  //     .flat();
-  //   const pathObj: any = {};
-  //   for (let i = 0; i < pathArr.length; i += 2) {
-  //     pathObj[pathArr[i]] = pathArr[i + 1];
-  //   }
+    console.log(pathObj)
 
-  //   console.log(pathObj)
-
-  //   return switchPath(pathObj);
-  // }
-  // return <Main />;
+    return switchPath(pathObj);
+  }
+  return <Main />;
 }
 
 export default App;

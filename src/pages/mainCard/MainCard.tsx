@@ -3,6 +3,7 @@ import { FormMode } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { useMenuData } from "../../app/hooks/useMenuData";
 import MainForm, { MainFormProps } from "../mainForm/mainForm";
+import MainIframe from "../mainIframe/mainIframe";
 import MainPlacement from "../mainPlacement/MainPlacement";
 import ActionButtons from "./components/ActionsButtons";
 import { useGetPageTitleQuery, useLazyGetActionButtonsQuery } from "./mainCardApi";
@@ -56,6 +57,8 @@ export default function MainCard(props: MainCardProps) {
         )
       case "mainCardChildren":
         return <MainPlacement entity={currentTab.params.entity} parentId={parentId} />
+      case "mainCardIframe":
+        return <MainIframe src={currentTab.params.link} queryParams={{ parentId }} />
       default:
         // TODO: Вернуть текст с ошибкой
         return "error"
