@@ -8,7 +8,7 @@ export type SliderContentType = "content" | "iframe"
 
 export interface SliderProps {
   show?: boolean
-  width?: string
+  width?: string|number
   title?: string
   timeout?: number
   type?: SliderContentType
@@ -24,6 +24,7 @@ const ROOT_ID = "wm-slider-root"
 export const DEFAULT_ZINDEX = 2000
 
 export function Slider({ type = "iframe", show, width = "600px", title, timeout = 300, typeParams, placementOptions, onClose }: SliderProps) {
+  const formatWidth = (width: string | number): string => typeof width === 'number' ? width + 'px' : width.toString();
   const cssRef = useRef(null)
   const formIframeRef = useRef<HTMLFormElement>(null)
 
@@ -59,7 +60,7 @@ export function Slider({ type = "iframe", show, width = "600px", title, timeout 
         timeout={timeout}
         nodeRef={cssRef}
       >
-        <SliderContainer ref={cssRef} width={width} timeout={timeout} zIndex={zIndex}>
+        <SliderContainer ref={cssRef} width ={ formatWidth(width) } timeout={timeout} zIndex={zIndex}>
           <div className="backdrop" onClick={onClose} />
           <div className="content-wrapper">
             <SliderCloseBlock timeout={timeout} children={title} onClick={onClose} />
