@@ -12,6 +12,7 @@ import {
     useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
 import PopupAction, { PopupActionProps } from "./PopupAction";
+import {Slider, SliderProps} from "./slider";
 
 interface ITopBarButtonsProps {
     involvedState: {
@@ -53,6 +54,8 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
     const [isShowPopup, setShowPopup] = useState(false)
     const [popupAction, setPopupAction] = useState<{ handler: string, grid?: TRowItem[], params: IActionItemParams } | null>(null)
     const {grid, checkboxes, schema, parentId} = involvedState
+    const [showSlider, setShowSlider] = useState(false)
+    const [sliderProps, setSliderProps] = useState({})
 
     useEffect(() => {
         if (entity) {
@@ -152,7 +155,16 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
         link.click()
     }
 
+    const handleCloseSlider = (updateOnClose: boolean = true) => {
+        setShowSlider(false)
+
+        if (updateOnClose && onCloseSlider) {
+            onCloseSlider()
+        }
+    }
+
     const buttonAddOnClick = async () => {
+        let sliderProps: SliderProps = {}
         if (process.env.NODE_ENV === "production") {
             switch (buttonAdd.data?.params.type) {
                 case "openPath":
@@ -163,6 +175,17 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
                     // });
                     break;
                 case "openApplication":
+                    sliderProps = {
+                        type: "iframe",
+                        typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
+                        placementOptions: { ...buttonAdd.data?.params },
+                        width: buttonAdd.data?.params?.bx24_width,
+                        // TODO: Добавить обработчик закрытия
+                        onClose: () => handleCloseSlider(buttonAdd.data?.params?.updateOnCloseSlider)
+                    }
+                    setSliderProps(sliderProps)
+                    setShowSlider(true);
+
                     // BX24.openApplication(buttonAdd.data?.params, function () {
                     //     if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
                     //         onCloseSlider();
@@ -263,6 +286,10 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
                     onAfterSubmit={afterPopupSubmit}
                 />
             )}
+            <Slider
+                {...sliderProps}
+                show={showSlider}
+            />
         </Container>
     );
 }
