@@ -85,7 +85,7 @@ export const SliderCloseBlock = styled.div.attrs({ className: "close-block" }) <
     display: block;
     width: 12px;
     height: 12px;
-    padding: 5px;
+    margin: 5px;
     border: 2px solid transparent;
     border-radius: 50%;
     margin-right: 5px;

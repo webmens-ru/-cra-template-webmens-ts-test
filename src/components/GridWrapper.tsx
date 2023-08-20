@@ -13,7 +13,8 @@ import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
 import PopupAction, { PopupActionProps } from "./PopupAction";
-import { Slider, SliderProps } from "./slider";
+import { SliderProps } from "./slider";
+import useSlider from "./slider/hooks/useSlider";
 
 // TODO: Изучить типизацию redux-toolkit
 interface IGridWrapperProps {
@@ -32,14 +33,13 @@ interface IGridWrapperProps {
 
 export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSetter, height, onShemaMutation, onRowMutation, onCloseSlider, onClosePopup, onNavigate }: IGridWrapperProps) {
   const dispatch = useAppDispatch()
+  const sliderService = useSlider()
   const gridState = slice.grid
   const rowKey = gridState?.options?.key || "id"
   const burgerItems = gridState?.options?.actions || []
 
   const [isShowPopup, setShowPopup] = useState(false)
   const [popupAction, setPopupAction] = useState<{ row: TRowItem, popup: PopupActionProps, params: any, handler: string } | null>(null)
-  const [showSlider, setShowSlider] = useState(false)
-  const [sliderProps, setSliderProps] = useState({})
 
   const [notificationContext, notificationApi] = useNotification()
 
@@ -62,16 +62,9 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
           typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
           placementOptions: { ...cell },
           width:cell.bx24_width,
-          // TODO: Добавить обработчик закрытия
           onClose: () => handleCloseSlider(cell.updateOnCloseSlider)
         }
-        setSliderProps(sliderProps)
-        setShowSlider(true);
-        // BX24.openApplication(cell, function () {
-        //   if (cell.updateOnCloseSlider && onCloseSlider) {
-        //     onCloseSlider()
-        //   }
-        // });
+        sliderService.show(sliderProps)
         break;
       case "openLink":
         window.open(cell.link);
@@ -102,11 +95,9 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
           typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
           placementOptions: { ...item.params, [rowKey]: id },
           width: item.params.width,
-          // TODO: Добавить обработчик закрытия
           onClose: () => handleCloseSlider(item.params.updateOnCloseSlider)
         }
-        setSliderProps(sliderProps)
-        setShowSlider(true);
+        sliderService.show(sliderProps)
         break;
       case "openApplicationPortal":
         // @ts-ignore
@@ -128,8 +119,6 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         }
         break;
     }
-
-    // setSliderProps(sliderProps)
   }
 
   const handleSchemaMutation = (schema: any) => {
@@ -195,7 +184,7 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
   }
 
   const handleCloseSlider = (updateOnClose: boolean = true) => {
-    setShowSlider(false)
+    sliderService.hide()
 
     if (updateOnClose && onCloseSlider) {
       onCloseSlider()
@@ -224,10 +213,6 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
           onMetricLinkClick={handleMetricLink}
         />
       )}
-      <Slider
-        {...sliderProps}
-        show={showSlider}
-      />
       <Grid
         columns={slice.schema}
         rows={gridState?.grid}

@@ -1,4 +1,5 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import { sliderSlice } from "../../components/slider/sliderSlice";
 import { mainApi } from "../../pages/main/mainApi";
 import { mainSlice } from "../../pages/main/mainSlice";
 import { mainCardApi } from "../../pages/mainCard/mainCardApi";
@@ -13,6 +14,7 @@ export const store = configureStore({
     [mainSlice.name]: mainSlice.reducer,
     [mainPlacementSlice.name]: mainPlacementSlice.reducer,
     [mainDetailSlice.name]: mainDetailSlice.reducer,
+    [sliderSlice.name]: sliderSlice.reducer,
     [mainApi.reducerPath]: mainApi.reducer,
     [mainPlacementApi.reducerPath]: mainPlacementApi.reducer,
     [mainDetailApi.reducerPath]: mainDetailApi.reducer,

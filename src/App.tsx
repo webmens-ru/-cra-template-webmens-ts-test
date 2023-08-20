@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { useAppSelector } from "./app/store/hooks";
+import { Slider } from "./components/slider";
 import { Main } from "./pages/main";
 import MainCard from "./pages/mainCard/MainCard";
 import { MainDetail } from "./pages/mainDetail";
@@ -6,7 +8,8 @@ import MainForm from "./pages/mainForm/mainForm";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
 
 function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
-  console.log(placementOptions)
+  const { show: showSlider, ...sliderProps } = useAppSelector(store => store.sliderSlice)
+  
   useEffect(() => {
     // if (process.env.NODE_ENV === "production") {
     //   const size = BX24.getScrollSize()
@@ -73,7 +76,15 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
     }
   };
 
-  return switchPath(placementOptions || window._PARAMS_.placementOptions);
+  return (
+    <>
+      {switchPath(placementOptions || window._PARAMS_.placementOptions)}
+      <Slider
+        {...sliderProps}
+        show={showSlider}
+      />
+    </>
+  )
 
   // if (process.env.NODE_ENV === "production") {
   //   return switchPath(window._PARAMS_.placementOptions);
