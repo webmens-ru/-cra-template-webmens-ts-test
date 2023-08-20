@@ -80,7 +80,7 @@ export default function MainCard(props: MainCardProps) {
         <MainCardTitle children={title || "Создание"} />
         <MainCardHeaderActionsContainer>
           {(actionButtons.isSuccess && actionButtons.data) && (
-            <ActionButtons disabled={onCreateState} actions={actionButtons.data} />
+            <ActionButtons disabled={onCreateState} actions={actionButtons.data} parentId={parentId}/>
           )}
         </MainCardHeaderActionsContainer>
       </MainCardHeaderContainer>
