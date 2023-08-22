@@ -51,20 +51,18 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
 
   const onCellClick = (cell: TCellItem) => {
     // if (process.env.NODE_ENV === "production") {
-    let sliderProps: SliderProps = {}
     switch (cell.type) {
       case "openPath":
       // BX24.openPath(cell.link, (res: any) => console.log(res));
       break;
       case "openApplication":
-        sliderProps = {
+        sliderService.show({
           type: "iframe",
           typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
           placementOptions: { ...cell },
           width:cell.bx24_width,
           onClose: () => handleCloseSlider(cell.updateOnCloseSlider)
-        }
-        sliderService.show(sliderProps)
+        })
         break;
       case "openLink":
         window.open(cell.link);
