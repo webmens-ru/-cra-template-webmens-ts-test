@@ -105,8 +105,9 @@ export default function MainForm(
           formTitle={formTitle.data?.name}
           height={height}
           validationRules={validation.data}
-          onSubmit={handleFormSubmit}
           canToggleMode={canToggleMode}
+          onInit={(values) => setForm({ isLoading: false, values })}
+          onSubmit={handleFormSubmit}
           onAfterSubmit={handleAfterSubmit}
         />
       </div>
