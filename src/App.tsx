@@ -24,7 +24,7 @@ function App() {
     try {
       switch (opt?.path) {
         case "mainDetail":
-          return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
+          return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} parentId={opt.parentId} />;
         case "mainForm":
           if ('params' in opt) {
             opt = {
