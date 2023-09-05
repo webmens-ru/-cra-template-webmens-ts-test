@@ -60,10 +60,7 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
               path={opt.path}
               form={{
                 entity: opt.params.entity,
-                mode: opt.params.mode,//TODO Нужен ли здесь этот параметр или лучше в form
-                action: opt.params.action,//TODO Нужен ли здесь этот параметр или лучше в form
-                canToggleMode: stringToBoolean(opt.params.canToggleMode),//TODO Нужен ли здесь этот параметр или лучше в form
-                closeSliderOnSubmit: stringToBoolean(opt.params.closeSliderOnSubmit), //TODO Нужен ли здесь этот параметр или лучше в form
+                closeSliderOnSubmit: stringToBoolean(opt.params.closeSliderOnSubmit),
                  ...opt.params.form
               }}
             />
