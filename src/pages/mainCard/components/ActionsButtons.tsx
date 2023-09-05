@@ -6,6 +6,8 @@ import { axiosInst } from "../../../app/api/baseQuery";
 import { ActionButton, ActionButtonParams } from "../../../app/model/action-button";
 import PopupAction from "../../../components/PopupAction";
 import { useSendDataOnButtonClickMutation } from "../../main";
+import {AxiosError} from "axios";
+import {ErrorResponse} from "../../../app/model/query";
 
 interface ActionButtonsProps {
   actions: Array<ActionButton>;
@@ -44,7 +46,20 @@ export default function ActionButtons({ actions, disabled, parentId, onClosePopu
   const handlePopupSubmit = (values?: FormValues) => {
     if (popupAction) {
       const body = { form: values, parentId }
-      return axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+      return axiosInst
+          .post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+          .then((response) => {
+            console.log(response);
+            if (response?.data && "notification" in response.data) {
+              notificationApi.show(response.data.notification)
+            }
+          })
+          .catch((err: AxiosError<ErrorResponse>) => {
+            setShowPopup(false)
+            if (err.response?.data && "notification" in err.response.data) {
+              notificationApi.show(err.response.data.notification)
+            }
+          })
     } else {
       return Promise.all([])
     }

@@ -1,4 +1,4 @@
-import { Button } from "@webmens-ru/ui_lib";
+import {Button, useNotification} from "@webmens-ru/ui_lib";
 import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { TRawColumnItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
@@ -12,6 +12,8 @@ import {
     useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
 import PopupAction, { PopupActionProps } from "./PopupAction";
+import {AxiosError} from "axios";
+import {ErrorResponse} from "../app/model/query";
 
 interface ITopBarButtonsProps {
     involvedState: {
@@ -53,6 +55,7 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
     const [isShowPopup, setShowPopup] = useState(false)
     const [popupAction, setPopupAction] = useState<{ handler: string, grid?: TRowItem[], params: IActionItemParams } | null>(null)
     const {grid, checkboxes, schema, parentId} = involvedState
+    const [notificationContext, notificationApi] = useNotification()
 
     useEffect(() => {
         if (entity) {
@@ -189,7 +192,20 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
     const handlePopupSubmit = (values?: FormValues) => {
         if (popupAction) {
             const body = {grid: popupAction.grid, form: values}
-            return axiosInst.post(popupAction.handler, body, {responseType: "output" in popupAction.params ? "blob" : "json"})
+            return axiosInst
+                .post(popupAction.handler, body, {responseType: "output" in popupAction.params ? "blob" : "json"})
+                .then((response) => {
+                    console.log(response);
+                    if (response?.data && "notification" in response.data) {
+                        notificationApi.show(response.data.notification)
+                    }
+                })
+                .catch((err: AxiosError<ErrorResponse>) => {
+                    setShowPopup(false)
+                    if (err.response?.data && "notification" in err.response.data) {
+                        notificationApi.show(err.response.data.notification)
+                    }
+                })
         } else {
             return Promise.all([])
         }
@@ -216,6 +232,7 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
 
     return (
         <Container>
+            {notificationContext}
             {!!buttonAdd.data && !buttonAdd.data?.items && (
                 <Button
                     color="success"
