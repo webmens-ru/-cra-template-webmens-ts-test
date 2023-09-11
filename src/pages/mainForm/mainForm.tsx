@@ -51,7 +51,7 @@ export default function MainForm(
     setForm({ values: formValues, isLoading: true })
 
     const url = (action === "create") ? `${entity}/${action}` : `${entity}/${action}?id=${formValues.id}`
-    const submitRequest = axiosInst.post(url, formValues)
+      const submitRequest = axiosInst.post(url, formValues, { headers: { "Content-type": "multipart/form-data" } })
       .then((response) => {
         const values = {
           ...formValues,
