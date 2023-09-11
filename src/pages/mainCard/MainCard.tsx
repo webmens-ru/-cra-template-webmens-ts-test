@@ -2,6 +2,7 @@ import { Loader, Menu } from "@webmens-ru/ui_lib";
 import { FormMode } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { useMenuData } from "../../app/hooks/useMenuData";
+import useSlider from "../../components/slider/hooks/useSlider";
 import MainForm, { MainFormProps } from "../mainForm/mainForm";
 import MainPlacement from "../mainPlacement/MainPlacement";
 import ActionButtons from "./components/ActionsButtons";
@@ -18,6 +19,8 @@ interface MainCardProps {
 }
 
 export default function MainCard(props: MainCardProps) {
+  const sliderService = useSlider()
+
   const [parentId, setParentId] = useState(props.parentId)
   const [currentTab, setCurrentTab] = useState<any>(null)
   const [onCreateState, setOnCreateState] = useState<boolean>(!parentId)
@@ -25,7 +28,7 @@ export default function MainCard(props: MainCardProps) {
 
   const { data: title } = useGetPageTitleQuery({ id: parentId, entity: props.entity })
   const [getActionButtons, actionButtons] = useLazyGetActionButtonsQuery()
-  const { tabs, setTab } = useMenuData(props.menuId);
+  const { tabs } = useMenuData(props.menuId);
 
   const handleFormSubmit = (values: any) => {
     setOnCreateState(false)
@@ -92,6 +95,7 @@ export default function MainCard(props: MainCardProps) {
             menuStyle="card"
             items={tabs.data}
             setItem={(tab) => setCurrentTab(tab)}
+            sliderOpenner={(params) => sliderService.show(params)}
           />
         )}
       </div>

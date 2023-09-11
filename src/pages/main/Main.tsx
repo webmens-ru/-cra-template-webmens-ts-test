@@ -3,6 +3,7 @@ import { setCheckboxes, setFilterResponse, setPage, setSchema, useEditRowMutatio
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { GridWrapper } from "../../components/GridWrapper";
+import useSlider from "../../components/slider/hooks/useSlider";
 import { TopBar } from "./components/TopBar";
 import { useData } from "./hooks/useData";
 import { useMenuData } from "./hooks/useMenuData";
@@ -16,12 +17,18 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
   const [schemaMutation] = useSaveSchemaMutation()
   const [rowMutation] = useEditRowMutation()
   const { isCorrect, reload } = useData();
+  const sliderService = useSlider()
 
   if (tabs.isLoading) return <Loader />;
 
   return (
     <>
-      <Menu items={tabs.data} setItem={setTab} itemsMutation={itemsMutation} />
+      <Menu
+        items={tabs.data}
+        setItem={setTab}
+        itemsMutation={itemsMutation}
+        sliderOpenner={(params) => sliderService.show(params)}
+      />
       {isCorrect ? (
         <>
           <TopBar
