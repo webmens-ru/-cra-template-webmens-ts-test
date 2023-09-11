@@ -1,13 +1,13 @@
 import { Button, useNotification } from "@webmens-ru/ui_lib";
 import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../../../app/api/baseQuery";
 import { ActionButton, ActionButtonParams } from "../../../app/model/action-button";
+import { ErrorResponse } from "../../../app/model/query";
 import PopupAction from "../../../components/PopupAction";
 import { useSendDataOnButtonClickMutation } from "../../main";
-import {AxiosError} from "axios";
-import {ErrorResponse} from "../../../app/model/query";
 
 interface ActionButtonsProps {
   actions: Array<ActionButton>;
@@ -52,6 +52,7 @@ export default function ActionButtons({ actions, disabled, parentId, onClosePopu
             console.log(response);
             if (response?.data && "notification" in response.data) {
               notificationApi.show(response.data.notification)
+              setShowPopup(false)
             }
           })
           .catch((err: AxiosError<ErrorResponse>) => {

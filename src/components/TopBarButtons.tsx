@@ -1,10 +1,12 @@
-import {Button, useNotification} from "@webmens-ru/ui_lib";
+import { Button, useNotification } from "@webmens-ru/ui_lib";
 import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { TRawColumnItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
+import { ErrorResponse } from "../app/model/query";
 import { IGridState } from "../pages/main";
 import {
     useLazyGetButtonAddQuery,
@@ -12,8 +14,6 @@ import {
     useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
 import PopupAction, { PopupActionProps } from "./PopupAction";
-import {AxiosError} from "axios";
-import {ErrorResponse} from "../app/model/query";
 
 interface ITopBarButtonsProps {
     involvedState: {
@@ -198,6 +198,7 @@ export function TopBarButtons({involvedState, excelTitle, entity, parentId: prop
                     console.log(response);
                     if (response?.data && "notification" in response.data) {
                         notificationApi.show(response.data.notification)
+                        setShowPopup(false)
                     }
                 })
                 .catch((err: AxiosError<ErrorResponse>) => {
