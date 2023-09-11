@@ -3,6 +3,7 @@ import { setCheckboxes, setFilterResponse, setPage, setSchema, useEditRowMutatio
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { GridWrapper } from "../../components/GridWrapper";
+import { SliderProps } from "../../components/slider";
 import useSlider from "../../components/slider/hooks/useSlider";
 import { TopBar } from "./components/TopBar";
 import { useData } from "./hooks/useData";
@@ -21,13 +22,45 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
 
   if (tabs.isLoading) return <Loader />;
 
+  const handleSliderOpen = (item: any) => {
+    let sliderProps: SliderProps
+
+    switch (item.type) {
+      case "openApplication":
+        sliderProps = {
+          type: "iframe",
+          typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
+          placementOptions: item.params,
+          width: item.params.width,
+          onClose: () => sliderService.hide()
+        }
+        sliderService.show(sliderProps)
+        break;
+      case "openApplicationPortal":
+        // @ts-ignore
+        sliderProps = {
+          type: "content",
+          placementOptions: item.params,
+          onClose: () => sliderService.hide()
+        }
+        break;
+      case "openPath":
+        sliderProps = {
+          type: "iframe",
+          typeParams: { iframeUrl: item.params.url },
+          onClose: () => sliderService.hide()
+        }
+        break;
+    }
+  }
+
   return (
     <>
       <Menu
         items={tabs.data}
         setItem={setTab}
         itemsMutation={itemsMutation}
-        sliderOpenner={(params) => sliderService.show(params)}
+        sliderOpenner={handleSliderOpen}
       />
       {isCorrect ? (
         <>

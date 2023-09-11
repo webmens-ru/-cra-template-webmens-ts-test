@@ -25,7 +25,7 @@ const ROOT_ID = "wm-slider-root"
 const IFRAME_ROOT_ID = randomizeString("wm-slider-iframe")
 export const DEFAULT_ZINDEX = 2000
 
-export function Slider({ type = "iframe", show, width = "600px", title, timeout = 300, typeParams, placementOptions, onClose }: SliderProps) {
+export function Slider({ type = "iframe", show, width = "95%", title, timeout = 300, typeParams, placementOptions, onClose }: SliderProps) {
   const cssRef = useRef(null)
   const formIframeRef = useRef<HTMLFormElement>(null)
 
