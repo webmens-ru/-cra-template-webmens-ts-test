@@ -44,7 +44,7 @@ export function Slider({ type = "iframe", show, width = "95%", title, timeout = 
   const formatWidth = (width: string | number): string => typeof width === 'number' ? width + 'px' : width;
 
   useEffect(() => {
-    if (type === "iframe" && typeParams?.iframeUrl && formIframeRef.current) {
+    if (type === "iframe" && typeParams?.iframeUrl && formIframeRef.current && show) {
 
       for (let [name, value] of Object.entries(placementOptions)) {
         createIframeFields(name, value as any, formIframeRef.current)
@@ -53,7 +53,7 @@ export function Slider({ type = "iframe", show, width = "95%", title, timeout = 
       formIframeRef.current.submit()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [placementOptions, type, typeParams?.iframeUrl])
+  }, [placementOptions, type, typeParams?.iframeUrl, show])
 
   return (
     <BodyPortal className={ROOT_ID} container={ROOT_ID} >
