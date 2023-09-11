@@ -145,8 +145,8 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
         .then((response) => {
           if (response?.data && "notification" in response.data) {
             notificationApi.show(response.data.notification)
-            setShowPopup(false)
           }
+          setShowPopup(false)
         })
         .catch((err: AxiosError<ErrorResponse>) => {
           setShowPopup(false)
