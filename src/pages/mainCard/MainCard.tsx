@@ -1,4 +1,4 @@
-import { Loader, Menu } from "@webmens-ru/ui_lib";
+import { Loader, Menu, Button } from "@webmens-ru/ui_lib";
 import { FormMode } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { useMenuData } from "../../app/hooks/useMenuData";
@@ -6,9 +6,14 @@ import useSlider from "../../components/slider/hooks/useSlider";
 import MainForm, { MainFormProps } from "../mainForm/mainForm";
 import MainPlacement from "../mainPlacement/MainPlacement";
 import ActionButtons from "./components/ActionsButtons";
-import { useGetPageTitleQuery, useLazyGetActionButtonsQuery } from "./mainCardApi";
+import {
+  useGetPageTitleQuery,
+  useLazyGetActionButtonsQuery,
+  useLazyGetHelpButtonQuery
+} from "./mainCardApi";
 import { MainCardContainer, MainCardHeaderActionsContainer, MainCardHeaderContainer, MainCardTitle } from "./styles";
 import { MainCardPath } from "./types";
+import {Buttons} from "@webmens-ru/ui_lib/dist/components/calendar";
 
 interface MainCardProps {
   path: MainCardPath;
@@ -27,7 +32,8 @@ export default function MainCard(props: MainCardProps) {
   const [formMode, setFormMode] = useState<FormMode>(onCreateState ? "edit" : props.form?.mode || "view")
 
   const { data: title } = useGetPageTitleQuery({ id: parentId, entity: props.entity })
-  const [getActionButtons, actionButtons] = useLazyGetActionButtonsQuery()
+  const [getActionButtons, actionButtons] = useLazyGetActionButtonsQuery();
+  const [getHelpButton, helpButton] = useLazyGetHelpButtonQuery()
   const { tabs } = useMenuData(props.menuId);
 
   const handleFormSubmit = (values: any) => {
@@ -71,6 +77,47 @@ export default function MainCard(props: MainCardProps) {
     }
   }, [getActionButtons, props.entity, parentId])
 
+  useLayoutEffect(() => {
+    getHelpButton({ entity: props.entity })
+  }, [getHelpButton, props.entity])
+
+  const buttonHelpOnClick = async () => {
+    switch (helpButton.data?.params.type) {
+      // case "openPath":
+      //   // BX24.openPath(buttonAdd.data?.params.link, function () {
+      //   //     if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+      //   //         onCloseSlider();
+      //   //     }
+      //   // });
+      //   break;
+      // case "openApplication":
+      //   sliderService.show({
+      //     type: "iframe",
+      //     typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
+      //     placementOptions: { ...gelpButton.data?.params },
+      //     width: gelpButton.data?.params?.bx24_width,
+      //     // TODO: Добавить обработчик закрытия
+      //     onClose: () => handleCloseSlider(gelpButton.data?.params?.updateOnCloseSlider)
+      //   })
+      //
+      //   // BX24.openApplication(buttonAdd.data?.params, function () {
+      //   //     if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+      //   //         onCloseSlider();
+      //   //     }
+      //   // });
+      //   break;
+      case "openLink":
+        window.open(helpButton.data?.params.link);
+        break;
+      // case "popup":
+      //   setShowPopup(true);
+      //   setPopupAction({ params: gelpButton.data?.params, handler: gelpButton.data?.params?.handler });
+      //   break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     if (tabs.isSuccess) {
       setCurrentTab(tabs.data[0])
@@ -86,6 +133,14 @@ export default function MainCard(props: MainCardProps) {
             <ActionButtons disabled={onCreateState} actions={actionButtons.data} parentId={parentId}/>
           )}
         </MainCardHeaderActionsContainer>
+        {helpButton.data && (
+            <Button
+                color="gray"
+                svgBefore="reload"
+                variant="square"
+                onClick={buttonHelpOnClick}
+            />
+        )}
       </MainCardHeaderContainer>
 
       <div style={{ marginBottom: 15 }}>

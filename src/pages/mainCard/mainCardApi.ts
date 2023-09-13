@@ -23,12 +23,18 @@ export const mainCardApi = createApi({
         body: data,
         method: "POST"
       })
-    })
+    }),
+    getHelpButton: build.query<{title: string, params: any, items: any}, any>({
+      query: ({ entity}) => ({
+        url: `${entity}/get-help-button`
+      })
+    }),
   }),
 });
 
 export const {
   useGetActionButtonsQuery,
   useLazyGetActionButtonsQuery,
+  useLazyGetHelpButtonQuery,
   useGetPageTitleQuery
 } = mainCardApi;
