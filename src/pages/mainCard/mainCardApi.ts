@@ -24,8 +24,8 @@ export const mainCardApi = createApi({
         method: "POST"
       })
     }),
-    getHelpButton: build.query<{title: string, params: any, items: any}, any>({
-      query: ({ entity}) => ({
+    getHelpButton: build.query<{ title: string, params: any }, { entity: string }>({
+      query: ({ entity }) => ({
         url: `${entity}/get-help-button`
       })
     }),
