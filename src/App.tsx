@@ -18,8 +18,8 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
     // }
   }, [])
 
-  const stringToBoolean = (value?: string|boolean) => {
-    if (value === undefined || value === null|| value === true|| value === false ) return value
+  const stringToBoolean = (value?: string | boolean) => {
+    if (value === undefined || value === null || value === true || value === false) return value
 
     return value === "true"
   }
@@ -40,11 +40,11 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
           return (
             <MainForm
               mode={opt.mode}
-              entity={opt.entity} 
-              action={opt.action} 
-              id={opt?.id} 
-              canToggleMode={stringToBoolean(opt?.canToggleMode)} 
-              closeSliderOnSubmit={stringToBoolean(opt.closeSliderOnSubmit)} 
+              entity={opt.entity}
+              action={opt.action}
+              id={opt?.id}
+              canToggleMode={stringToBoolean(opt?.canToggleMode)}
+              closeSliderOnSubmit={stringToBoolean(opt.closeSliderOnSubmit)}
               defaultValue={opt?.defaultValue}
             />
           );
@@ -62,14 +62,14 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
               form={{
                 entity: opt.params.entity,
                 closeSliderOnSubmit: stringToBoolean(opt.params.closeSliderOnSubmit),
-                 ...opt.params.form
+                ...opt.params.form
               }}
             />
           )
         case "mainIframe":
           return <MainIframe src={opt.params.link} />
         default:
-          return <Main menuId={opt.menuId}/>
+          return <Main menuId={opt.menuId} />
       }
     } catch (error) {
       console.error([error, 'error']);
@@ -87,26 +87,6 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
     </>
   )
 
-  // if (process.env.NODE_ENV === "production") {
-  //   return switchPath(window._PARAMS_.placementOptions);
-  // }
-  // if (process.env.NODE_ENV === "development") {
-  //   const pathArr = window.location.pathname
-  //     .replace("/", "")
-  //     .split("&")
-  //     .map((item) => item.split("="))
-  //     .flat();
-  //   const pathObj: any = {};
-  //   for (let i = 0; i < pathArr.length; i += 2) {
-  //     pathObj[pathArr[i]] = pathArr[i + 1];
-  //   }
-
-    console.log(pathObj)
-
-    return switchPath(pathObj);
-  }
-  return <Main />;
 }
 
 export default App;
-

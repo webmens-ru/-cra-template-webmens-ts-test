@@ -35,7 +35,7 @@ export default function MainForm(
     canToggleMode = true,
     closeSliderOnSubmit = true,
     defaultValue = {},
-    onAfterSubmit = () => {}
+    onAfterSubmit = () => { }
   }: MainFormProps) {
   const [getValues] = useLazyGetFormValuesQuery()
   const formFields = useGetFormFieldsQuery(entity);
@@ -51,13 +51,13 @@ export default function MainForm(
     setForm({ values: formValues, isLoading: true })
 
     const url = (action === "create") ? `${entity}/${action}` : `${entity}/${action}?id=${formValues.id}`
-      const submitRequest = axiosInst.post(url, formValues, { headers: { "Content-type": "multipart/form-data" } })
+    const submitRequest = axiosInst.post(url, formValues, { headers: { "Content-type": "multipart/form-data" } })
       .then((response) => {
         const values = {
           ...formValues,
           id: action === "create" ? response.data.id : formValues.id
         }
-        
+
         setForm({ values, isLoading: false })
         setSubmitError({ error: false, data: undefined })
         onAfterSubmit(values)
@@ -87,7 +87,7 @@ export default function MainForm(
     } else {
       setForm({ ...form, isLoading: false })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, action])
 
   if (formFields.isLoading || validation.isLoading || formTitle.isLoading || form.isLoading) {
