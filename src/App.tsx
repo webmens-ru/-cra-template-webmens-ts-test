@@ -5,6 +5,7 @@ import { Main } from "./pages/main";
 import MainCard from "./pages/mainCard/MainCard";
 import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
+import MainIframe from "./pages/mainIframe/mainIframe";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
 
 function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
@@ -26,9 +27,9 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
   const switchPath = (opt: TPlacementOptions) => {
 
     try {
-      switch (opt.path) {
+      switch (opt?.path) {
         case "mainDetail":
-          return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} />;
+          return <MainDetail title={opt.mainDetailTitle} entity={opt.entity} body={opt.queryParams} parentId={opt.parentId} />;
         case "mainForm":
           if ('params' in opt) {
             opt = {
@@ -65,6 +66,8 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
               }}
             />
           )
+        case "mainIframe":
+          return <MainIframe src={opt.params.link} />
         default:
           return <Main menuId={opt.menuId}/>
       }
@@ -98,11 +101,11 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
   //     pathObj[pathArr[i]] = pathArr[i + 1];
   //   }
 
-  //   console.log(pathObj)
+    console.log(pathObj)
 
-  //   return switchPath(pathObj);
-  // }
-  // return <Main />;
+    return switchPath(pathObj);
+  }
+  return <Main />;
 }
 
 export default App;

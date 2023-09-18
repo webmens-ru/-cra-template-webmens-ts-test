@@ -10,10 +10,11 @@ import { setCheckboxes, setGrid, setIsLoading, setSchema } from "./mainDetailSli
 export interface MainDetailProps {
   title?: string,
   entity: string,
-  body?: any
+  body?: any,
+  parentId?: string | number
 }
 
-export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
+export function MainDetail({ title, entity, body = [], parentId = '' }: MainDetailProps) {
   const dispatch = useAppDispatch()
   const mainDetail = useAppSelector(store => store.mainDetailSlice)
 
@@ -47,6 +48,7 @@ export function MainDetail({ title, entity, body = [] }: MainDetailProps) {
           involvedState={mainDetail}
           entity={entity}
           excelTitle={title}
+          parentId={parentId}
         />
       </Container>
       <GridWrapper

@@ -156,6 +156,12 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
       const body = { [rowKey]: popupAction.row[rowKey], form: values }
       return axiosInst
         .post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+        .then((response) => {
+          if (response?.data && "notification" in response.data) {
+            notificationApi.show(response.data.notification)
+          }
+          setShowPopup(false)
+        })
         .catch((err: AxiosError<ErrorResponse>) => {
           setShowPopup(false)
           if (err.response?.data && "notification" in err.response.data) {

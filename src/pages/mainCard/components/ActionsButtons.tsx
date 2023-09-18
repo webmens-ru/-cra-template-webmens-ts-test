@@ -1,9 +1,11 @@
 import { Button, useNotification } from "@webmens-ru/ui_lib";
 import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../../../app/api/baseQuery";
 import { ActionButton, ActionButtonParams } from "../../../app/model/action-button";
+import { ErrorResponse } from "../../../app/model/query";
 import PopupAction from "../../../components/PopupAction";
 import { useSendDataOnButtonClickMutation } from "../../main";
 
@@ -44,7 +46,20 @@ export default function ActionButtons({ actions, disabled, parentId, onClosePopu
   const handlePopupSubmit = (values?: FormValues) => {
     if (popupAction) {
       const body = { form: values, parentId }
-      return axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+      return axiosInst
+          .post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+          .then((response) => {
+            if (response?.data && "notification" in response.data) {
+              notificationApi.show(response.data.notification)
+            }
+            setShowPopup(false)
+          })
+          .catch((err: AxiosError<ErrorResponse>) => {
+            setShowPopup(false)
+            if (err.response?.data && "notification" in err.response.data) {
+              notificationApi.show(err.response.data.notification)
+            }
+          })
     } else {
       return Promise.all([])
     }

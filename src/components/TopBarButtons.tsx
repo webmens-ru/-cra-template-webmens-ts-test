@@ -1,15 +1,17 @@
-import { Button } from "@webmens-ru/ui_lib";
+import { Button, useNotification } from "@webmens-ru/ui_lib";
 import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { TRawColumnItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
+import { ErrorResponse } from "../app/model/query";
 import { IGridState } from "../pages/main";
 import {
-  useLazyGetButtonAddQuery,
-  useLazyGetDynamicButtonItemsQuery,
-  useSendDataOnButtonClickMutation
+    useLazyGetButtonAddQuery,
+    useLazyGetDynamicButtonItemsQuery,
+    useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
 import PopupAction, { PopupActionProps } from "./PopupAction";
 import useSlider from "./slider/hooks/useSlider";
@@ -57,6 +59,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   const [popupAction, setPopupAction] = useState<{ handler: string, grid?: TRowItem[], params: IActionItemParams } | null>(null)
 
   const { grid, checkboxes, schema, parentId } = involvedState
+    const [notificationContext, notificationApi] = useNotification()
 
   // TODO: Добавить обработку gridEmpty
   const itemClickHandler = async (item: IActionItem) => {
@@ -200,14 +203,27 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
     }
   };
 
-  const handlePopupSubmit = (values?: FormValues) => {
-    if (popupAction) {
-      const body = { grid: popupAction.grid, form: values }
-      return axiosInst.post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
-    } else {
-      return Promise.all([])
+    const handlePopupSubmit = (values?: FormValues) => {
+        if (popupAction) {
+            const body = {grid: popupAction.grid, form: values}
+            return axiosInst
+                .post(popupAction.handler, body, {responseType: "output" in popupAction.params ? "blob" : "json"})
+                .then((response) => {
+                    if (response?.data && "notification" in response.data) {
+                        notificationApi.show(response.data.notification)
+                    }
+                    setShowPopup(false)
+                })
+                .catch((err: AxiosError<ErrorResponse>) => {
+                    setShowPopup(false)
+                    if (err.response?.data && "notification" in err.response.data) {
+                        notificationApi.show(err.response.data.notification)
+                    }
+                })
+        } else {
+            return Promise.all([])
+        }
     }
-  }
 
   const afterPopupSubmit = (response: any) => {
     if (popupAction && popupAction.params.output && response.data) {
@@ -237,6 +253,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
 
   return (
     <Container>
+            {notificationContext}
       {!!buttonAdd.data && !buttonAdd.data?.items && (
         <Button
           color="success"
