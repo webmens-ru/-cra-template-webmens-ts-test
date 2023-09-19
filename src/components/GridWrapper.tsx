@@ -53,16 +53,21 @@ export function GridWrapper({ slice, schemaSetter, checkboxesSetter, filterSette
     // if (process.env.NODE_ENV === "production") {
     switch (cell.type) {
       case "openPath":
-      // BX24.openPath(cell.link, (res: any) => console.log(res));
+      BX24.openPath(cell.link, (res: any) => console.log(res));
       break;
       case "openApplication":
-        sliderService.show({
-          type: "iframe",
-          typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
-          placementOptions: { ...cell },
-          width:cell.bx24_width,
-          onClose: () => handleCloseSlider(cell.updateOnCloseSlider)
-        })
+        if (cell?.iframeUrl){
+          sliderService.show({
+            type: "iframe",
+            typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
+            placementOptions: { ...cell },
+            width:cell.bx24_width,
+            onClose: () => handleCloseSlider(cell.updateOnCloseSlider)
+          })
+        }else{
+          BX24.openApplication({ ...item.params, [rowKey]: id }, resolve);
+        }
+
         break;
       case "openLink":
         window.open(cell.link);
