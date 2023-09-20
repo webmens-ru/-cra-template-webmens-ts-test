@@ -96,7 +96,7 @@ export default function MainCard(props: MainCardProps) {
       // case "openApplication":
       //   sliderService.show({
       //     type: "iframe",
-      //     typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
+      //     typeParams: { iframeUrl: "https://app.taxivisor.ru/lk" },
       //     placementOptions: { ...gelpButton.data?.params },
       //     width: gelpButton.data?.params?.bx24_width,
       //     // TODO: Добавить обработчик закрытия
@@ -139,7 +139,7 @@ export default function MainCard(props: MainCardProps) {
         {helpButton.data && (
             <Button
                 color="gray"
-                svgBefore="reload"
+                svgBefore="help"
                 variant="square"
                 onClick={buttonHelpOnClick}
             />
