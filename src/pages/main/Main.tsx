@@ -29,7 +29,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
       case "openApplication":
         sliderProps = {
           type: "iframe",
-          typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
+          typeParams: { iframeUrl: item.iframeUrl },//TODO iframeUrl BX24
           placementOptions: item.params,
           width: item.params.width,
           onClose: () => sliderService.hide()

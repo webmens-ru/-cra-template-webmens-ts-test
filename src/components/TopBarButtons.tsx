@@ -164,27 +164,29 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
     if (process.env.NODE_ENV === "production") {
       switch (buttonAdd.data?.params.type) {
         case "openPath":
-          // BX24.openPath(buttonAdd.data?.params.link, function () {
-          //     if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
-          //         onCloseSlider();
-          //     }
-          // });
+          BX24.openPath(buttonAdd.data?.params.link, function () {
+              if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+                  onCloseSlider();
+              }
+          });
           break;
         case "openApplication":
-          sliderService.show({
-            type: "iframe",
-            typeParams: { iframeUrl: "https://appv1.taxivisor.ru/lk" },
-            placementOptions: { ...buttonAdd.data?.params },
-            width: buttonAdd.data?.params?.bx24_width,
-            // TODO: Добавить обработчик закрытия
-            onClose: () => handleCloseSlider(buttonAdd.data?.params?.updateOnCloseSlider)
-          })
-
-          // BX24.openApplication(buttonAdd.data?.params, function () {
-          //     if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
-          //         onCloseSlider();
-          //     }
-          // });
+          if(window._APP_TYPE_ == 'site'){
+            sliderService.show({
+              type: "iframe",
+              typeParams: { iframeUrl: buttonAdd.data?.params?.iframeUrl },
+              placementOptions: { ...buttonAdd.data?.params },
+              width: buttonAdd.data?.params?.bx24_width,
+              // TODO: Добавить обработчик закрытия
+              onClose: () => handleCloseSlider(buttonAdd.data?.params?.updateOnCloseSlider)
+            })
+          }else{
+            BX24.openApplication(buttonAdd.data?.params, function () {
+              if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+                onCloseSlider();
+              }
+            });
+          }
           break;
         case "openLink":
           window.open(buttonAdd.data?.params.link);

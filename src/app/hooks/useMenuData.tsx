@@ -1,6 +1,6 @@
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { useCallback, useLayoutEffect } from "react";
-import { Item } from "../../components/menu/types";
+import {Item} from "@webmens-ru/ui_lib/dist/components/menu/types";
 import { useLazyGetTabsQuery } from "../../pages/main";
 import { useAppDispatch } from "../store/hooks";
 

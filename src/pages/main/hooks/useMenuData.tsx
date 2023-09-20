@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect } from "react";
 import { useAppDispatch } from "../../../app/store/hooks";
-import { Item } from "../../../components/menu/types";
+import {Item} from "@webmens-ru/ui_lib/dist/components/menu/types";
 import { useLazyGetTabsQuery } from "../mainApi";
 import { setCurrentTab } from "../mainSlice";
 

@@ -14,6 +14,7 @@ interface Window {
   "_PARAMS_": any;
   "_APP_URL_": string;
   "_HOSTNAME_": string;
+  "_APP_TYPE_"?: string;
 }
 
 declare module '*.avif' {
@@ -92,16 +93,16 @@ declare module '*.module.sass' {
   export default classes;
 }
 
-// declare const BX24: {
-//   openPath: (path: string, callback?: (...args: any[]) => void) => void;
-//   openApplication: (
-//     params: { bx24_width?: string | number; [index: string]: any },
-//     callback?: () => void,
-//   ) => void;
-//   closeApplication: () => void;
-//   getScrollSize: () => { scrollWidth: number, scrollHeight: number }
-//   resizeWindow: (width: number, height: number, cb?: any) => void;
-// };
+declare const BX24: {
+  openPath: (path: string, callback?: (...args: any[]) => void) => void;
+  openApplication: (
+    params: { bx24_width?: string | number; [index: string]: any },
+    callback?: () => void,
+  ) => void;
+  closeApplication: () => void;
+  getScrollSize: () => { scrollWidth: number, scrollHeight: number }
+  resizeWindow: (width: number, height: number, cb?: any) => void;
+};
 
 declare module '@ckeditor/ckeditor5-react' {
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';

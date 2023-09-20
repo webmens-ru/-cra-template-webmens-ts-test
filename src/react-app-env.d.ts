@@ -24,7 +24,7 @@ declare global {
     _HOSTNAME_: string;
   }
 
-  // declare const BX24: any;
+  declare const BX24: any;
 }
 
 export default global;
