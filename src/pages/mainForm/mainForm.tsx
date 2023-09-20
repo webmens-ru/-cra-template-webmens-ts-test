@@ -50,8 +50,20 @@ export default function MainForm(
   const handleFormSubmit = (formValues: FormValues) => {
     setForm({ values: formValues, isLoading: true })
 
+    const parsedData: any = {}
+
+    for (let [key, value] of Object.entries(formValues)) {
+      if (Array.isArray(value)) {
+        value.forEach((v, i) => {
+          parsedData[`${key}[${i.toString()}]`] = "value" in v ? v.value : v.name
+        })
+      } else {
+        parsedData[key] = value
+      }
+    }
+
     const url = (action === "create") ? `${entity}/${action}` : `${entity}/${action}?id=${formValues.id}`
-    const submitRequest = axiosInst.post(url, formValues, { headers: { "Content-type": "multipart/form-data" } })
+    const submitRequest = axiosInst.post(url, parsedData, { headers: { "Content-type": "multipart/form-data" } })
       .then((response) => {
         const values = {
           ...formValues,
