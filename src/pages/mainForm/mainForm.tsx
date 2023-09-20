@@ -55,7 +55,7 @@ export default function MainForm(
     for (let [key, value] of Object.entries(formValues)) {
       if (Array.isArray(value)) {
         value.forEach((v, i) => {
-          parsedData[`${key}[${i.toString()}]`] = "value" in v ? v.value : v.name
+          parsedData[`${key}[${i.toString()}]`] = typeof v === "object" ? ("value" in v ? v.value : v.name) : v
         })
       } else {
         parsedData[key] = value
