@@ -29,7 +29,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
       case "openApplication":
         sliderProps = {
           type: "iframe",
-          typeParams: { iframeUrl: item.iframeUrl },//TODO iframeUrl BX24
+          typeParams: { iframeUrl: item.params.iframeUrl },//TODO iframeUrl BX24
           placementOptions: item.params,
           width: item.params.width,
           onClose: () => sliderService.hide()
