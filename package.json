@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.2",
-    "@webmens-ru/ui_lib": "0.24.39",
+    "@webmens-ru/ui_lib": "0.24.40",
     "axios": "^0.27.2",
     "react": "^18.1.0",
     "react-dnd": "^16.0.1",
