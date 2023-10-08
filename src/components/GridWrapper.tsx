@@ -1,19 +1,20 @@
-import {ActionCreatorWithPayload} from "@reduxjs/toolkit";
-import {MutationTrigger} from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import {Grid2 as Grid, Loader, Toolbar, useNotification} from "@webmens-ru/ui_lib";
-import {FormValues} from "@webmens-ru/ui_lib/dist/components/form/types";
-import {TRowID} from "@webmens-ru/ui_lib/dist/components/grid/types";
-import {BurgerItem, TCellItem, TRowItem} from "@webmens-ru/ui_lib/dist/components/grid_2";
-import {IBlockItemMetricFilter, IBlockItemMetricLink} from "@webmens-ru/ui_lib/dist/components/toolbar";
-import {AxiosError} from "axios";
-import {useCallback, useMemo, useState} from "react";
-import {axiosInst} from "../app/api/baseQuery";
-import {ErrorResponse} from "../app/model/query";
-import {useAppDispatch} from "../app/store/hooks";
-import {bxOpen} from "../app/utils/bx";
-import {IState} from "../pages/mainPlacement";
-import PopupAction, {PopupActionProps} from "./PopupAction";
-import {SliderProps} from "./slider";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { Grid2 as Grid, Loader, Toolbar, useNotification } from "@webmens-ru/ui_lib";
+import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
+import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
+import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
+import { AxiosError } from "axios";
+import { useCallback, useMemo, useState } from "react";
+import { axiosInst } from "../app/api/baseQuery";
+import { ErrorResponse } from "../app/model/query";
+import { useAppDispatch } from "../app/store/hooks";
+import { bxOpen } from "../app/utils/bx";
+import { getPrintFrame } from "../app/utils/print";
+import { IState } from "../pages/mainPlacement";
+import PopupAction, { PopupActionProps } from "./PopupAction";
+import { SliderProps } from "./slider";
 import useSlider from "./slider/hooks/useSlider";
 
 // TODO: Изучить типизацию redux-toolkit
@@ -32,17 +33,17 @@ interface IGridWrapperProps {
 }
 
 export function GridWrapper({
-                                slice,
-                                schemaSetter,
-                                checkboxesSetter,
-                                filterSetter,
-                                height,
-                                onShemaMutation,
-                                onRowMutation,
-                                onCloseSlider,
-                                onClosePopup,
-                                onNavigate
-                            }: IGridWrapperProps) {
+    slice,
+    schemaSetter,
+    checkboxesSetter,
+    filterSetter,
+    height,
+    onShemaMutation,
+    onRowMutation,
+    onCloseSlider,
+    onClosePopup,
+    onNavigate
+}: IGridWrapperProps) {
     const dispatch = useAppDispatch()
     const sliderService = useSlider()
     const gridState = slice.grid
@@ -56,7 +57,7 @@ export function GridWrapper({
 
     const pagination = useMemo(() => {
         if (slice.pagination) {
-            return {...slice.pagination, onNavigate}
+            return { ...slice.pagination, onNavigate }
         }
     }, [onNavigate, slice.pagination])
 
@@ -70,8 +71,8 @@ export function GridWrapper({
                 if (window._APP_TYPE_ == 'site') {
                     sliderService.show({
                         type: "iframe",
-                        typeParams: {iframeUrl: cell.iframeUrl},
-                        placementOptions: {...cell},
+                        typeParams: { iframeUrl: cell.iframeUrl },
+                        placementOptions: { ...cell },
                         width: cell.bx24_width,
                         onClose: () => handleCloseSlider(cell.updateOnCloseSlider)
                     })
@@ -112,14 +113,14 @@ export function GridWrapper({
                         sliderProps = {
                             type: "iframe",
                             //@ts-ignore
-                            typeParams: {iframeUrl: item?.iframeUrl},
-                            placementOptions: {...item.params, [rowKey]: id},
+                            typeParams: { iframeUrl: item?.iframeUrl },
+                            placementOptions: { ...item.params, [rowKey]: id },
                             width: item.params.width,
                             onClose: () => handleCloseSlider(item.params.updateOnCloseSlider)
                         }
                         sliderService.show(sliderProps)
                     } else {
-                        BX24.openApplication({...item.params, [rowKey]: id}, resolve);
+                        BX24.openApplication({ ...item.params, [rowKey]: id }, resolve);
                     }
 
                     break;
@@ -138,13 +139,13 @@ export function GridWrapper({
                 case "openPath":
                     sliderProps = {
                         type: "iframe",
-                        typeParams: {iframeUrl: item.handler.replace("{id}", id)}
+                        typeParams: { iframeUrl: item.handler.replace("{id}", id) }
                     }
                     break;
                 case "trigger":
                     if (item.params.popup) {
                         setShowPopup(true)
-                        setPopupAction({popup: item.params.popup, row, params: item.params, handler: item.handler})
+                        setPopupAction({ popup: item.params.popup, row, params: item.params, handler: item.handler })
                     }
                     break;
             }
@@ -163,7 +164,7 @@ export function GridWrapper({
 
     const handleRowMutation = (row: TRowItem, key: string, value: any) => {
         if (onRowMutation) {
-            onRowMutation({id: row[rowKey], key, value, entity: slice.entity})
+            onRowMutation({ id: row[rowKey], key, value, entity: slice.entity })
         }
     }
 
@@ -189,9 +190,9 @@ export function GridWrapper({
 
     const handlePopupSubmit = (values?: FormValues) => {
         if (popupAction) {
-            const body = {[rowKey]: popupAction.row[rowKey], form: values}
+            const body = { [rowKey]: popupAction.row[rowKey], form: values }
             return axiosInst
-                .post(popupAction.handler, body, {responseType: "output" in popupAction.params ? "blob" : "json"})
+                .post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
                 .then((response) => {
                     if (response?.data && "notification" in response.data) {
                         notificationApi.show(response.data.notification)
@@ -210,12 +211,23 @@ export function GridWrapper({
     }
 
     const afterPopupSubmit = (response: any) => {
-        if (popupAction && popupAction.params.output && response.data) {
-            const link = document.createElement("a")
-            const title = popupAction.params.output.documentName
-            link.href = URL.createObjectURL(new Blob([response.data]))
-            link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
-            link.click()
+        if (!popupAction?.params?.output?.action || popupAction?.params?.output?.action === 'download') {
+            const link = document.createElement("a");
+            const title = popupAction?.params?.output?.documentName;
+            link.href = URL.createObjectURL(new Blob([response.data]));
+            link.download = title;
+            link.click();
+        }
+        if (popupAction?.params?.output?.action === 'print') {
+            const printContent = response.data
+            const printFrame = getPrintFrame()
+            if (!printFrame) return
+
+            printFrame.document.body.innerHTML = printContent
+            setTimeout(() => {
+                printFrame.window.focus()
+                printFrame.window.print()
+            }, 1000)
         }
 
         if (popupAction && popupAction.params.updateOnCloseSlider && onClosePopup) {
@@ -233,7 +245,7 @@ export function GridWrapper({
 
     const calcHeight = (gridState?.header?.blocks) ? 190 : 160;
 
-    if (slice.isLoading) return <Loader/>;
+    if (slice.isLoading) return <Loader />;
 
     return (
         <>
