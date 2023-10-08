@@ -1,5 +1,7 @@
 import axios from "axios";
 
+export const PRINT_FRAME_NAME = "wm_print_frame"
+
 export const formatData = (
   schema: any[],
   grid: any[] = [],
@@ -43,3 +45,21 @@ export const downloadFile = async (url: string, data: any, format: string) => {
     console.error(error);
   }
 };
+
+export const getPrintFrame = (): Window => {
+  // @ts-ignore
+  let frame: Window = window.frames[PRINT_FRAME_NAME]
+
+  if (frame) return frame
+
+  const printFrame = document.createElement("iframe")
+  printFrame.src = "about:blank"
+  printFrame.name = PRINT_FRAME_NAME
+  printFrame.width = "0"
+  printFrame.height = "0"
+  printFrame.frameBorder = "0"
+  document.body.append(printFrame)
+  
+  // @ts-ignore
+  return window.frames[PRINT_FRAME_NAME]
+}

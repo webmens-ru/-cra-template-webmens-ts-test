@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import { PRINT_FRAME_NAME } from "../../app/utils/print";
 import { OpenSansBold, OpenSansExtraBold, OpenSansLight, OpenSansRegular, OpenSansSemiBold } from "../fonts/OpenSans";
 
 export const GlobalStyles = createGlobalStyle`
@@ -37,5 +38,13 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: 'Open Sans';
+  }
+
+  iframe[name=${PRINT_FRAME_NAME}] {
+    display: none;
+
+    @media print {
+      display: block;
+    }
   }
 `

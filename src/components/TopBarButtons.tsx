@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
 import { ErrorResponse } from "../app/model/query";
+import { getPrintFrame } from "../app/utils/print";
 import { IGridState } from "../pages/main";
 import {
   useLazyGetButtonAddQuery,
@@ -88,25 +89,23 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
         const response = await axiosInst.post(item.handler, body, {
           responseType: item.params.output.type
         })
-        if(!item.params?.output?.action || item.params?.output?.action == 'download'){
+        if (!item.params?.output?.action || item.params?.output?.action === 'download') {
           const link = document.createElement("a");
           const title = item.params?.output?.documentName;
           link.href = URL.createObjectURL(new Blob([response.data]));
           link.download = title;
           link.click();
         }
-        if(item.params?.output?.action == 'print'){
-          const url = URL.createObjectURL(new Blob([response.data]));
-          const iframe = document.createElement('iframe');
-          iframe.style.display = 'none';
-          iframe.src = response.data;
-          document.body.appendChild(iframe);
+        if (item.params?.output?.action === 'print') {
+          const printContent = response.data
+          const printFrame = getPrintFrame()
+          if (!printFrame) return
 
-          iframe.onload = function() {
-            iframe?.contentWindow?.print();
-            document.body.removeChild(iframe);
-            URL.revokeObjectURL(url);
-          };
+          printFrame.document.body.innerHTML = printContent
+          setTimeout(() => {
+            printFrame.window.focus()
+            printFrame.window.print()
+          }, 1000)
         }
         if (item.params.updateOnCloseSlider && onCloseSlider) {
           onCloseSlider()
@@ -149,9 +148,9 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   };
 
   const handleGearClick = async (item: any) => {
-    const gridData = checkboxes.length == 0 || checkboxes.length == grid.grid?.length
+    const gridData = checkboxes.length === 0 || checkboxes.length === grid.grid?.length
       ? grid.grid
-      : grid.grid?.filter((item) => checkboxes.some((check) => check == item.id || check == (item.id as any).title))
+      : grid.grid?.filter((item) => checkboxes.some((check) => check === item.id || check === (item.id as any).title))
     const response = await axiosInst.post('/admin/excel/get-excel', {
       schema: schema.filter((item) => item.visible).sort((a, b) => a.order - b.order),
       grid: gridData || [],
@@ -180,13 +179,13 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
       switch (buttonAdd.data?.params.type) {
         case "openPath":
           BX24.openPath(buttonAdd.data?.params.link, function () {
-              if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
-                  onCloseSlider();
-              }
+            if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
+              onCloseSlider();
+            }
           });
           break;
         case "openApplication":
-          if(window._APP_TYPE_ == 'site'){
+          if (window._APP_TYPE_ === 'site') {
             sliderService.show({
               type: "iframe",
               typeParams: { iframeUrl: buttonAdd.data?.params?.iframeUrl },
@@ -195,7 +194,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
               // TODO: Добавить обработчик закрытия
               onClose: () => handleCloseSlider(buttonAdd.data?.params?.updateOnCloseSlider)
             })
-          }else{
+          } else {
             BX24.openApplication(buttonAdd.data?.params, function () {
               if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
                 onCloseSlider();
@@ -269,7 +268,6 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   }, [getItems, getButtonAdd, entity, parentId, propParentId]);
 
   return (
-    <div id="print-content" style={{ display: 'none' }} ref={printContentRef} dangerouslySetInnerHTML={{ __html: serverContent }} />
     <Container>
       {notificationContext}
       {!!buttonAdd.data && !buttonAdd.data?.items && (
