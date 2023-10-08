@@ -40,6 +40,7 @@ interface IActionItem {
 
 interface IActionItemParams {
   output: {
+    action?: string;
     type: string;
     documentName: string;
   };
@@ -87,12 +88,26 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
         const response = await axiosInst.post(item.handler, body, {
           responseType: item.params.output.type
         })
+        if(!item.params?.output?.action || item.params?.output?.action == 'download'){
+          const link = document.createElement("a");
+          const title = item.params?.output?.documentName;
+          link.href = URL.createObjectURL(new Blob([response.data]));
+          link.download = title;
+          link.click();
+        }
+        if(item.params?.output?.action == 'print'){
+          const url = URL.createObjectURL(new Blob([response.data]));
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.src = response.data;
+          document.body.appendChild(iframe);
 
-        const link = document.createElement("a");
-        const title = item.params?.output?.documentName;
-        link.href = URL.createObjectURL(new Blob([response.data]));
-        link.download = title;
-        link.click();
+          iframe.onload = function() {
+            iframe?.contentWindow?.print();
+            document.body.removeChild(iframe);
+            URL.revokeObjectURL(url);
+          };
+        }
         if (item.params.updateOnCloseSlider && onCloseSlider) {
           onCloseSlider()
         }
@@ -254,6 +269,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   }, [getItems, getButtonAdd, entity, parentId, propParentId]);
 
   return (
+    <div id="print-content" style={{ display: 'none' }} ref={printContentRef} dangerouslySetInnerHTML={{ __html: serverContent }} />
     <Container>
       {notificationContext}
       {!!buttonAdd.data && !buttonAdd.data?.items && (

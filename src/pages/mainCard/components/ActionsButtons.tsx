@@ -48,12 +48,12 @@ export default function ActionButtons({ actions, disabled, parentId, onClosePopu
       const body = { form: values, parentId }
       return axiosInst
           .post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
-          .then((response) => {
-            if (response?.data && "notification" in response.data) {
-              notificationApi.show(response.data.notification)
-            }
-            setShowPopup(false)
-          })
+          // .then((response) => {
+          //   if (response?.data && "notification" in response.data) {
+          //     notificationApi.show(response.data.notification)
+          //   }
+          //   setShowPopup(false)
+          // })
           .catch((err: AxiosError<ErrorResponse>) => {
             setShowPopup(false)
             if (err.response?.data && "notification" in err.response.data) {
