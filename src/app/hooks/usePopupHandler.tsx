@@ -20,8 +20,11 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
       return Promise.all([])
     }
 
+    const responseType = !popupAction.params.output?.action || popupAction.params.output.action === "download" ? "blob"
+      : popupAction.params.output.action === "print" ? "document" : "json"
+
     return axiosInst
-      .post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
+      .post(popupAction.handler, body, { responseType })
       .then((response) => {
         if (response?.data && "notification" in response.data) {
           notificationAPI.show(response.data.notification)
