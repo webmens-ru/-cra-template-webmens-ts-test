@@ -1,12 +1,11 @@
 import { Button, useNotification } from "@webmens-ru/ui_lib";
-import { FormValues } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
-import { TRawColumnItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
-import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { useEffect } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
-import { ErrorResponse } from "../app/model/query";
+import usePopupHandler from "../app/hooks/usePopupHandler";
+import { PopupActionParams } from "../app/model/popup-action";
 import { getPrintFrame } from "../app/utils/print";
 import { IGridState } from "../pages/main";
 import {
@@ -14,7 +13,7 @@ import {
   useLazyGetDynamicButtonItemsQuery,
   useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
-import PopupAction, { PopupActionProps } from "./PopupAction";
+import PopupAction from "./PopupAction";
 import useSlider from "./slider/hooks/useSlider";
 
 interface ITopBarButtonsProps {
@@ -36,19 +35,7 @@ interface IActionItem {
   entityCode: string;
   label: string;
   handler: string;
-  params: IActionItemParams | null;
-}
-
-interface IActionItemParams {
-  output: {
-    action?: string;
-    type: string;
-    documentName: string;
-  };
-  popup?: PopupActionProps;
-  columns: string[];
-  updateOnCloseSlider?: boolean;
-  allowActionIsSelectedEmpty?: false;
+  params: PopupActionParams | null;
 }
 
 export function TopBarButtons({ involvedState, excelTitle, entity, parentId: propParentId, onCloseSlider, onClosePopup }: ITopBarButtonsProps) {
@@ -57,11 +44,9 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   const [sendData] = useSendDataOnButtonClickMutation();
   const sliderService = useSlider()
 
-  const [isShowPopup, setShowPopup] = useState(false)
-  const [popupAction, setPopupAction] = useState<{ handler: string, grid?: TRowItem[], params: IActionItemParams } | null>(null)
-
+  const [notificationContext, notificationAPI] = useNotification()
+  const { isShowPopup, popupAction, ...popupProps } = usePopupHandler({ notificationAPI, onClosePopup })
   const { grid, checkboxes, schema, parentId } = involvedState
-  const [notificationContext, notificationApi] = useNotification()
 
   // TODO: Добавить обработку gridEmpty
   const itemClickHandler = async (item: IActionItem) => {
@@ -75,13 +60,12 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
     if (item.params && "columns" in item.params) {
       // @ts-ignore
       body = body.map(row => Object.fromEntries(
-        Object.entries(row).filter(([key]) => item.params?.columns.includes(key))
+        Object.entries(row).filter(([key]) => item.params?.columns?.includes(key))
       ));
     }
 
     if (item.params && item.params.popup && body?.length) {
-      setShowPopup(true);
-      setPopupAction({ grid: body, params: item.params, handler: item.handler });
+      popupProps.show({ grid: body, params: item.params, handler: item.handler })
     }
 
     if (body?.length && !item.params?.popup) {
@@ -91,7 +75,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
         })
         if (!item.params?.output?.action || item.params?.output?.action === 'download') {
           const link = document.createElement("a");
-          const title = item.params?.output?.documentName;
+          const title = item.params?.output?.documentName || "";
           link.href = URL.createObjectURL(new Blob([response.data]));
           link.download = title;
           link.click();
@@ -121,21 +105,8 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   };
 
   const addButtonItemClickHandler = async (item: IActionItem) => {
-    // let body = grid.grid!.filter((row) => {
-    //   const id = typeof row.id === "object" ? row.id.title : row.id;
-    //   return checkboxes.includes(id);
-    // })
-
-    // if (item.params && "columns" in item.params) {
-    //   // @ts-ignore
-    //   body = body.map(row => Object.fromEntries(
-    //     Object.entries(row).filter(([key]) => item.params?.columns.includes(key))
-    //   ));
-    // }
-
     if (item.params && item.params.popup) {
-      setShowPopup(true);
-      setPopupAction({ params: item.params, handler: item.handler });
+      popupProps.show({ params: item.params, handler: item.handler })
     }
 
     if (!item.params?.popup) {
@@ -191,7 +162,6 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
               typeParams: { iframeUrl: buttonAdd.data?.params?.iframeUrl },
               placementOptions: { ...buttonAdd.data?.params },
               width: buttonAdd.data?.params?.bx24_width,
-              // TODO: Добавить обработчик закрытия
               onClose: () => handleCloseSlider(buttonAdd.data?.params?.updateOnCloseSlider)
             })
           } else {
@@ -206,8 +176,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           window.open(buttonAdd.data?.params.link);
           break;
         case "popup":
-          setShowPopup(true);
-          setPopupAction({ params: buttonAdd.data?.params, handler: buttonAdd.data?.params?.handler });
+          popupProps.show({ params: buttonAdd.data?.params, handler: buttonAdd.data?.params?.handler })
           break;
         default:
           break;
@@ -218,47 +187,6 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
       console.log(buttonAdd.data?.params);
     }
   };
-
-  const handlePopupSubmit = (values?: FormValues) => {
-    if (popupAction) {
-      const body = { grid: popupAction.grid, form: values }
-      return axiosInst
-        .post(popupAction.handler, body, { responseType: "output" in popupAction.params ? "blob" : "json" })
-        .then((response) => {
-          if (response?.data && "notification" in response.data) {
-            notificationApi.show(response.data.notification)
-          }
-          setShowPopup(false)
-        })
-        .catch((err: AxiosError<ErrorResponse>) => {
-          setShowPopup(false)
-          if (err.response?.data && "notification" in err.response.data) {
-            notificationApi.show(err.response.data.notification)
-          }
-        })
-    } else {
-      return Promise.all([])
-    }
-  }
-
-  const afterPopupSubmit = (response: any) => {
-    if (popupAction && popupAction.params.output && response.data) {
-      const link = document.createElement("a")
-      const title = popupAction.params.output.documentName
-      link.href = URL.createObjectURL(new Blob([response.data]))
-      link.download = title //TODO: Убрать дату и расширение. Добавить расширение в title
-      link.click()
-    }
-
-    if (popupAction && popupAction.params.updateOnCloseSlider && onClosePopup) {
-      onClosePopup()
-    }
-  }
-
-  const handleCloseModal = () => {
-    setShowPopup(false)
-    setPopupAction(null)
-  }
 
   useEffect(() => {
     if (entity) {
@@ -312,9 +240,9 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
       {(isShowPopup && !!popupAction?.params.popup) && (
         <PopupAction
           {...popupAction.params.popup}
-          onClose={handleCloseModal}
-          onSubmit={handlePopupSubmit}
-          onAfterSubmit={afterPopupSubmit}
+          onClose={popupProps.close}
+          onSubmit={popupProps.handlePopupSubmit}
+          onAfterSubmit={popupProps.afterPopupSubmit}
         />
       )}
     </Container>
