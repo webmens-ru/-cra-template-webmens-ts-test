@@ -51,7 +51,7 @@ export default function ActionButtons({ actions, disabled, parentId, onClosePopu
         <PopupAction
           {...popupAction.params.popup}
           onClose={popupProps.close}
-          onSubmit={popupProps.handlePopupSubmit}
+          onSubmit={(values) => popupProps.handlePopupSubmit({ ...values, parentId })}
           onAfterSubmit={popupProps.afterPopupSubmit}
         />
       )}
