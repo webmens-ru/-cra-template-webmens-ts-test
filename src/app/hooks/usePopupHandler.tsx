@@ -30,6 +30,7 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
           notificationAPI.show(response.data.notification)
         }
         setIsShowPopup(false)
+        return response
       })
       .catch((err: AxiosError<ErrorResponse>) => {
         setIsShowPopup(false)
@@ -42,7 +43,7 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
   const afterPopupSubmit = (response: any) => {
     const action = popupAction?.params?.output?.action
 
-    if (action || (action === 'download' && action !== 'print')) {
+    if (action === undefined || action === 'download') {
       const link = document.createElement("a");
       const title = popupAction?.params?.output?.documentName || "";
       link.href = URL.createObjectURL(new Blob([response.data]));
@@ -53,9 +54,9 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
     if (action === 'print') {
       const printContent = response.data
       const printFrame = getPrintFrame()
-      if (!printFrame) return
+      if (!printFrame || !printContent?.body) return
 
-      printFrame.document.body.innerHTML = printContent
+      printFrame.document.body.innerHTML = printContent.body.innerHTML
       setTimeout(() => {
         printFrame.window.focus()
         printFrame.window.print()
