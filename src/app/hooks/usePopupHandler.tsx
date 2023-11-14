@@ -40,24 +40,27 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
   }
 
   const afterPopupSubmit = (response: any) => {
-    if (!popupAction?.params?.output?.action || popupAction?.params?.output?.action === 'download') {
+    const action = popupAction?.params?.output?.action
+
+    if (action || (action === 'download' && action !== 'print')) {
       const link = document.createElement("a");
       const title = popupAction?.params?.output?.documentName || "";
       link.href = URL.createObjectURL(new Blob([response.data]));
       link.download = title;
       link.click();
-  }
-  if (popupAction?.params?.output?.action === 'print') {
+    }
+
+    if (action === 'print') {
       const printContent = response.data
       const printFrame = getPrintFrame()
       if (!printFrame) return
 
       printFrame.document.body.innerHTML = printContent
       setTimeout(() => {
-          printFrame.window.focus()
-          printFrame.window.print()
+        printFrame.window.focus()
+        printFrame.window.print()
       }, 1000)
-  }
+    }
 
     if (popupAction && popupAction.params.updateOnCloseSlider && onClosePopup) {
       onClosePopup()
