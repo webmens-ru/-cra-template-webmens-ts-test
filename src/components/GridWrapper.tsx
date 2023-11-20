@@ -138,7 +138,7 @@ export function GridWrapper({
           break;
         case "trigger":
           if (item.params.popup) {
-            popupProps.show({ params: item.params, handler: item.handler })
+            popupProps.show({ params: item.params, row, handler: item.handler })
           }
           break;
       }
@@ -200,7 +200,7 @@ export function GridWrapper({
         <PopupAction
           {...popupAction.params.popup}
           onClose={popupProps.close}
-          onSubmit={popupProps.handlePopupSubmit}
+          onSubmit={(form) => popupProps.handlePopupSubmit({ form, [rowKey]: row[rowKey] })}
           onAfterSubmit={popupProps.afterPopupSubmit}
         />
       )}

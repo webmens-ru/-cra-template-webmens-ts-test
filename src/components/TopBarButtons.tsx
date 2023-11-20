@@ -241,7 +241,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
         <PopupAction
           {...popupAction.params.popup}
           onClose={popupProps.close}
-          onSubmit={popupProps.handlePopupSubmit}
+          onSubmit={(form) => popupProps.handlePopupSubmit({ form, parentId })}
           onAfterSubmit={popupProps.afterPopupSubmit}
         />
       )}

@@ -4,6 +4,7 @@ import { PopupActionProps } from "../../components/PopupAction";
 export interface PopupAction {
   handler: string;
   params: PopupActionParams;
+  row?: TRowItem;
   grid?: TRowItem[];
 }
 
