@@ -200,7 +200,7 @@ export function GridWrapper({
         <PopupAction
           {...popupAction.params.popup}
           onClose={popupProps.close}
-          onSubmit={(form) => popupProps.handlePopupSubmit({ form, [rowKey]: row[rowKey] })}
+          onSubmit={(form) => popupProps.handlePopupSubmit({ form, [rowKey]: popupAction.row ? popupAction?.row[rowKey] : undefined })}
           onAfterSubmit={popupProps.afterPopupSubmit}
         />
       )}
