@@ -1,4 +1,4 @@
-import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { FieldTypes, TField } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
 
 type TAllFieldYii = {
   id: number;
@@ -8,7 +8,7 @@ type TAllFieldYii = {
   order: number;
   type: {
     id: number;
-    name: string;
+    name: FieldTypes;
   };
   filterFieldOptions: [];
   code: string;
@@ -43,7 +43,7 @@ export const concatFieldsAndAllFields = (
       type: allField.type.name,
       title: allField.title,
       queryKey: allField.code,
-      queryParams: { parentId, ...allField.queryParams },
+      queryParams: { parentId },
       code: allField.entityCode,
       visible: false,
       params: allField.params,
