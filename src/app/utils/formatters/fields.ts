@@ -28,6 +28,7 @@ type TFieldYii = {
 export const concatFieldsAndAllFields = (
   fields: TFieldYii[],
   allFields: TAllFieldYii[],
+  parentId?: number
 ): TField[] => {  
   if (!fields || !allFields) {
     return [];
@@ -42,6 +43,7 @@ export const concatFieldsAndAllFields = (
       type: allField.type.name,
       title: allField.title,
       queryKey: allField.code,
+      queryParams: { parentId, ...allField.queryParams },
       code: allField.entityCode,
       visible: false,
       params: allField.params,

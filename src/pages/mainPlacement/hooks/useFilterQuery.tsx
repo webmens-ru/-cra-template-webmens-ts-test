@@ -6,7 +6,6 @@ import {
 } from "..";
 import { axiosInst } from "../../../app/api/baseQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
-import { getFilterResponse } from "../../../app/utils/filterResponse";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
 import { getFilterResponsePost } from "../../../app/utils/postFilterResponse";
 
@@ -74,7 +73,7 @@ export const useFilterQuery = ({ parentId }: { parentId: number }) => {
     [mainPlacementApi.queries, mainPlacementSlice.entity],
   );
 
-  const fields = useMemo<any>(() => concatFieldsAndAllFields(f, all), [all, f]);  
+  const fields = useMemo<any>(() => concatFieldsAndAllFields(f, all, parentId), [all, f, parentId]);  
 
   const updateFieldsOrder = async (fields: TField[]) => {
     await axiosInst.post(
