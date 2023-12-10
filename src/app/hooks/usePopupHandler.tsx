@@ -43,7 +43,7 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
   const afterPopupSubmit = (response: any) => {
     const action = popupAction?.params?.output?.action
 
-    if (action === undefined || action === 'download') {
+    if (popupAction?.params.output !== undefined && (action === undefined || action === 'download')) {
       const link = document.createElement("a");
       const title = popupAction?.params?.output?.documentName || "";
       link.href = URL.createObjectURL(new Blob([response.data]));
@@ -51,7 +51,7 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
       link.click();
     }
 
-    if (action === 'print') {
+    if (popupAction?.params.output !== undefined && action === 'print') {
       const printContent = response.data
       const printFrame = getPrintFrame()
       if (!printFrame || !printContent?.body) return
