@@ -1,5 +1,5 @@
-export const createIframeFields = (name: string, value: string | number | Object, root: HTMLFormElement | null, parentName?: string) => {
-  if (!root) return
+export const createIframeFields = (name: string, value: string | number | Object | null, root: HTMLFormElement | null, parentName?: string) => {
+  if (!root || !value) return
 
   const newName = parentName ? `${parentName}[${name}]` : name
 

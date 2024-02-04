@@ -1,10 +1,10 @@
 import { Loader, Menu } from "@webmens-ru/ui_lib";
+import { Item as MenuItem } from "@webmens-ru/ui_lib/dist/components/menu/types";
 import { setCheckboxes, setFilterResponse, setPage, setSchema, useEditRowMutation, useSaveSchemaMutation, useSetTabsMutation } from ".";
+import useNavigation from "../../app/hooks/useNavigation";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { GridWrapper } from "../../components/GridWrapper";
-import { SliderProps } from "../../components/slider";
-import useSlider from "../../components/slider/hooks/useSlider";
 import { TopBar } from "./components/TopBar";
 import { useData } from "./hooks/useData";
 import { useMenuData } from "./hooks/useMenuData";
@@ -18,40 +18,19 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
   const [schemaMutation] = useSaveSchemaMutation()
   const [rowMutation] = useEditRowMutation()
   const { isCorrect, reload } = useData();
-  const sliderService = useSlider()
+  const navigate = useNavigation()
 
   if (tabs.isLoading) return <Loader />;
 
-  const handleSliderOpen = (item: any) => {
-    let sliderProps: SliderProps
-
-    switch (item.type) {
-      case "openApplication":
-        sliderProps = {
-          type: "iframe",
-          typeParams: { iframeUrl: item.params.iframeUrl },//TODO iframeUrl BX24
-          placementOptions: item.params,
-          width: item.params.width,
-          onClose: () => sliderService.hide()
-        }
-        sliderService.show(sliderProps)
-        break;
-      case "openApplicationPortal":
-        // @ts-ignore
-        sliderProps = {
-          type: "content",
-          placementOptions: item.params,
-          onClose: () => sliderService.hide()
-        }
-        break;
-      case "openPath":
-        sliderProps = {
-          type: "iframe",
-          typeParams: { iframeUrl: item.params.url },
-          onClose: () => sliderService.hide()
-        }
-        break;
-    }
+  const handleSliderOpen = (item: MenuItem) => {
+    navigate({
+      type: item.type,
+      // @ts-ignore
+      url: item.type === "openApplication" ? item.params.iframeUrl : item.params.url,
+      params: item.params,
+      // @ts-ignore
+      width: item.params.bx24_width
+    })
   }
 
   return (

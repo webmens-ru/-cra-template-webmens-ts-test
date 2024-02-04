@@ -12,7 +12,7 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
   const { show: showSlider, ...sliderProps } = useAppSelector(store => store.sliderSlice)
   
   useEffect(() => {
-    if (process.env.NODE_ENV === "production" && window._APP_TYPE_ != 'site') {
+    if (process.env.NODE_ENV === "production" && window._APP_TYPE_ !== 'site') {
       const size = BX24.getScrollSize()
       BX24.resizeWindow(size.scrollWidth, size.scrollHeight - 5)
     }

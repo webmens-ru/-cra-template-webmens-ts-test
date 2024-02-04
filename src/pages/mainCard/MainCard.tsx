@@ -126,6 +126,7 @@ export default function MainCard(props: MainCardProps) {
             items={tabs.data}
             setItem={(tab) => setCurrentTab(tab)}
             sliderOpenner={(params) => sliderService.show(params)}
+            showNativeSlider={window._APP_TYPE_ !== 'site'}
           />
         )}
       </div>

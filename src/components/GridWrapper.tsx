@@ -5,12 +5,12 @@ import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
+import useNavigation from "../app/hooks/useNavigation";
 import usePopupHandler from "../app/hooks/usePopupHandler";
 import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
 import PopupAction from "./PopupAction";
-import { SliderProps } from "./slider";
 import useSlider from "./slider/hooks/useSlider";
 
 // TODO: Изучить типизацию redux-toolkit
@@ -42,6 +42,7 @@ export function GridWrapper({
 }: IGridWrapperProps) {
   const dispatch = useAppDispatch()
   const sliderService = useSlider()
+  const navigate = useNavigation()
   const [notificationContext, notificationAPI] = useNotification()
   const { isShowPopup, popupAction, ...popupProps } = usePopupHandler({ notificationAPI, onClosePopup })
   const gridState = slice.grid
@@ -56,96 +57,35 @@ export function GridWrapper({
   }, [onNavigate, slice.pagination])
 
   const onCellClick = (cell: TCellItem) => {
-    // if (process.env.NODE_ENV === "production") {
-    switch (cell.type) {
-      case "openPath":
-        BX24.openPath(cell.link, (res: any) => console.log(res));
-        break;
-      case "openApplication":
-        if (window._APP_TYPE_ === 'site') {
-          sliderService.show({
-            type: "iframe",
-            typeParams: { iframeUrl: cell.iframeUrl },
-            placementOptions: { ...cell },
-            width: cell.bx24_width,
-            onClose: () => handleCloseSlider(cell.updateOnCloseSlider)
-          })
-        } else {
-          BX24.openApplication(cell, function () {
-            if (cell.updateOnCloseSlider && onCloseSlider) {
-              onCloseSlider()
-            }
-          });
-        }
-
-        break;
-      case "openLink":
-        window.open(cell.link);
-        break;
-      default:
-        break;
-    }
-
-    // } else if (cell.type === "openLink") {
-    //   window.open(cell.link);
-    // } else {
-    //   console.log(cell);
-    // }
+    navigate({
+      type: cell.type,
+      url: cell.type === "openApplication" ? cell.iframeUrl : cell.link,
+      params: cell,
+      width: cell.bx24_width,
+      onCloseSlider: () => handleCloseSlider(cell.updateOnCloseSlider)
+    })
   }
 
   const handleBurgerClick = (item: BurgerItem, row: TRowItem) => {
-    let sliderProps: SliderProps = {}
-    const rowID = row[rowKey]
-    let id = rowID;
-    if (typeof rowID == 'object') {
-      id = rowID.title;
-    }
-    new Promise<void>((resolve) => {
-      switch (item.type) {
-        case "openApplication":
-          if (window._APP_TYPE_ === 'site') {
-            sliderProps = {
-              type: "iframe",
-              //@ts-ignore
-              typeParams: { iframeUrl: item?.iframeUrl },
-              placementOptions: { ...item.params, [rowKey]: id },
-              width: item.params.width,
-              onClose: () => handleCloseSlider(item.params.updateOnCloseSlider)
-            }
-            sliderService.show(sliderProps)
-          } else {
-            BX24.openApplication({ ...item.params, [rowKey]: id }, resolve);
-          }
+    const rowID = row[rowKey] as { title: string } | string
+    const id = typeof rowID === "object" ? rowID?.title : rowID;
 
-          break;
-        case "openApplicationPortal":
-          // @ts-ignore
-          sliderProps = {
-            type: "content",
-            placementOptions: {
-              ...item.params,
-              handler: item.params.handler.replace("{id}", id),
-              [rowKey]: id,
-              route: "portal"
-            }
-          }
-          break;
-        case "openPath":
-          sliderProps = {
-            type: "iframe",
-            typeParams: { iframeUrl: item.handler.replace("{id}", id) }
-          }
-          break;
-        case "trigger":
-          if (item.params.popup) {
-            popupProps.show({ params: item.params, row, handler: item.handler })
-          }
-          break;
-      }
-    }).then(() => {
-      if (item.params.updateOnCloseSlider && onCloseSlider) {
-        onCloseSlider()
-      }
+    if (item.type === "trigger" && item.params.popup) {
+      popupProps.show({ params: item.params, row, handler: item.handler })
+      return
+    }
+
+    navigate({
+      type: item.type,
+      url: item.type === "openApplication" ? item.iframeUrl : item.handler.replace("{id}", id),
+      params: {
+        ...item.params,
+        [rowKey]: id,
+        handler: item.type === "openApplicationPortal" ? item.params.handler.replace("{id}", id) : undefined
+      },
+      // @ts-ignore
+      width: item.params.width,
+      onCloseSlider: () => handleCloseSlider(item.params.updateOnCloseSlider)
     })
   }
 
@@ -182,8 +122,6 @@ export function GridWrapper({
   }
 
   const handleCloseSlider = (updateOnClose: boolean = true) => {
-    sliderService.hide()
-
     if (updateOnClose && onCloseSlider) {
       onCloseSlider()
     }
