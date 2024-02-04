@@ -24,7 +24,7 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
       : popupAction.params.output.action === "print" ? "document" : "json"
 
     return axiosInst
-      .post(popupAction.handler, body, { responseType })
+      .post(popupAction.handler, { ...body, grid: popupAction.grid }, { responseType })
       .then((response) => {
         if (response?.data && "notification" in response.data) {
           notificationAPI.show(response.data.notification)
