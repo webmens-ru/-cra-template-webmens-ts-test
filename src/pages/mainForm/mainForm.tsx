@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { axiosInst } from "../../app/api/baseQuery";
 import { ErrorResponse } from "../../app/model/query";
+import { convertToFormData } from "../../app/utils/formatters/form";
 import {
   useGetFormFieldsQuery,
   useGetFormTitleQuery,
@@ -50,20 +51,9 @@ export default function MainForm(
   const handleFormSubmit = (formValues: FormValues) => {
     setForm({ values: formValues, isLoading: true })
 
-    const parsedData: any = {}
-
-    for (let [key, value] of Object.entries(formValues)) {
-      if (Array.isArray(value)) {
-        value.forEach((v, i) => {
-          parsedData[`${key}[${i.toString()}]`] = typeof v === "object" ? ("value" in v ? v.value : v.name) : v
-        })
-      } else {
-        parsedData[key] = value
-      }
-    }
-
     const url = (action === "create") ? `${entity}/${action}` : `${entity}/${action}?id=${formValues.id}`
-    const submitRequest = axiosInst.post(url, parsedData, { headers: { "Content-type": "multipart/form-data" } })
+    const formData = convertToFormData(formValues)
+    const submitRequest = axiosInst.post(url, formData, { headers: { "Content-type": "multipart/form-data" } })
       .then((response) => {
         const values = {
           ...formValues,
