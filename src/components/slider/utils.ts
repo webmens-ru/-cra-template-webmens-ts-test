@@ -21,9 +21,9 @@ export const createIframeFields = (name: string, value: string | number | Object
   root.append(input)
 }
 
-export function procentWidthToPx(width: string): string {
+export function procentWidthToPx(width: string, offset: number = 0): string {
   if (!width.includes("%")) return width
 
   const procent = parseInt(width)
-  return `${window.innerWidth / 100 * procent}px`
+  return `${(window.innerWidth / 100 * procent) + offset}px`
 }

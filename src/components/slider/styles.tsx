@@ -50,7 +50,7 @@ export const SliderContainer = styled.div<{ width: string, timeout: number, zInd
     }
 
     .close-block {
-      right: ${({ width }) => procentWidthToPx(width)};
+      right: ${({ width }) => procentWidthToPx(width, -16)};
     }
   }
 
@@ -95,8 +95,19 @@ export const SliderCloseBlock = styled.div.attrs({ className: "close-block" }) <
     opacity: .85;
   }
 
-  &:hover::before {
-    border-color: #99dfe8;
+  &::after {
+    content: '';
+    display: none;
+    position: absolute;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgb(153, 223, 232);
+    border-radius: 50%;
+  }
+
+  &:hover::after {
+    display: block;
   } 
 `
 
