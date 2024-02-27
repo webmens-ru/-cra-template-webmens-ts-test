@@ -11,7 +11,6 @@ import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
 import PopupAction from "./PopupAction";
-import useSlider from "./slider/hooks/useSlider";
 
 // TODO: Изучить типизацию redux-toolkit
 interface IGridWrapperProps {
@@ -41,7 +40,6 @@ export function GridWrapper({
   onNavigate
 }: IGridWrapperProps) {
   const dispatch = useAppDispatch()
-  const sliderService = useSlider()
   const navigate = useNavigation()
   const [notificationContext, notificationAPI] = useNotification()
   const { isShowPopup, popupAction, ...popupProps } = usePopupHandler({ notificationAPI, onClosePopup })
