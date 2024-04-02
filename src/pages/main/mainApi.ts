@@ -157,6 +157,11 @@ export const mainApi = createApi({
         method: "POST",
         body: {"parentId": parentId}
       }),
+    }),
+    getHelpButton: build.query<{ title: string, params: any }, { entity: string }>({
+      query: ({ entity }) => ({
+        url: `${entity}/get-help-button`
+      })
     })
   }),
 });
@@ -182,5 +187,6 @@ export const {
   useSendDataOnButtonClickMutation,
   useLazyGetDynamicButtonItemsQuery,
   useLazyGetButtonAddQuery,
-  useEditRowMutation
+  useEditRowMutation,
+  useLazyGetHelpButtonQuery
 } = mainApi;

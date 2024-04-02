@@ -11,6 +11,7 @@ import { IGridState } from "../pages/main";
 import {
   useLazyGetButtonAddQuery,
   useLazyGetDynamicButtonItemsQuery,
+  useLazyGetHelpButtonQuery,
   useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
 import PopupAction from "./PopupAction";
@@ -42,7 +43,8 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
   const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
-  const sliderService = useSlider()
+  const [getHelpButton, helpButton] = useLazyGetHelpButtonQuery();
+  const sliderService = useSlider();
 
   const [notificationContext, notificationAPI] = useNotification()
   const { isShowPopup, popupAction, ...popupProps } = usePopupHandler({ notificationAPI, onClosePopup })
@@ -188,12 +190,23 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
     }
   };
 
+  const buttonHelpOnClick = async () => {
+    switch (helpButton.data?.params.type) {
+      case "openLink":
+        window.open(helpButton.data?.params.link);
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     if (entity) {
       getItems({ entity, parentId: propParentId });
       getButtonAdd({ entity, parentId });
+      getHelpButton({ entity })
     }
-  }, [getItems, getButtonAdd, entity, parentId, propParentId]);
+  }, [getItems, getButtonAdd, entity, parentId, propParentId, getHelpButton]);
 
   return (
     <Container>
@@ -235,6 +248,14 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           items={items.data}
           itemsProps={{ onClick: itemClickHandler }}
           dropdownDirection="left"
+        />
+      )}
+      {!!helpButton.data && (
+        <Button
+          color="gray"
+          svgBefore="help"
+          variant="square"
+          onClick={buttonHelpOnClick}
         />
       )}
       {(isShowPopup && !!popupAction?.params.popup) && (

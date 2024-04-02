@@ -50,7 +50,7 @@ export const SliderContainer = styled.div<{ width: string, timeout: number, zInd
     }
 
     .close-block {
-      right: ${({ width }) => procentWidthToPx(width, -16)};
+      right: ${({ width }) => procentWidthToPx(width, width.indexOf("%") > -1 ? 0 : -16)};
     }
   }
 
