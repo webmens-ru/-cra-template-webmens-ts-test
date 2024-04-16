@@ -1,5 +1,4 @@
-import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
-import { TFilterDates } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
+import { TField, TFilterDates } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { IDataItem } from "@webmens-ru/ui_lib/dist/components/select/types";
 
 export interface PostFilterResponse<ValueType> {
@@ -13,8 +12,11 @@ export interface PostFilterResponseFields {
 
 export type ResponseOperator = "" | "=" | "in" | "isNull" | "isNotNull" | "isNotUsed" | "range" | "%like%" | "%like" | "like%" | "=<>" | ">=" | "<=" | "=>=" | "=<=" | "<" | ">";
 
-export const getFilterResponsePost = (fields: TField[]): PostFilterResponseFields => {
+const FILTER_SEARCH_TEXT_KEY = "wmTextSearch"
+
+export const getFilterResponsePost = (fields: TField[], searchText?: string | null): PostFilterResponseFields => {
   const response: PostFilterResponseFields = {}
+
   fields.forEach((item) => {
     switch (item.type) {
       case "date":
@@ -37,6 +39,11 @@ export const getFilterResponsePost = (fields: TField[]): PostFilterResponseField
         return "";
     }
   })
+
+  if (searchText) {
+    response[FILTER_SEARCH_TEXT_KEY] = [{ operator: "%like%", value: searchText }]
+  }
+
   return response
 }
 

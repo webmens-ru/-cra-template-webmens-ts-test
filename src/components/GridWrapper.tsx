@@ -1,8 +1,8 @@
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { Grid2 as Grid, Loader, Toolbar, useNotification } from "@webmens-ru/ui_lib";
+import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
 import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
-import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
 import useNavigation from "../app/hooks/useNavigation";

@@ -1,8 +1,13 @@
 export function convertToFormData(data: any, formData = new FormData(), parentKey = '') {
   for (let key in data) {
-    if (typeof data[key] === 'object') {
-      if (Array.isArray(data[key])) {
-        data[key].forEach((item: any, index: number) => {
+    const dataItem = data[key];
+    const finalKey = parentKey ? `${parentKey}[${key}]` : key;
+
+    if (typeof dataItem === 'object') {
+      if (dataItem instanceof File) {
+        formData.append(finalKey, dataItem)
+      } else if (Array.isArray(dataItem)) {
+        dataItem.forEach((item: any, index: number) => {
           const finalKey = parentKey ? `${parentKey}[${key}][${index}]` : `${key}[${index}]`
           if (typeof item === "object") {
             convertToFormData(item, formData, finalKey);
@@ -11,12 +16,10 @@ export function convertToFormData(data: any, formData = new FormData(), parentKe
           }
         });
       } else {
-        const finalKey = parentKey ? `${parentKey}[${key}]` : key
-        convertToFormData(data[key], formData, finalKey);
+        convertToFormData(dataItem, formData, finalKey);
       }
     } else {
-      const finalKey = parentKey ? `${parentKey}[${key}]` : key;
-      formData.append(finalKey, data[key]);
+      formData.append(finalKey, dataItem);
     }
   }
 

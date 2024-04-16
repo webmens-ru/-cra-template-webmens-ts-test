@@ -105,17 +105,17 @@ export default function MainCard(props: MainCardProps) {
         <MainCardTitle children={title || "Создание"} />
         <MainCardHeaderActionsContainer>
           {(actionButtons.isSuccess && actionButtons.data) && (
-            <ActionButtons disabled={onCreateState} actions={actionButtons.data} parentId={parentId}/>
+            <ActionButtons disabled={onCreateState} actions={actionButtons.data} parentId={parentId} />
+          )}
+          {helpButton.data && (
+            <Button
+              color="gray"
+              svgBefore="help"
+              variant="square"
+              onClick={buttonHelpOnClick}
+            />
           )}
         </MainCardHeaderActionsContainer>
-        {helpButton.data && (
-            <Button
-                color="gray"
-                svgBefore="help"
-                variant="square"
-                onClick={buttonHelpOnClick}
-            />
-        )}
       </MainCardHeaderContainer>
 
       <div style={{ marginBottom: 15 }}>

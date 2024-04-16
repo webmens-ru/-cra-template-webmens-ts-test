@@ -1,8 +1,8 @@
 import { FilterAlpha as Filter } from "@webmens-ru/ui_lib";
 import { useLazyGetDynamicSelectItemsQuery } from "..";
 import { useAppSelector } from "../../../app/store/hooks";
-import CopyToClipboard from "../../../components/copyToClipboard";
 import { TopBarButtons } from "../../../components/TopBarButtons";
+import CopyToClipboard from "../../../components/copyToClipboard";
 import { useFilterQuery } from "../hooks/useFilterQuery";
 import ControlBar from "./control_bar";
 
@@ -27,7 +27,7 @@ export function TopBar({onCloseSlider, onClosePopup} : ITopBarProps) {
       <Filter
         currentFilter={mainSlice.currentFilter}
         {...filterProps}
-        onClearFilter={() => filterProps.onSearch([])}
+        onClearFilter={() => filterProps?.onSearch && filterProps.onSearch([])}
         getSelectItems={getSelectItems}
       />
       <TopBarButtons 

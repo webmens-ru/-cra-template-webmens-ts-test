@@ -1,8 +1,8 @@
-import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
-import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
-import { useCallback, useMemo } from "react";
+import { TField, TFilter, TProps } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { useCallback, useMemo, useRef } from "react";
 import {
-  setCurrentFilter as setFilter, setFilterResponse, setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
+  setCurrentFilter as setFilter, setFilterResponse,
+  setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
   useLazyGetFieldsQuery, useUpdateFieldMutation, useUpdateFilterMutation, useUpdateFiltersOrderMutation
 } from "..";
 import { axiosInst } from "../../../app/api/baseQuery";
@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
 import { getFilterResponsePost } from "../../../app/utils/postFilterResponse";
 
-export const useFilterQuery = () => {
+export const useFilterQuery = (): TProps => {
   const dispatch = useAppDispatch();
   const { mainSlice, mainApi } = useAppSelector((state) => state);
   const [createFilter] = useCreateFilterMutation();
@@ -22,11 +22,12 @@ export const useFilterQuery = () => {
   const [deleteField] = useDeleteFieldMutation();
   const [getFieldsQuery] = useLazyGetFieldsQuery();
 
+  const searchTextRef = useRef<string>("")
+
   const onSearch = useCallback(async (fields: TField[]) => {
     dispatch(setIsLoading(true));
 
-    const filterResponse = getFilterResponsePost(fields);
-    console.log(mainSlice.currentFilter.id)
+    const filterResponse = getFilterResponsePost(fields, searchTextRef.current);
 
     getFieldsQuery(mainSlice.currentFilter.id);
     dispatch(setFilterResponse(filterResponse));
@@ -55,9 +56,7 @@ export const useFilterQuery = () => {
     }
   };
 
-  const setCurrentFilter = (filter: TFilter) => {
-    console.log(filter);
-    
+  const setCurrentFilter = (filter: TFilter) => {    
     getFieldsQuery(filter.id).then(response => {
       dispatch(setFilter(filter));
     })
@@ -70,18 +69,19 @@ export const useFilterQuery = () => {
     [mainApi.queries, mainSlice.currentTab.params?.entity],
   );
 
-  const f = useMemo<any>(
+  const rawFields = useMemo<any>(
     () => mainApi.queries[`getFields(${mainSlice.currentFilter?.id})`]?.data,
     [mainApi.queries, mainSlice.currentFilter?.id],
   );
-  const all = useMemo<any>(
+
+  const allFields = useMemo<any>(
     () =>
       mainApi.queries[`getAllFields("${mainSlice.currentTab.params?.entity}")`]
         ?.data,
     [mainApi.queries, mainSlice.currentTab.params?.entity],
   );
 
-  const fields = useMemo<any>(() => concatFieldsAndAllFields(f, all), [all, f]);
+  const fields = useMemo<any>(() => concatFieldsAndAllFields(rawFields, allFields), [allFields, rawFields]);
 
   const updateFieldsOrder = async (fields: TField[]) => {
     await axiosInst.post(
@@ -89,6 +89,10 @@ export const useFilterQuery = () => {
       fields.filter((f) => f.visible),
     );
   };
+
+  const updateTextSearch = (text: string) => {    
+    searchTextRef.current = text
+  }
 
   return {
     filters,
@@ -100,6 +104,7 @@ export const useFilterQuery = () => {
     updateFieldsOrder,
     updateField,
     onSearch,
-    setCurrentFilter
+    setCurrentFilter,
+    updateTextSearch
   };
 };

@@ -1,5 +1,4 @@
-import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
-import { TFilterDates } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
+import { TField, TFilterDates } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { IDataItem } from "@webmens-ru/ui_lib/dist/components/select/types";
 
 export const getFilterResponse = (array: TField[]) => {

@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/grid/components/pagination";
 import { TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
-import { PaginationProps } from '@webmens-ru/ui_lib/dist/components/pagination';
 import { baseQuery } from "../../app/api/baseQuery";
 import { PostFilterResponseFields } from './../../app/utils/postFilterResponse';
 

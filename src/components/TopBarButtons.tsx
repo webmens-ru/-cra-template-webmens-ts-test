@@ -1,6 +1,5 @@
 import { Button, useNotification } from "@webmens-ru/ui_lib";
-import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
-import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { TRawColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
@@ -9,10 +8,10 @@ import { PopupActionParams } from "../app/model/popup-action";
 import { getPrintFrame } from "../app/utils/print";
 import { IGridState } from "../pages/main";
 import {
-  useLazyGetButtonAddQuery,
-  useLazyGetDynamicButtonItemsQuery,
-  useLazyGetHelpButtonQuery,
-  useSendDataOnButtonClickMutation
+    useLazyGetButtonAddQuery,
+    useLazyGetDynamicButtonItemsQuery,
+    useLazyGetHelpButtonQuery,
+    useSendDataOnButtonClickMutation
 } from "../pages/main/mainApi";
 import PopupAction from "./PopupAction";
 import useSlider from "./slider/hooks/useSlider";

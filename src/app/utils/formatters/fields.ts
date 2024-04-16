@@ -1,4 +1,4 @@
-import { FieldTypes, TField } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
+import { FieldTypes, TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
 
 type TAllFieldYii = {
   id: number;

@@ -15,6 +15,7 @@ interface Window {
   "_APP_URL_": string;
   "_HOSTNAME_": string;
   "_APP_TYPE_"?: string;
+  BX24?: BX24;
 }
 
 declare module '*.avif' {
@@ -106,8 +107,8 @@ declare const BX24: {
 
 declare module '@ckeditor/ckeditor5-react' {
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-  import Event from '@ckeditor/ckeditor5-utils/src/eventinfo'
-  import { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig'
+  import { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+  import Event from '@ckeditor/ckeditor5-utils/src/eventinfo';
   import * as React from 'react';
   const CKEditor: React.FunctionComponent<{
       disabled?: boolean;

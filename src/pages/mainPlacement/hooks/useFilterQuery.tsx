@@ -1,5 +1,5 @@
 import { TField } from "@webmens-ru/ui_lib/dist/components/filter/types";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import {
   setFilterResponse, setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
   useLazyGetFieldsQuery, useUpdateFieldMutation, useUpdateFilterMutation, useUpdateFiltersOrderMutation
@@ -21,17 +21,17 @@ export const useFilterQuery = ({ parentId }: { parentId: number }) => {
   const [deleteField] = useDeleteFieldMutation();
   const [getFieldsQuery] = useLazyGetFieldsQuery();
 
-  const onSearch = useCallback(
-    async (fields: TField[]) => {      
-      dispatch(setIsLoading(true));      
-      const filterResponse = getFilterResponsePost(fields);
-      
-      getFieldsQuery(mainPlacementSlice.currentFilter.id);
-      dispatch(setFilterResponse(filterResponse));
-      dispatch(setIsLoading(false));
-    },
-    [dispatch, getFieldsQuery, mainPlacementSlice.currentFilter],
-  );
+  const searchTextRef = useRef<string | null>(null)
+
+  const onSearch = useCallback(async (fields: TField[]) => {
+    dispatch(setIsLoading(true));
+
+    const filterResponse = getFilterResponsePost(fields, searchTextRef.current);
+
+    getFieldsQuery(mainPlacementSlice.currentFilter.id);
+    dispatch(setFilterResponse(filterResponse));
+    dispatch(setIsLoading(false));
+  }, [dispatch, getFieldsQuery, mainPlacementSlice.currentFilter]);
 
   const updateField = async (filter: TField, param: string) => {
     if (param === "hide") {
@@ -73,7 +73,7 @@ export const useFilterQuery = ({ parentId }: { parentId: number }) => {
     [mainPlacementApi.queries, mainPlacementSlice.entity],
   );
 
-  const fields = useMemo<any>(() => concatFieldsAndAllFields(f, all, parentId), [all, f, parentId]);  
+  const fields = useMemo<any>(() => concatFieldsAndAllFields(f, all, parentId), [all, f, parentId]);
 
   const updateFieldsOrder = async (fields: TField[]) => {
     await axiosInst.post(
@@ -81,6 +81,10 @@ export const useFilterQuery = ({ parentId }: { parentId: number }) => {
       fields.filter((f) => f.visible),
     );
   };
+
+  const updateTextSearch = (text: string) => {    
+    searchTextRef.current = text
+  }
 
   return {
     filters,
@@ -92,5 +96,6 @@ export const useFilterQuery = ({ parentId }: { parentId: number }) => {
     updateFieldsOrder,
     updateField,
     onSearch,
+    updateTextSearch
   };
 };

@@ -1,5 +1,5 @@
 import { FilterAlpha as Filter } from "@webmens-ru/ui_lib";
-import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter_2/types";
+import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { setCurrentFilter, useLazyGetDynamicSelectItemsQuery } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { TopBarButtons } from "../../../components/TopBarButtons";

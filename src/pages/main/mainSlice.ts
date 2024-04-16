@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid";
+import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/grid/components/pagination";
 import { TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
-import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
 import { Item } from "@webmens-ru/ui_lib/dist/components/menu/types";
-import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/pagination";
 import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
 import { mainApi } from './mainApi';
 

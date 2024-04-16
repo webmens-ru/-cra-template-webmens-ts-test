@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import { BurgerItem, TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid";
+import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/grid/components/pagination";
 import { TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
-import { BurgerItem, TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
-import { PaginationProps } from '@webmens-ru/ui_lib/dist/components/pagination';
 import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
 
 // TODO: Вынести в generic-типы

@@ -1,6 +1,6 @@
 import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
-import { TRowID, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid/types";
-import { TCellItem } from "@webmens-ru/ui_lib/dist/components/grid_2";
+import { TCellItem } from "@webmens-ru/ui_lib/dist/components/grid";
+import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
 import { BlockItems } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
 import { useSaveSchemaMutation } from "..";
