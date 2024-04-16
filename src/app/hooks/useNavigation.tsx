@@ -52,7 +52,7 @@ export default function useNavigation() {
             onClose: onCloseComponentSlider
           })
         } else if (BX24 && url) {
-          BX24.openPath(url);
+          BX24.openPath(url, onCloseSlider);
         }
         break;
       case "openLink":
