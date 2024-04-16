@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import useBX24Window from "./app/hooks/useBX24Window";
 import { useAppSelector } from "./app/store/hooks";
 import { Slider } from "./components/slider";
 import { Main } from "./pages/main";
@@ -10,13 +10,7 @@ import MainPlacement from "./pages/mainPlacement/MainPlacement";
 
 function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
   const { show: showSlider, ...sliderProps } = useAppSelector(store => store.sliderSlice)
-  
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production" && window._APP_TYPE_ !== 'site') {
-      const size = BX24.getScrollSize()
-      BX24.resizeWindow(size.scrollWidth, size.scrollHeight - 5)
-    }
-  }, [])
+  useBX24Window()
 
   const stringToBoolean = (value?: string | boolean) => {
     if (value === undefined || value === null || value === true || value === false) return value
