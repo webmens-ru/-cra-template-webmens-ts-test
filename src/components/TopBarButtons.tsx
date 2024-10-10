@@ -34,8 +34,8 @@ interface IActionItem {
   id: number;
   entityCode: string;
   label: string;
-  handler: string;
-  params: PopupActionParams | null;
+  handler: string|null;
+  params: /*PopupActionParams*/ any | null;
 }
 
 export function TopBarButtons({ involvedState, excelTitle, entity, parentId: propParentId, onCloseSlider, onClosePopup }: ITopBarButtonsProps) {
@@ -65,11 +65,11 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
       ));
     }
 
-    if (item.params && item.params.popup && body?.length) {
+    if (item.params && item.params.popup && body?.length&&item.handler) {
       popupProps.show({ grid: body, params: item.params, handler: item.handler })
     }
 
-    if (body?.length && !item.params?.popup) {
+    if (body?.length && !item.params?.popup&&item.handler) {
       if (item.params?.output?.type === "blob") {
         const response = await axiosInst.post(item.handler, body, {
           responseType: item.params.output.type
@@ -106,17 +106,56 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   };
 
   const addButtonItemClickHandler = async (item: IActionItem) => {
-    if (item.params && item.params.popup) {
-      popupProps.show({ params: item.params, handler: item.handler })
+
+    if(item.params?.type){
+      switch (item.params.type) {
+        case "openPath":
+          BX24.openPath(item.params.link, function () {
+            if (item.params.updateOnCloseSlider && onCloseSlider) {
+              onCloseSlider();
+            }
+          });
+          break;
+        case "openApplication":
+          if (window._APP_TYPE_ === 'site') {
+            sliderService.show({
+              type: "iframe",
+              typeParams: { iframeUrl: item.params?.iframeUrl },
+              placementOptions: { ...item.params?.params },
+              width: item.params?.bx24_width,
+              onClose: () => handleCloseSlider(item.params?.updateOnCloseSlider)
+            })
+          } else {
+            BX24.openApplication(item.params, function () {
+              if (item.params.updateOnCloseSlider && onCloseSlider) {
+                onCloseSlider();
+              }
+            });
+          }
+          break;
+        case "openLink":
+          window.open(item.params.link);
+          break;
+        case "popup":
+          popupProps.show({ params: item.params, handler: item.params?.handler })
+          break;
+        default:
+          break;
+      }
+    }else{//TODO old version обратная совместимость
+      if (item.params && item.params.popup&&item.handler) {
+        popupProps.show({ params: item.params, handler: item.handler })
+      }
+
+      if (!item.params?.popup&&item.handler) {
+        await sendData({ url: item.handler, body: {} }).then(() => {
+          if (item.params?.updateOnCloseSlider && onCloseSlider) {
+            onCloseSlider()
+          }
+        });
+      }
     }
 
-    if (!item.params?.popup) {
-      await sendData({ url: item.handler, body: {} }).then(() => {
-        if (item.params?.updateOnCloseSlider && onCloseSlider) {
-          onCloseSlider()
-        }
-      });
-    }
   };
 
   const handleGearClick = async (item: any) => {
@@ -225,6 +264,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           svgBefore="black-plus"
           items={buttonAdd.data.items}
           dropdownDirection="left"
+          dropdownWidth = {buttonAdd.data?.dropdownWidth?buttonAdd.data.dropdownWidth:'150px'}
           itemsProps={{ onClick: addButtonItemClickHandler }}
           buttonProps={{ onClick: buttonAddOnClick }}
         >
