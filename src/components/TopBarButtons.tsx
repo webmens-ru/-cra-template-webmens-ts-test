@@ -143,7 +143,7 @@ export function TopBarButtons({
             sliderService.show({
               type: "iframe",
               typeParams: { iframeUrl: item.params?.iframeUrl },
-              placementOptions: { ...item.params?.params },
+              placementOptions: { ...item.params },
               width: item.params?.bx24_width,
               onClose: () =>
                 handleCloseSlider(item.params?.updateOnCloseSlider),
