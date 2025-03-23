@@ -1,26 +1,28 @@
 import { Button, useNotification } from "@webmens-ru/ui_lib";
-import { TRawColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import {
+  TRawColumnItem,
+  TRowID,
+} from "@webmens-ru/ui_lib/dist/components/grid";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
 import usePopupHandler from "../app/hooks/usePopupHandler";
-import { PopupActionParams } from "../app/model/popup-action";
 import { getPrintFrame } from "../app/utils/print";
 import { IGridState } from "../pages/main";
 import {
-    useLazyGetButtonAddQuery,
-    useLazyGetDynamicButtonItemsQuery,
-    useLazyGetHelpButtonQuery,
-    useSendDataOnButtonClickMutation
+  useLazyGetButtonAddQuery,
+  useLazyGetDynamicButtonItemsQuery,
+  useLazyGetHelpButtonQuery,
+  useSendDataOnButtonClickMutation,
 } from "../pages/main/mainApi";
 import PopupAction from "./PopupAction";
 import useSlider from "./slider/hooks/useSlider";
 
 interface ITopBarButtonsProps {
   involvedState: {
-    schema: TRawColumnItem[]
+    schema: TRawColumnItem[];
     grid: IGridState;
-    checkboxes: TRowID[]
+    checkboxes: TRowID[];
     parentId?: string | number;
   };
   excelTitle?: string;
@@ -34,71 +36,92 @@ interface IActionItem {
   id: number;
   entityCode: string;
   label: string;
-  handler: string|null;
+  handler: string | null;
   params: /*PopupActionParams*/ any | null;
 }
 
-export function TopBarButtons({ involvedState, excelTitle, entity, parentId: propParentId, onCloseSlider, onClosePopup }: ITopBarButtonsProps) {
+export function TopBarButtons({
+  involvedState,
+  excelTitle,
+  entity,
+  parentId: propParentId,
+  onCloseSlider,
+  onClosePopup,
+}: ITopBarButtonsProps) {
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
   const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
   const [sendData] = useSendDataOnButtonClickMutation();
   const [getHelpButton, helpButton] = useLazyGetHelpButtonQuery();
   const sliderService = useSlider();
 
-  const [notificationContext, notificationAPI] = useNotification()
-  const { isShowPopup, popupAction, ...popupProps } = usePopupHandler({ notificationAPI, onClosePopup })
-  const { grid, checkboxes, schema, parentId } = involvedState
+  const [notificationContext, notificationAPI] = useNotification();
+  const { isShowPopup, popupAction, ...popupProps } = usePopupHandler({
+    notificationAPI,
+    onClosePopup,
+  });
+  const { grid, checkboxes, schema, parentId } = involvedState;
 
   // TODO: Добавить обработку gridEmpty
   const itemClickHandler = async (item: IActionItem) => {
     let body = item.params?.allowActionIsSelectedEmpty
       ? grid.grid
       : grid.grid!.filter((row) => {
-        const id = typeof row.id === "object" ? row.id.title : row.id;
-        return checkboxes.includes(id);
-      })
+          const id = typeof row.id === "object" ? row.id.title : row.id;
+          return checkboxes.includes(id);
+        });
 
     if (item.params && "columns" in item.params) {
       // @ts-ignore
-      body = body.map(row => Object.fromEntries(
-        Object.entries(row).filter(([key]) => item.params?.columns?.includes(key))
-      ));
+      body = body.map((row) =>
+        Object.fromEntries(
+          Object.entries(row).filter(([key]) =>
+            item.params?.columns?.includes(key)
+          )
+        )
+      );
     }
 
-    if (item.params && item.params.popup && body?.length&&item.handler) {
-      popupProps.show({ grid: body, params: item.params, handler: item.handler })
+    if (item.params && item.params.popup && body?.length && item.handler) {
+      popupProps.show({
+        grid: body,
+        params: item.params,
+        handler: item.handler,
+      });
     }
 
-    if (body?.length && !item.params?.popup&&item.handler) {
+    if (body?.length && !item.params?.popup && item.handler) {
       if (item.params?.output?.type === "blob") {
         const response = await axiosInst.post(item.handler, body, {
-          responseType: item.params.output.type
-        })
-        if (!item.params?.output?.action || item.params?.output?.action === 'download') {
+          responseType: item.params.output.type,
+        });
+        if (
+          !item.params?.output?.action ||
+          item.params?.output?.action === "download"
+        ) {
           const link = document.createElement("a");
           const title = item.params?.output?.documentName || "";
           link.href = URL.createObjectURL(new Blob([response.data]));
           link.download = title;
           link.click();
         }
-        if (item.params?.output?.action === 'print') {
-          const printContent = response.data
-          const printFrame = getPrintFrame()
-          if (!printFrame) return
+        if (item.params?.output?.action === "print") {
+          const printContent = response.data;
+          const printFrame = getPrintFrame();
+          if (!printFrame) return;
 
-          printFrame.document.body.innerHTML = printContent
+          printFrame.document.body.innerHTML = printContent;
           setTimeout(() => {
-            printFrame.window.focus()
-            printFrame.window.print()
-          }, 1000)
+            printFrame.window.focus();
+            printFrame.window.print();
+          }, 1000);
         }
         if (item.params.updateOnCloseSlider && onCloseSlider) {
-          onCloseSlider()
+          onCloseSlider();
         }
       } else {
         await sendData({ url: item.handler, body }).then(() => {
           if (item.params?.updateOnCloseSlider && onCloseSlider) {
-            onCloseSlider()
+            onCloseSlider();
           }
         });
       }
@@ -106,8 +129,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
   };
 
   const addButtonItemClickHandler = async (item: IActionItem) => {
-
-    if(item.params?.type){
+    if (item.params?.type) {
       switch (item.params.type) {
         case "openPath":
           BX24.openPath(item.params.link, function () {
@@ -117,14 +139,15 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           });
           break;
         case "openApplication":
-          if (window._APP_TYPE_ === 'site') {
+          if (window._APP_TYPE_ === "site") {
             sliderService.show({
               type: "iframe",
               typeParams: { iframeUrl: item.params?.iframeUrl },
               placementOptions: { ...item.params?.params },
               width: item.params?.bx24_width,
-              onClose: () => handleCloseSlider(item.params?.updateOnCloseSlider)
-            })
+              onClose: () =>
+                handleCloseSlider(item.params?.updateOnCloseSlider),
+            });
           } else {
             BX24.openApplication(item.params, function () {
               if (item.params.updateOnCloseSlider && onCloseSlider) {
@@ -137,53 +160,67 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           window.open(item.params.link);
           break;
         case "popup":
-          popupProps.show({ params: item.params, handler: item.params?.handler })
+          popupProps.show({
+            params: item.params,
+            handler: item.params?.handler,
+          });
           break;
         default:
           break;
       }
-    }else{//TODO old version обратная совместимость
-      if (item.params && item.params.popup&&item.handler) {
-        popupProps.show({ params: item.params, handler: item.handler })
+    } else {
+      //TODO old version обратная совместимость
+      if (item.params && item.params.popup && item.handler) {
+        popupProps.show({ params: item.params, handler: item.handler });
       }
 
-      if (!item.params?.popup&&item.handler) {
+      if (!item.params?.popup && item.handler) {
         await sendData({ url: item.handler, body: {} }).then(() => {
           if (item.params?.updateOnCloseSlider && onCloseSlider) {
-            onCloseSlider()
+            onCloseSlider();
           }
         });
       }
     }
-
   };
 
   const handleGearClick = async (item: any) => {
-    const gridData = checkboxes.length === 0 || checkboxes.length === grid.grid?.length
-      ? grid.grid
-      : grid.grid?.filter((item) => checkboxes.some((check) => check === item.id || check === (item.id as any).title))
-    const response = await axiosInst.post('/admin/excel/get-excel', {
-      schema: schema.filter((item) => item.visible).sort((a, b) => a.order - b.order),
-      grid: gridData || [],
-      footer: gridData?.length === grid.grid?.length ? grid.footer : []
-    }, {
-      responseType: "blob"
-    })
+    const gridData =
+      checkboxes.length === 0 || checkboxes.length === grid.grid?.length
+        ? grid.grid
+        : grid.grid?.filter((item) =>
+            checkboxes.some(
+              (check) => check === item.id || check === (item.id as any).title
+            )
+          );
+    const response = await axiosInst.post(
+      "/admin/excel/get-excel",
+      {
+        schema: schema
+          .filter((item) => item.visible)
+          .sort((a, b) => a.order - b.order),
+        grid: gridData || [],
+        footer: gridData?.length === grid.grid?.length ? grid.footer : [],
+      },
+      {
+        responseType: "blob",
+      }
+    );
 
-    const link = document.createElement("a")
-    const title = excelTitle || "Excel"
-    link.href = URL.createObjectURL(new Blob([response.data]))
-    link.download = `${title} ${new Date().toLocaleString().slice(0, 10)}.xlsx`
-    link.click()
-  }
+    const link = document.createElement("a");
+    const title = excelTitle || "Excel";
+    link.href = URL.createObjectURL(new Blob([response.data]));
+    link.download = `${title} ${new Date().toLocaleString().slice(0, 10)}.xlsx`;
+    link.click();
+  };
 
   const handleCloseSlider = (updateOnClose: boolean = true) => {
-    sliderService.hide()
+    sliderService.hide();
 
     if (updateOnClose && onCloseSlider) {
-      onCloseSlider()
+      onCloseSlider();
     }
-  }
+  };
 
   const buttonAddOnClick = async () => {
     if (process.env.NODE_ENV === "production") {
@@ -196,14 +233,15 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           });
           break;
         case "openApplication":
-          if (window._APP_TYPE_ === 'site') {
+          if (window._APP_TYPE_ === "site") {
             sliderService.show({
               type: "iframe",
               typeParams: { iframeUrl: buttonAdd.data?.params?.iframeUrl },
               placementOptions: { ...buttonAdd.data?.params },
               width: buttonAdd.data?.params?.bx24_width,
-              onClose: () => handleCloseSlider(buttonAdd.data?.params?.updateOnCloseSlider)
-            })
+              onClose: () =>
+                handleCloseSlider(buttonAdd.data?.params?.updateOnCloseSlider),
+            });
           } else {
             BX24.openApplication(buttonAdd.data?.params, function () {
               if (buttonAdd.data?.params.updateOnCloseSlider && onCloseSlider) {
@@ -216,7 +254,10 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           window.open(buttonAdd.data?.params.link);
           break;
         case "popup":
-          popupProps.show({ params: buttonAdd.data?.params, handler: buttonAdd.data?.params?.handler })
+          popupProps.show({
+            params: buttonAdd.data?.params,
+            handler: buttonAdd.data?.params?.handler,
+          });
           break;
         default:
           break;
@@ -242,7 +283,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
     if (entity) {
       getItems({ entity, parentId: propParentId });
       getButtonAdd({ entity, parentId });
-      getHelpButton({ entity })
+      getHelpButton({ entity });
     }
   }, [getItems, getButtonAdd, entity, parentId, propParentId, getHelpButton]);
 
@@ -264,7 +305,11 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           svgBefore="black-plus"
           items={buttonAdd.data.items}
           dropdownDirection="left"
-          dropdownWidth = {buttonAdd.data?.dropdownWidth?buttonAdd.data.dropdownWidth:'150px'}
+          dropdownWidth={
+            buttonAdd.data?.dropdownWidth
+              ? buttonAdd.data.dropdownWidth
+              : "150px"
+          }
           itemsProps={{ onClick: addButtonItemClickHandler }}
           buttonProps={{ onClick: buttonAddOnClick }}
         >
@@ -297,7 +342,7 @@ export function TopBarButtons({ involvedState, excelTitle, entity, parentId: pro
           onClick={buttonHelpOnClick}
         />
       )}
-      {(isShowPopup && !!popupAction?.params.popup) && (
+      {isShowPopup && !!popupAction?.params.popup && (
         <PopupAction
           {...popupAction.params.popup}
           onClose={popupProps.close}
