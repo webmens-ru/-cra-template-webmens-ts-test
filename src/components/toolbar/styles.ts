@@ -53,6 +53,7 @@ export const BlockTitle = styled(BlockItemContainer)`
 export const MetricFilterContainer = styled(BlockItemContainer)`
   &:hover {
     background: rgba(82,92,105,.15);
+    flex-shrink: 0;
   }
 `
 

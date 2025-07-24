@@ -48,6 +48,7 @@ export function GridWrapper({
   const rowKey = gridState?.options?.key || "id"
   const burgerItems = gridState?.options?.actions || []
 
+  const isFirstLoading = slice.isLoading && !slice.schema?.length && !gridState?.grid
 
   const pagination = useMemo(() => {
     if (slice.pagination) {
@@ -128,10 +129,11 @@ export function GridWrapper({
 
   const calcHeight = (gridState?.header?.blocks) ? 190 : 160;
 
-  if (slice.isLoading) return <Loader />;
+  if (isFirstLoading) return <Loader />;
 
   return (
     <>
+      {slice.isLoading && <Loader transparent />}
       {notificationContext}
       {(isShowPopup && !!popupAction?.params.popup) && (
         <PopupAction

@@ -2,14 +2,16 @@ import React, { StrictMode } from "react";
 import styled, { keyframes } from "styled-components";
 import logo from "./assets/webmens_200_200.png";
 
-/**
- * Loader without props
- */
+export interface LoaderProps {
+  transparent?: boolean
+}
 
-export const Loader = React.memo(() => {
+export const Loader = React.memo(({
+  transparent
+}: LoaderProps) => {
   return (
     <StrictMode>
-      <LoadingContainer>
+      <LoadingContainer className={transparent ? 'transparent' : ''}>
         <LoadingContent>
           <img src={logo} alt="Logo" />
           <Ring data-testid="loader-ring">
@@ -32,6 +34,10 @@ const LoadingContainer = styled.div`
   display: flex;
   background: rgb(255, 255, 255);
   z-index: 100;
+
+  &.transparent {
+    background: rgba(55, 55, 55, .5);
+  }
 `;
 
 const LoadingContent = styled.div`

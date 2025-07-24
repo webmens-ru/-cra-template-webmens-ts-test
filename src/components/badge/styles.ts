@@ -32,6 +32,7 @@ export const BadgeContainer = styled.div<IBadgeContainerProps>`
   white-space: nowrap;
   text-align: center;
   border-radius: 10px;
+  flex-shrink: 0;
 `
 
 export const BadgeCount = styled.span`
