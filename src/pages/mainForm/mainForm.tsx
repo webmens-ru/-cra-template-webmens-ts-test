@@ -1,8 +1,3 @@
-import { Loader, useNotification } from "@webmens-ru/ui_lib";
-import {
-  FormMode,
-  FormValues,
-} from "@webmens-ru/ui_lib/dist/components/form/types";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { axiosInst } from "../../app/api/baseQuery";
@@ -14,7 +9,9 @@ import {
   useGetValidationQuery,
   useLazyGetFormValuesQuery,
 } from "./mainFormApi";
-import Form from "../../components/form";
+import Form, { type FormMode, type FormValues } from "../../components/form";
+import { Loader } from "../../components/loader";
+import useNotification from "../../components/notification";
 
 export interface MainFormProps {
   width?: string;

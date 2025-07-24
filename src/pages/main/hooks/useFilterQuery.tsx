@@ -1,4 +1,3 @@
-import { TField, TFilter, TProps } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { useCallback, useMemo, useRef } from "react";
 import {
   setCurrentFilter as setFilter, setFilterResponse,
@@ -9,6 +8,7 @@ import { axiosInst } from "../../../app/api/baseQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
 import { getFilterResponsePost } from "../../../app/utils/postFilterResponse";
+import type { TField, TFilter, TProps } from "../../../components/filter/types";
 
 export const useFilterQuery = (): TProps => {
   const dispatch = useAppDispatch();

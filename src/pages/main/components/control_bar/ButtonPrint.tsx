@@ -1,24 +1,19 @@
-
-import { hooks } from "@webmens-ru/ui_lib";
 import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../../../app/store/hooks";
 import { downloadFile } from "../../../../app/utils/print";
 import { timeout } from "../../../../app/utils/timeout";
+import { useShowControl } from "../../../../hooks";
 
 export function ButtonPrint() {
-  const { ref, isShow, setShow } = hooks.useShowControl();
+  const { ref, isShow, setShow } = useShowControl();
   const { mainSlice } = useAppSelector((state) => state);
   const [isLoadingPays, setIsLoadingPays] = useState(false);
 
   const getWordPays = async (url: string) => {
     setIsLoadingPays(true);
-    await downloadFile(
-      url,
-      mainSlice.checkboxes,
-      "docx",
-    );
+    await downloadFile(url, mainSlice.checkboxes, "docx");
     setShow(false);
     setIsLoadingPays(false);
   };
@@ -27,7 +22,7 @@ export function ButtonPrint() {
     ref: modalRef,
     isShow: isShowModal,
     setShow: setIsShowModal,
-  } = hooks.useShowControl();
+  } = useShowControl();
 
   const [text, setText] = useState("");
 
@@ -36,7 +31,7 @@ export function ButtonPrint() {
     await downloadFile(
       "/route-sheet/print-docx",
       { id: mainSlice.checkboxes, text },
-      "docx",
+      "docx"
     );
   };
 
@@ -202,6 +197,7 @@ const ContainerModal = styled.div`
       height: 40px;
       font-weight: 600;
       text-transform: uppercase;
+      
       &:hover: {
         opacity: 0.7;
       }

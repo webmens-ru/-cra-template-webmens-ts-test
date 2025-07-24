@@ -1,11 +1,10 @@
-import { Grid2 as Grid, Loader, Toolbar } from "@webmens-ru/ui_lib";
-import { TCellItem } from "@webmens-ru/ui_lib/dist/components/grid";
-import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
-import { BlockItems } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
 import { useSaveSchemaMutation } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { setCheckboxes, setSchema } from "../mainPlacementSlice";
+import { Grid2, type TCellItem, type TRowID } from "../../../components/grid";
+import { Loader } from "../../../components/loader";
+import { type BlockItems, Toolbar } from "../../../components/toolbar";
 
 export function GridWrapper() {
   const { mainPlacementSlice, mainPlacementApi } = useAppSelector((state) => state);
@@ -85,7 +84,7 @@ export function GridWrapper() {
           onItemClick={handleToolbarItemClick}
         />
       )}
-      <Grid
+      <Grid2
         columns={column}
         rows={grid?.grid}
         footer={grid?.footer}

@@ -1,9 +1,8 @@
-import { TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types"
-import { TColumnItem } from "@webmens-ru/ui_lib/dist/components/grid"
 import { baseQuery } from "../../app/api/baseQuery";
 import { PostFilterResponseFields } from '../../app/utils/postFilterResponse';
+import type { TSelectDynamicItem } from "../../components/filter/types";
+import type { TRowItem } from "../../components/grid";
 
 export const mainPlacementApi = createApi({
   reducerPath: "mainPlacementApi",

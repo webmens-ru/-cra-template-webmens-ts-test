@@ -1,5 +1,3 @@
-import { Button, Loader, Menu } from "@webmens-ru/ui_lib";
-import { FormMode } from "@webmens-ru/ui_lib/dist/components/form/types";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { useMenuData } from "../../app/hooks/useMenuData";
 import useSlider from "../../components/slider/hooks/useSlider";
@@ -14,6 +12,10 @@ import {
 } from "./mainCardApi";
 import { MainCardContainer, MainCardHeaderActionsContainer, MainCardHeaderContainer, MainCardTitle } from "./styles";
 import { MainCardPath } from "./types";
+import type { FormMode } from "../../components/form";
+import { Loader } from "../../components/loader";
+import { Menu } from "../../components/menu";
+import { Button } from "../../components/button";
 
 interface MainCardProps {
   path: MainCardPath;

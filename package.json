@@ -4,17 +4,18 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.2",
-    "@webmens-ru/ui_lib": "0.24.55",
     "axios": "^0.27.2",
     "react": "^18.1.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.1.0",
     "react-redux": "^7.2.8",
-    "react-scripts": "^5.0.1",
+    "react-data-grid": "7.0.0-beta.14",
     "react-transition-group": "^4.4.5",
+    "react-tooltip": "^5.26.0",
     "styled-components": "^5.3.5",
-    "typescript": "~4.7.2"
+    "@ckeditor/ckeditor5-build-classic": "^34.1.0",
+    "@ckeditor/ckeditor5-react": "^5.0.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -29,7 +30,9 @@
     "react-app-env": "^1.2.3",
     "react-app-rewired": "^2.2.1",
     "react-error-overlay": "^6.0.9",
-    "@types/react-transition-group": "^4.4.6"
+    "@types/react-transition-group": "^4.4.6",
+    "typescript": "~4.7.2",
+    "react-scripts": "^5.0.1"
   },
   "resolutions": {
     "//": "See https://github.com/facebook/create-react-app/issues/11773",

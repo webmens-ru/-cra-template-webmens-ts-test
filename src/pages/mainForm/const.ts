@@ -1,4 +1,4 @@
-import { FormFieldsItem } from "@webmens-ru/ui_lib/dist/components/form/types" 
+import type { FormFieldsItem } from "../../components/form";
 
 export const mainFormFields = [
   { type: "input", name: "last_name", label: "Фамилия" },

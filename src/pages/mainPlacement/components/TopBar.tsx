@@ -1,7 +1,7 @@
-import { FilterAlpha as Filter } from "@webmens-ru/ui_lib";
-import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
 import { setCurrentFilter, useLazyGetDynamicSelectItemsQuery } from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
+import { FilterAlpha } from "../../../components/filter";
+import type { TFilter } from "../../../components/filter/types";
 import { TopBarButtons } from "../../../components/TopBarButtons";
 import { useFilterQuery } from "../hooks/useFilterQuery";
 import ControlBar from "./control_bar";
@@ -31,7 +31,7 @@ export function TopBar({ parentId, onCloseSlider, onClosePopup } : ITopBarProps)
 
   return (
     <ControlBar title={mainPlacementSlice.title}>
-      <Filter
+      <FilterAlpha
         currentFilter={mainPlacementSlice.currentFilter}
         setCurrentFilter={setFilter}
         {...filterProps}

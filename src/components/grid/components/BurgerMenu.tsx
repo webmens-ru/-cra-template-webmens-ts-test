@@ -27,8 +27,10 @@ export function BurgerMenu({ items = [], gridRef, onBurgerItemClick }: IBurgerMe
   }
 
   const updateBurgerMenuPosition = () => {
-    const gridElement = gridRef.current!.element!;
-    const burgerPos = ref.current!.getBoundingClientRect();
+    if (!gridRef?.current || !ref?.current) return
+
+    const gridElement = gridRef.current.element!;
+    const burgerPos = ref.current.getBoundingClientRect();
     const gridPos = gridElement.getBoundingClientRect();
 
     const top = burgerPos.top;

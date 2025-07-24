@@ -1,9 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { TSelectDynamicItem } from "@webmens-ru/ui_lib/dist/components/filter/types";
-import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/grid/components/pagination";
-import { TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
 import { baseQuery } from "../../app/api/baseQuery";
 import { PostFilterResponseFields } from './../../app/utils/postFilterResponse';
+import type { TRowItem } from "../../components/grid";
+import type { PaginationProps } from "../../components/grid/components/pagination";
+import type { TSelectDynamicItem } from "../../components/filter/types";
 
 export const mainApi = createApi({
   reducerPath: "mainApi",

@@ -1,4 +1,4 @@
-import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
+import type { TFilter } from "../../../components/filter/types";
 
 type TFilterFromYii = {
   entityCode: string;

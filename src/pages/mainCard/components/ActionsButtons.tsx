@@ -1,9 +1,10 @@
-import { Button, useNotification } from "@webmens-ru/ui_lib";
 import styled from "styled-components";
 import usePopupHandler from "../../../app/hooks/usePopupHandler";
 import { ActionButton, ActionButtonParams } from "../../../app/model/action-button";
 import PopupAction from "../../../components/PopupAction";
 import { useSendDataOnButtonClickMutation } from "../../main";
+import useNotification from "../../../components/notification";
+import { Button } from "../../../components/button";
 
 interface ActionButtonsProps {
   actions: Array<ActionButton>;

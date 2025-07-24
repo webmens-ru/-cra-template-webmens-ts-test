@@ -1,8 +1,8 @@
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { useCallback, useLayoutEffect } from "react";
-import {Item} from "@webmens-ru/ui_lib/dist/components/menu/types";
 import { useLazyGetTabsQuery } from "../../pages/main";
 import { useAppDispatch } from "../store/hooks";
+import type { Item } from "../../components/menu/types";
 
 export const useMenuData = (menuId: number, storeSetter?: ActionCreatorWithPayload<any, string>) => {
   const dispatch = useAppDispatch();

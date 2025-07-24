@@ -1,4 +1,3 @@
-import { Loader } from "@webmens-ru/ui_lib";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
@@ -6,6 +5,7 @@ import { GridWrapper } from "../../components/GridWrapper";
 import { TopBarButtons } from "../../components/TopBarButtons";
 import { useLazyGetGridQuery, useLazyGetSchemaQuery, useSaveSchemaMutation } from "./mainDetailApi";
 import { setCheckboxes, setGrid, setIsLoading, setSchema } from "./mainDetailSlice";
+import { Loader } from "../../components/loader";
 
 export interface MainDetailProps {
   title?: string,

@@ -1,9 +1,5 @@
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { MutationTrigger } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { Grid2 as Grid, Loader, Toolbar, useNotification } from "@webmens-ru/ui_lib";
-import { BurgerItem, TCellItem, TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
-import { TRowID } from "@webmens-ru/ui_lib/dist/components/grid/types";
-import { IBlockItemMetricFilter, IBlockItemMetricLink } from "@webmens-ru/ui_lib/dist/components/toolbar";
 import { useCallback, useMemo } from "react";
 import useNavigation from "../app/hooks/useNavigation";
 import usePopupHandler from "../app/hooks/usePopupHandler";
@@ -11,6 +7,11 @@ import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
 import { IState } from "../pages/mainPlacement";
 import PopupAction from "./PopupAction";
+import type { BurgerItem, TCellItem, TRowID, TRowItem } from "./grid/types";
+import { Toolbar, type IBlockItemMetricFilter, type IBlockItemMetricLink } from "./toolbar";
+import { Grid2 } from "./grid/Grid";
+import { Loader } from "./loader";
+import useNotification from "./notification";
 
 // TODO: Изучить типизацию redux-toolkit
 interface IGridWrapperProps {
@@ -147,7 +148,7 @@ export function GridWrapper({
           onMetricLinkClick={handleMetricLink}
         />
       )}
-      <Grid
+      <Grid2
         columns={slice.schema}
         rows={gridState?.grid}
         footer={gridState?.footer}

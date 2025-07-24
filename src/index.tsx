@@ -1,4 +1,3 @@
-import { ResetStyles } from "@webmens-ru/ui_lib";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -6,6 +5,7 @@ import App from "./App";
 import { store } from "./app/store";
 import { PRINT_FRAME_NAME } from "./app/utils/print";
 import { GlobalStyles } from "./assets/globalStyle";
+import { ResetStyles } from "./components/reset_styles";
 
 ReactDOM.render(
   <React.StrictMode>

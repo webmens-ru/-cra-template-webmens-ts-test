@@ -1,11 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
-import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid";
-import { PaginationProps } from "@webmens-ru/ui_lib/dist/components/grid/components/pagination";
-import { TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
-import { Item } from "@webmens-ru/ui_lib/dist/components/menu/types";
-import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
 import { mainApi } from './mainApi';
+import type { TRawColumnItem, TRowID, TRowItem } from "../../components/grid";
+import type { TFilter } from "../../components/filter/types";
+import type { Item } from "../../components/menu/types";
+import type { PaginationProps } from "../../components/grid/components/pagination";
+import type { IToolbarBlock } from "../../components/toolbar";
 
 interface IState {
   currentTab: Item;

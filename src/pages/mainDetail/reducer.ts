@@ -1,4 +1,4 @@
-import { TRawColumnItem, TRowID } from "@webmens-ru/ui_lib/dist/components/grid";
+import type { TRawColumnItem, TRowID } from "../../components/grid";
 import { IGridState } from "../main/mainSlice";
 
 export interface IMainDetailReducerState {

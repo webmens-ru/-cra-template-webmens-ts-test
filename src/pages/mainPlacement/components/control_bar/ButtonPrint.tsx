@@ -1,14 +1,14 @@
 
-import { hooks } from "@webmens-ru/ui_lib";
 import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../../../app/store/hooks";
 import { downloadFile } from "../../../../app/utils/print";
 import { timeout } from "../../../../app/utils/timeout";
+import { useShowControl } from "../../../../hooks";
 
 export function ButtonPrint() {
-  const { ref, isShow, setShow } = hooks.useShowControl();
+  const { ref, isShow, setShow } = useShowControl();
   const { mainSlice } = useAppSelector((state) => state);
   const [isLoadingPays, setIsLoadingPays] = useState(false);
 
@@ -27,7 +27,7 @@ export function ButtonPrint() {
     ref: modalRef,
     isShow: isShowModal,
     setShow: setIsShowModal,
-  } = hooks.useShowControl();
+  } = useShowControl();
 
   const [text, setText] = useState("");
 

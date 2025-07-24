@@ -1,6 +1,8 @@
-import { Button, Form, Modal } from "@webmens-ru/ui_lib";
-import { FormValues, IFormProps, IFormRefHandlers } from "@webmens-ru/ui_lib/dist/components/form/types";
 import React, { useRef } from "react";
+import type { FormValues, IFormProps, IFormRefHandlers } from "./form";
+import Form from "./form";
+import { Button } from "./button";
+import { Modal } from "./modal/Modal";
 
 export interface PopupActionProps {
   title: string;

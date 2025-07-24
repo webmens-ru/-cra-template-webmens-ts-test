@@ -1,10 +1,10 @@
-import { NotificationAPI } from "@webmens-ru/ui_lib/dist/components/notification/types";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { axiosInst } from "../api/baseQuery";
 import { PopupAction } from "../model/popup-action";
 import { ErrorResponse } from "../model/query";
 import { getPrintFrame } from "../utils/print";
+import type { NotificationAPI } from "../../components/notification/types";
 
 interface usePopupHandlerProps {
   notificationAPI: NotificationAPI;

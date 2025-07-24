@@ -1,4 +1,4 @@
-import { TRowItem } from "@webmens-ru/ui_lib/dist/components/grid";
+import type { TRowItem } from "../../components/grid";
 import { PopupActionProps } from "../../components/PopupAction";
 
 export interface PopupAction {

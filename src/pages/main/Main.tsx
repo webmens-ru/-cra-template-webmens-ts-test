@@ -1,10 +1,11 @@
-import { Loader, Menu } from "@webmens-ru/ui_lib";
-import { Item as MenuItem } from "@webmens-ru/ui_lib/dist/components/menu/types";
 import { setCheckboxes, setFilterResponse, setPage, setSchema, useEditRowMutation, useSaveSchemaMutation, useSetTabsMutation } from ".";
 import useNavigation from "../../app/hooks/useNavigation";
 import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { GridWrapper } from "../../components/GridWrapper";
+import { Loader } from "../../components/loader";
+import { Menu } from "../../components/menu";
+import type { Item } from "../../components/menu/types";
 import { TopBar } from "./components/TopBar";
 import { useData } from "./hooks/useData";
 import { useMenuData } from "./hooks/useMenuData";
@@ -22,7 +23,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
 
   if (tabs.isLoading) return <Loader />;
 
-  const handleSliderOpen = (item: MenuItem) => {
+  const handleSliderOpen = (item: Item) => {
     navigate({
       type: item.type,
       // @ts-ignore

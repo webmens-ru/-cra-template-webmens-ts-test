@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TFilter } from "@webmens-ru/ui_lib/dist/components/filter/types";
-import { TRawColumnItem } from "@webmens-ru/ui_lib/dist/components/grid";
-import { TRowID, TRowItem } from '@webmens-ru/ui_lib/dist/components/grid/types/index';
-import { Item } from "@webmens-ru/ui_lib/dist/components/menu/types";
-import { IToolbarBlock } from '@webmens-ru/ui_lib/dist/components/toolbar';
+import type { TFilter } from "../../components/filter/types";
+import type { Item } from "../../components/menu/types";
+import type { TRowID, TRawColumnItem, TRowItem } from "../../components/grid";
+import type { IToolbarBlock } from "../../components/toolbar";
 
 interface IState {
   currentTab: Item;

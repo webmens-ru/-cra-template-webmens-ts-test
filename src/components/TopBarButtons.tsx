@@ -1,8 +1,3 @@
-import { Button, useNotification } from "@webmens-ru/ui_lib";
-import {
-  TRawColumnItem,
-  TRowID,
-} from "@webmens-ru/ui_lib/dist/components/grid";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { axiosInst } from "../app/api/baseQuery";
@@ -17,6 +12,9 @@ import {
 } from "../pages/main/mainApi";
 import PopupAction from "./PopupAction";
 import useSlider from "./slider/hooks/useSlider";
+import type { TRawColumnItem, TRowID } from "./grid";
+import { Button } from "./button";
+import useNotification from "./notification";
 
 interface ITopBarButtonsProps {
   involvedState: {
