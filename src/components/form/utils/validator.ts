@@ -97,6 +97,7 @@ const integerCase = ({ item, target, result }: IPrimitiveValidator) => {
   let invalidMax = false;
   let invalidInteger = false;
   let message = "Стандартное сообщение об ошибке";
+
   if (item.rules !== undefined) {
     if (item.rules.min !== undefined) {
       invalidMin = target.value < item.rules.min;
@@ -106,7 +107,7 @@ const integerCase = ({ item, target, result }: IPrimitiveValidator) => {
       invalidMax = target.value > item.rules.max;
       message = `Число должно быть меньше чем ${item.rules.max}`;
     }
-    if (typeof target.value === 'string' && !target.value.match(/^\d+$/)) {
+    if (!!target.value && typeof target.value === 'string' && !target.value.match(/^\d+$/)) {
       invalidInteger = true;
       message = `Требуется целое числовое значение`;
     }
