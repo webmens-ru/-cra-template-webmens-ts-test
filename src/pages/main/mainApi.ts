@@ -139,7 +139,6 @@ export const mainApi = createApi({
     }),
     getDynamicButtonItems: build.query<{ label: string, title: string }[], { entity: string, parentId?: string | number }>({
       query: ({ entity, parentId }) => ({
-        // url: `/admin/ui/grid/action/entity-actions?entity=${entity}`
         url: `/${entity}/grid-actions`,
         params: { parentId }
       })

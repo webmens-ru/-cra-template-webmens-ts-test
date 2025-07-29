@@ -18,6 +18,10 @@ export default function useRows({ createRows, createColumns, sortColumns, burger
 
   const sortedRows = useMemo((): readonly TRowItem[] => {
     const actionRows = createRows.map(row => {
+      if (!row[burgerKey]) {
+        return row
+      }
+
       const rowBurgerItems = burgerItems.filter(item => row[burgerKey].includes(item.id))
       return { ...row, action: { burgerItems: rowBurgerItems, onBurgerItemClick, gridRef } }
     })

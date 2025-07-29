@@ -128,9 +128,10 @@ export const mainPlacementApi = createApi({
         url: `select-dinamic/get-list?name=${code}`
       })
     }),
-    getDynamicButtonItems: build.query<{ label: string, title: string }[], string>({
-      query: (entity) => ({
-        url: `/admin/ui/grid/action/entity-actions?entity=${entity}`
+    getDynamicButtonItems: build.query<{ label: string, title: string }[], { entity: string, parentId?: string | number }>({
+      query: ({ entity, parentId }) => ({
+        url: `/${entity}/grid-actions`,
+        params: { parentId }
       })
     }),
     sendDataOnButtonClick: build.mutation({

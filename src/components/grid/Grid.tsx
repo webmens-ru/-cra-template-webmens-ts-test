@@ -42,11 +42,7 @@ export const Grid2 = ({
   const { draggableColumns, sortColumns, showSettings, setShowSettings, setSortColumns } = useColumns({ createColumns: mutableColumns, cellColorKey, onReorder: handleColumnsMutation, onChangeEnd: onRowMutation })
   const { sortedRows, selectedRows, setSelectedRows } = useRows({ createColumns: columns, createRows, sortColumns, burgerItems, burgerKey, gridRef, onBurgerItemClick })
   // @ts-ignore
-  const { onColumnResize } = useColumnResize({ mutableColumns, draggableColumns, onResizeEnd: handleColumnsMutation })    
-  
-  useEffect(() => {
-    onChangeCheckboxes(Array.from(selectedRows))
-  }, [onChangeCheckboxes, selectedRows])
+  const { onColumnResize } = useColumnResize({ mutableColumns, draggableColumns, onResizeEnd: handleColumnsMutation })
 
   function handleColumnsMutation(columns: TColumnItem[]) {
     setMutableColumns(columns)
@@ -71,8 +67,16 @@ export const Grid2 = ({
   }
 
   useEffect(() => {
+    onChangeCheckboxes(Array.from(selectedRows))
+  }, [onChangeCheckboxes, selectedRows])
+
+  useEffect(() => {
     setCreateRows(rows)
   }, [rows])
+
+  useEffect(() => {
+    setMutableColumns(fromRawColumns(columns, isShowCheckboxes, onCellClick))
+  }, [columns, isShowCheckboxes, onCellClick])
 
   return (
     <>
