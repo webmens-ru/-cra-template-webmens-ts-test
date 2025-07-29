@@ -1,6 +1,6 @@
-import { TField, TFilter, TProps } from "../types";
+import { TField, TFilter, FilterProps } from "../types";
 
-export const propsFormatter = (props: TProps) => {
+export const propsFormatter = (props: FilterProps) => {
   return {
     ...props,
     filters:

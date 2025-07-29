@@ -7,7 +7,7 @@ import { LeftColumn } from './components/left_column';
 import { useShowControl } from './hooks/useShowControl';
 import { FilterContextProvider, useCustomContext } from './store/Context';
 import { FilterContainer, FilterMenuContainer, PopUp } from './styles';
-import { TProps } from './types';
+import { FilterProps } from './types';
 
 /* TODO:
 ✔️ 1. Добавить глобальный поиск. Отправка под полем wmTextSearch. Сочетается с другими фильтрами.
@@ -45,7 +45,7 @@ import { TProps } from './types';
  * code: string;
  * visible: boolean;}
  */
-export function FilterAlpha(props: TProps) {
+export function FilterAlpha(props: FilterProps) {
   return (
     <FilterContextProvider {...props}>
       <FilterComponent />

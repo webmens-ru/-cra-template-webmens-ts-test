@@ -1,12 +1,11 @@
-import React from "react";
 import { Button } from "../../button";
 import { useShowControl } from "../hooks/useShowControl";
 import { useCustomContext } from "../store/Context";
-import { AddFieldsMenu, FilterMenuFooter } from "../styles";
+import { FilterMenuFooter } from "../styles";
 import { TField } from "../types";
 import { DashedBlueBtn, DashedGreyBtn } from "./Buttons";
-import { AddFieldInput } from "./mini_components/Input";
 import { FilterFields } from "./right_column/FilterFields";
+import FilterFieldsModal from "./filters_modal";
 
 export function RightColumn({
   setShowFilter,
@@ -14,6 +13,7 @@ export function RightColumn({
   setShowFilter: (arg: boolean) => void;
 }) {
   const { state, dispatch } = useCustomContext();
+  const { isShow, toggleShow } = useShowControl();
 
   const searchProxy = () => {
     state.onSearch(state.fields.filter((f) => Boolean(f.visible)));
@@ -43,18 +43,9 @@ export function RightColumn({
     }
   };
 
-  const { ref, isShow, setShow } = useShowControl();
-
-  const change = (item: TField) => {
-    state.updateField(
-      { ...item, visible: !Boolean(item.visible) },
-      Boolean(item.visible) ? "hide" : "create",
-    );
-    dispatch({
-      type: "UPDATE_FILTER_FIELD",
-      field: { ...item, visible: !Boolean(item.visible) },
-    });
-  };
+  const onChangeFieldsVisibility = (fields: TField[]) => {
+    dispatch({ type: 'SET_FILTER_FIELDS', fields })
+  }
 
   const onClear = () => {
     state.onClearFilter();
@@ -64,7 +55,7 @@ export function RightColumn({
   return (
     <div draggable={false}>
       <FilterFields />
-      <DashedBlueBtn onClick={() => setShow(!isShow)} children="Добавить поле" />
+      <DashedBlueBtn onClick={toggleShow} children="Добавить поле" />
       <DashedGreyBtn onClick={state.returnDefaultFields} children="Вернуть поля по умолчанию" />
       <FilterMenuFooter>
         {state.isSetup || state.isCreateFilter ? (
@@ -80,19 +71,11 @@ export function RightColumn({
         )}
       </FilterMenuFooter>
       {isShow && (
-        <AddFieldsMenu ref={ref}>
-          {state.fields
-            .slice()
-            .sort((a, b) => a.order - b.order)
-            .map((item, index) => (
-              <AddFieldInput
-                key={index}
-                onChange={() => change(item)}
-                checked={Boolean(item.visible)}
-                children={item.title}
-              />
-            ))}
-        </AddFieldsMenu>
+        <FilterFieldsModal
+          fields={state.fields}
+          onClose={toggleShow}
+          onSubmit={onChangeFieldsVisibility}
+        />
       )}
     </div>
   );

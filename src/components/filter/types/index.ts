@@ -1,7 +1,7 @@
 import { IDataItem } from "../../select";
 
 
-export type TProps = {
+export interface FilterProps {
   filters?: TFilter[];
   currentFilter?: TFilter;
   fields?: TField[];
@@ -54,16 +54,6 @@ export type TField = {
   params: any;
   options: any;
   queryParams?: { [key: string]: any }
-};
-
-export type TFilterFieldsItem = {
-  id: number;
-  order: number;
-  value: string[];
-  type: string;
-  title: string;
-  queryKey: string;
-  visible: boolean | number;
 };
 
 export type TUpdateFieldParams = {
@@ -120,36 +110,9 @@ export interface IThreeField {
   item: TField;
 }
 
-export interface IMultipleSelect {
-  item: TField;
-  onDragStart: () => void;
-  onDragEnter: (e: React.MouseEvent<HTMLElement>) => void;
-  onMouseLeave: (e: React.MouseEvent<HTMLElement>) => void;
-  updateField: (props: TField, param: string) => void;
-  maxHeight?: number;
-}
-
 export type TSelectDynamicItem = {
   ID: number;
   VALUE: string;
-}
-
-export interface IBodySelectDynamic {
-  setItem: (item: TSelectDynamicItem) => void;
-}
-
-export type TMultiplySelectDynamicItem = {
-  id: number;
-  title: string
-}
-
-export interface IBodyMultiplySelectDynamic {
-  addItem: (item: TMultiplySelectDynamicItem) => void;
-  selectedItems: TMultiplySelectDynamicItem[]
-  setIsShowMenu: (isShow: boolean) => void;
-  item: TFilterFieldsItem;
-  setDefaultSelectedItems: (item: TMultiplySelectDynamicItem[]) => void;
-  searchInputValue: string;
 }
 
 export type TFilterDates = "anyDate"|"yesterday"|"today"|"tomorrow"|"currentWeek"|"currentMonth"|"currentQuarter"|"last7Days"|"last30Days"|"last60Days"|"last90Days"|"lastNDays"|"nextNDays"|"nextWeek"|"nextMonth"|"month"|"quarter"|"year"|"exactDate"|"lastWeek"|"lastMonth"|"range"
