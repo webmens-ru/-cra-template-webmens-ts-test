@@ -1,12 +1,12 @@
-import React, { useEffect, useImperativeHandle, useReducer, useState } from "react";
+import React, { useEffect, useImperativeHandle, useReducer } from "react";
 import { Button } from "../button";
 import { EditForm } from "./components/EditForm";
 import { ViewForm } from "./components/ViewForm";
 import { init, reducer } from "./reducer";
 import { FormButtonsContainer, FormContainer, FormHeader, FormInnerContainer, FormModeToggler, FormTitle, GlobalStyleForm } from "./styles";
 import { IFormProps, IFormRefHandlers, IValidationErrorItem } from "./types";
-import { validator } from "./utils/onBlurHandler";
 import { prepareFormData } from "./utils/parse";
+import { validator } from "./utils/validator";
 
 export const Form = React.forwardRef(({
   fields = [],
@@ -25,7 +25,6 @@ export const Form = React.forwardRef(({
   onInit = () => { },
   onEditEnd = () => { }
 }: IFormProps, ref: React.ForwardedRef<IFormRefHandlers>) => {
-  console.log('IN FORM', errors)
   const [form, dispatch] = useReducer(reducer, {
     fields,
     values,
@@ -85,7 +84,6 @@ export const Form = React.forwardRef(({
       }).catch(({ response }) => {
         console.log('FORM CATCH', response, response.status)
         if (response.status !== 500) {
-          console.log('DISPATCH')
           dispatch({ type: "set_errors", errors: response.data })
         }
         return false

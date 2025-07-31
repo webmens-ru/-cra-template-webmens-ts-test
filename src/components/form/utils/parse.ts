@@ -43,6 +43,10 @@ export const prepareFormData = ({ fields, tempValues: values }: IFormReducerStat
       }
     }
 
+    if (parsedValue === undefined) {
+      parsedValue = null
+    }
+
     result[name] = parsedValue
   })
 
