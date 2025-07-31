@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef } from "react";
 import {
   setCurrentFilter as setFilter, setFilterResponse,
-  setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
+  setIsLoading, useAddFieldMutation, useAddFieldsMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
   useLazyGetFieldsQuery, useUpdateFieldMutation, useUpdateFilterMutation, useUpdateFiltersOrderMutation
 } from "..";
 import { axiosInst } from "../../../app/api/baseQuery";
@@ -19,6 +19,7 @@ export const useFilterQuery = (): FilterProps => {
   const [updateFiltersOrder] = useUpdateFiltersOrderMutation();
   const [updateFieldMut] = useUpdateFieldMutation();
   const [createField] = useAddFieldMutation();
+  const [createFields] = useAddFieldsMutation()
   const [deleteField] = useDeleteFieldMutation();
   const [getFieldsQuery] = useLazyGetFieldsQuery();
 
@@ -34,27 +35,37 @@ export const useFilterQuery = (): FilterProps => {
     dispatch(setIsLoading(false));
   }, [dispatch, getFieldsQuery, mainSlice.currentFilter]);
 
-  const updateField = async (filter: TField, param: string) => {
+  const updateField = async (field: TField, param: string) => {
     if (param === "hide") {
-      deleteField(filter.id);
+      deleteField(field.id);
     }
     if (param === "create") {
       createField({
-        ...filter,
-        filterFieldId: -filter.id,
+        ...field,
+        filterFieldId: -field.id,
         filterId: mainSlice.currentFilter.id,
       });
     }
     if (param === "value") {
       await axiosInst.post(
-        `/admin/ui/filter/filter-field-setting/update?id=${filter.id}`,
-        filter,
+        `/admin/ui/filter/filter-field-setting/update?id=${field.id}`,
+        field,
       );
     }
     if (param === "valueWithRefetch") {
-      updateFieldMut(filter);
+      updateFieldMut(field);
     }
   };
+
+  const addFields = (fields: TField[]) => {
+    const queryFields = fields.map(field => ({
+      ...fields, filterFieldId:
+        -field.id,
+      filterId: mainSlice.currentFilter.id
+    }))
+
+    createFields(queryFields)
+  }
 
   const setCurrentFilter = (filter: TFilter) => {    
     getFieldsQuery(filter.id).then(response => {
@@ -91,7 +102,6 @@ export const useFilterQuery = (): FilterProps => {
   };
 
   const updateTextSearch = (text: string) => {
-    console.log(text)
     searchTextRef.current = text
   }
 
@@ -104,6 +114,7 @@ export const useFilterQuery = (): FilterProps => {
     updateFiltersOrder,
     updateFieldsOrder,
     updateField,
+    addFields,
     onSearch,
     setCurrentFilter,
     updateTextSearch

@@ -44,6 +44,7 @@ export function RightColumn({
   };
 
   const onChangeFieldsVisibility = (fields: TField[]) => {
+    state.addFields(fields);
     dispatch({ type: 'SET_FILTER_FIELDS', fields })
   }
 

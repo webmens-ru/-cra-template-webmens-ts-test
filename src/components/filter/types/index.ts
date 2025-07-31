@@ -13,6 +13,7 @@ export interface FilterProps {
   deleteFilter?: (f: TFilter) => void;
   updateFiltersOrder?: (f: Array<{id: number, order: number}>) => void;
   updateField?: (f: TField, param: string) => void;
+  addFields?: (f: TField[]) => void;
   updateFieldsOrder?: (f: TField[]) => void;
   updateTextSearch?: (text: string) => void;
   returnDefaultFields?: () => void;

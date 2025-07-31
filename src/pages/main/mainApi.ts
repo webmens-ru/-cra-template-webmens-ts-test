@@ -92,6 +92,14 @@ export const mainApi = createApi({
       }),
       invalidatesTags: ["Field"],
     }),
+    addFields: build.mutation({
+      query: (body) => ({
+        url: `admin/ui/filter/filter-field-setting/create-many`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Field"],
+    }),
     deleteField: build.mutation({
       query: (id) => ({
         url: `admin/ui/filter/filter-field-setting/delete?id=${id}`,
@@ -177,6 +185,7 @@ export const {
   useDeleteFilterMutation,
   useUpdateFieldMutation,
   useAddFieldMutation,
+  useAddFieldsMutation,
   useDeleteFieldMutation,
   useLazyGetSchemaQuery,
   useSaveSchemaMutation,
