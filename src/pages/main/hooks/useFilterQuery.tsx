@@ -8,9 +8,9 @@ import { axiosInst } from "../../../app/api/baseQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
 import { getFilterResponsePost } from "../../../app/utils/postFilterResponse";
-import type { TField, TFilter, FilterProps } from "../../../components/filter/types";
+import type { TField, TFilter, TProps } from "../../../components/filter/types";
 
-export const useFilterQuery = (): FilterProps => {
+export const useFilterQuery = (): TProps => {
   const dispatch = useAppDispatch();
   const { mainSlice, mainApi } = useAppSelector((state) => state);
   const [createFilter] = useCreateFilterMutation();
@@ -90,8 +90,7 @@ export const useFilterQuery = (): FilterProps => {
     );
   };
 
-  const updateTextSearch = (text: string) => {
-    console.log(text)
+  const updateTextSearch = (text: string) => {    
     searchTextRef.current = text
   }
 
