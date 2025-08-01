@@ -26,6 +26,7 @@ export type Item = {
   params: {
     url: string;
     entity: string;
+    viewMode?: string;
   };
   width?: number;
 }

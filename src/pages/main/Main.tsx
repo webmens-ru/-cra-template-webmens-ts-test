@@ -10,6 +10,7 @@ import { TopBar } from "./components/TopBar";
 import { useData } from "./hooks/useData";
 import { useMenuData } from "./hooks/useMenuData";
 import { MainContainer } from "./mainStyle";
+import ResourceTimeLineWrapper from "../../components/ResourceTimeLineWrapper";
 
 export function Main({ menuId = 1 }: { menuId?: number }) {
   const dispatch = useAppDispatch()
@@ -33,39 +34,116 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
       width: item.params.bx24_width
     })
   }
+// console.log(mainSlice.currentTab.params.viewMode)
+//   return (
+//     <>
+//       <Menu
+//         items={tabs.data}
+//         setItem={setTab}
+//         itemsMutation={itemsMutation}
+//         sliderOpenner={handleSliderOpen}
+//       />
+//       {isCorrect ? (
+//         <>
+//           <TopBar
+//             onCloseSlider={reload}
+//             onClosePopup={reload}
+//           />
+//           <GridWrapper
+//             slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
+//             api={mainApi}
+//             onShemaMutation={schemaMutation}
+//             onRowMutation={rowMutation}
+//             checkboxesSetter={setCheckboxes}
+//             schemaSetter={setSchema}
+//             filterSetter={setFilterResponse}
+//             onCloseSlider={reload}
+//             onClosePopup={reload}
+//             onNavigate={(page) => dispatch(setPage(page))}
+//           />
+//         </>
+//       ) : (
+//         <MainContainer>
+//           <img src={webmensLogo} alt="webmens logo" />
+//         </MainContainer>
+//       )}
+//     </>
+//   );
+
+  // console.log(mainSlice.currentTab.params.viewMode);
+
+  const renderContent = () => {
+    if (!isCorrect) {
+      return (
+          <MainContainer>
+            <img src={webmensLogo} alt="webmens logo" />
+          </MainContainer>
+      );
+    }
+
+    switch (mainSlice.currentTab.params.viewMode) {
+      case 'grid':
+        return (
+            <>
+              <TopBar
+                  onCloseSlider={reload}
+                  onClosePopup={reload}
+              />
+              <GridWrapper
+                  slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
+                  api={mainApi}
+                  onShemaMutation={schemaMutation}
+                  onRowMutation={rowMutation}
+                  checkboxesSetter={setCheckboxes}
+                  schemaSetter={setSchema}
+                  filterSetter={setFilterResponse}
+                  onCloseSlider={reload}
+                  onClosePopup={reload}
+                  onNavigate={(page) => dispatch(setPage(page))}
+              />
+            </>
+        );
+      case 'resource-time-line':
+        return <>
+          <TopBar
+              onCloseSlider={reload}
+              onClosePopup={reload}
+          />
+          <ResourceTimeLineWrapper/>
+        </>
+      default:
+        return (
+            <>
+              <TopBar
+                  onCloseSlider={reload}
+                  onClosePopup={reload}
+              />
+              <GridWrapper
+                  slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
+                  api={mainApi}
+                  onShemaMutation={schemaMutation}
+                  onRowMutation={rowMutation}
+                  checkboxesSetter={setCheckboxes}
+                  schemaSetter={setSchema}
+                  filterSetter={setFilterResponse}
+                  onCloseSlider={reload}
+                  onClosePopup={reload}
+                  onNavigate={(page) => dispatch(setPage(page))}
+              />
+            </>
+        );
+    }
+  };
 
   return (
-    <>
-      <Menu
-        items={tabs.data}
-        setItem={setTab}
-        itemsMutation={itemsMutation}
-        sliderOpenner={handleSliderOpen}
-      />
-      {isCorrect ? (
-        <>
-          <TopBar
-            onCloseSlider={reload}
-            onClosePopup={reload}
-          />
-          <GridWrapper
-            slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
-            api={mainApi}
-            onShemaMutation={schemaMutation}
-            onRowMutation={rowMutation}
-            checkboxesSetter={setCheckboxes}
-            schemaSetter={setSchema}
-            filterSetter={setFilterResponse}
-            onCloseSlider={reload}
-            onClosePopup={reload}
-            onNavigate={(page) => dispatch(setPage(page))}
-          />
-        </>
-      ) : (
-        <MainContainer>
-          <img src={webmensLogo} alt="webmens logo" />
-        </MainContainer>
-      )}
-    </>
+      <>
+        <Menu
+            items={tabs.data}
+            setItem={setTab}
+            itemsMutation={itemsMutation}
+            sliderOpenner={handleSliderOpen}
+        />
+        {renderContent()}
+      </>
   );
 }

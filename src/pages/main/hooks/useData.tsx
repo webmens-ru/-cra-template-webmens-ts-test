@@ -1,10 +1,12 @@
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import { setCurrentFilter, setIsLoading } from "..";
+import {setCheckboxes, setCurrentFilter, setFilterResponse, setIsLoading, setPage} from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
 import { PostFilterResponseFields, getFilterResponsePost } from "../../../app/utils/postFilterResponse";
 import { useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery, useLazyGetGridPostQuery, useLazyGetSchemaQuery } from "../mainApi";
 import { setGrid, setPagination, setSchema } from "../mainSlice";
+import {TopBar} from "../components/TopBar";
+import {GridWrapper} from "../../../components/GridWrapper";
 
 export const useData = () => {
   const { mainSlice } = useAppSelector((state) => state);
@@ -53,6 +55,13 @@ export const useData = () => {
         ).filter((f) => Boolean(f.visible));
 
         const filterResponse = getFilterResponsePost(correctFields);
+        // switch ('') {
+        //   case 'grid':
+        //   case 'resource-time-line':
+        //   default:
+        //
+        // }
+
         const grid = await getGridPost({
           entity,
           filter: ((mainSlice.filterResponse !== null && mainSlice.filterResponse !== undefined) ? mainSlice.filterResponse : filterResponse) as PostFilterResponseFields,

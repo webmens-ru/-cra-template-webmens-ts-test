@@ -132,6 +132,15 @@ export const mainApi = createApi({
         body: {'filter': params.filter}
       })
     }),
+    getResourceTimeLinePost: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[], pagination: PaginationProps}, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+      query: (params) => ({
+        url: `${params.entity}/data-time-line`,
+        params: { page: params.pagination?.currentPage, perPage: params.pagination?.perPage },
+        method: "POST",
+        body: {'filter': params.filter}
+      })
+    }),
+
     getDynamicSelectItems: build.query<TSelectDynamicItem[], string>({
       query: (code) => ({
         url: `select-dinamic/get-list?name=${code}`
@@ -182,6 +191,7 @@ export const {
   useSaveSchemaMutation,
   useLazyGetGridQuery,
   useLazyGetGridPostQuery,
+  useLazyGetResourceTimeLinePostQuery,
   useLazyGetDynamicSelectItemsQuery,
   useSendDataOnButtonClickMutation,
   useLazyGetDynamicButtonItemsQuery,
