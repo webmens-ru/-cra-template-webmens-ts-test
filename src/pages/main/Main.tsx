@@ -109,7 +109,18 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
               onCloseSlider={reload}
               onClosePopup={reload}
           />
-          <ResourceTimeLineWrapper/>
+          <ResourceTimeLineWrapper
+              slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
+              // api={mainApi}
+              // onShemaMutation={schemaMutation}
+              // onRowMutation={rowMutation}
+              // checkboxesSetter={setCheckboxes}
+              // schemaSetter={setSchema}
+              filterSetter={setFilterResponse}
+              onCloseSlider={reload}
+              onClosePopup={reload}
+              // onNavigate={(page) => dispatch(setPage(page))}
+          />
         </>
       default:
         return (
