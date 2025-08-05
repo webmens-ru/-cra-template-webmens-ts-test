@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   setCurrentFilter as setFilter, setFilterResponse,
   setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
@@ -93,6 +93,13 @@ export const useFilterQuery = (): TProps => {
   const updateTextSearch = (text: string) => {    
     searchTextRef.current = text
   }
+
+  useEffect(() => {
+    const visibleFields = fields.filter(field => !!field.visible)
+    const filterResponse = getFilterResponsePost(visibleFields)
+    
+    dispatch(setFilterResponse(filterResponse))
+  }, [dispatch, fields])
 
   return {
     filters,

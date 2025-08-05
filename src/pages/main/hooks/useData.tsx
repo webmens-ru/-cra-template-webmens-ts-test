@@ -1,12 +1,10 @@
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import {setCheckboxes, setCurrentFilter, setFilterResponse, setIsLoading, setPage} from "..";
+import { setCurrentFilter, setIsLoading} from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
 import { PostFilterResponseFields, getFilterResponsePost } from "../../../app/utils/postFilterResponse";
 import { useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery, useLazyGetGridPostQuery, useLazyGetSchemaQuery } from "../mainApi";
 import { setGrid, setPagination, setSchema } from "../mainSlice";
-import {TopBar} from "../components/TopBar";
-import {GridWrapper} from "../../../components/GridWrapper";
 
 export const useData = () => {
   const { mainSlice } = useAppSelector((state) => state);
@@ -33,10 +31,10 @@ export const useData = () => {
       let currentFilter;
       let currentFields;
 
-      const [filters, allFields, schema] = await Promise.all([
+      const [filters, allFields] = await Promise.all([
         getFilters(entity),
         getAllFields(entity),
-        getSchema(entity),
+        // getSchema(entity),
       ]);
 
       if (filters.data) {
@@ -45,36 +43,36 @@ export const useData = () => {
       
       if (currentFilter && "id" in currentFilter) {
         dispatch(setCurrentFilter(currentFilter));
-        currentFields = await getCurrentFiltersFields(currentFilter.id);
+        await getCurrentFiltersFields(currentFilter.id);
       }
 
-      if (currentFields) {
-        const correctFields = concatFieldsAndAllFields(
-          currentFields.data,
-          allFields.data,
-        ).filter((f) => Boolean(f.visible));
+      // if (currentFields) {
+      //   const correctFields = concatFieldsAndAllFields(
+      //     currentFields.data,
+      //     allFields.data,
+      //   ).filter((f) => Boolean(f.visible));
 
-        const filterResponse = getFilterResponsePost(correctFields);
-        // switch ('') {
-        //   case 'grid':
-        //   case 'resource-time-line':
-        //   default:
-        //
-        // }
+      //   const filterResponse = getFilterResponsePost(correctFields);
+      //   // switch ('') {
+      //   //   case 'grid':
+      //   //   case 'resource-time-line':
+      //   //   default:
+      //   //
+      //   // }
 
-        const grid = await getGridPost({
-          entity,
-          filter: ((mainSlice.filterResponse !== null && mainSlice.filterResponse !== undefined) ? mainSlice.filterResponse : filterResponse) as PostFilterResponseFields,
-          pagination: mainSlice.pagination
-        });
+      //   const grid = await getGridPost({
+      //     entity,
+      //     filter: ((mainSlice.filterResponse !== null && mainSlice.filterResponse !== undefined) ? mainSlice.filterResponse : filterResponse) as PostFilterResponseFields,
+      //     pagination: mainSlice.pagination
+      //   });
 
-        dispatch(setSchema(schema.data))
-        dispatch(setGrid(grid.data))
-        dispatch(setPagination(grid.data?.pagination))
-      }
+      //   dispatch(setSchema(schema.data))
+      //   dispatch(setGrid(grid.data))
+      //   dispatch(setPagination(grid.data?.pagination))
+      // }
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, getGridPost, getSchema, isCorrect, mainSlice.currentTab.params, mainSlice.filterResponse, mainSlice.pagination]);
+  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, isCorrect, mainSlice.currentTab.params, mainSlice.filterResponse, mainSlice.pagination]);
 
   useLayoutEffect(() => {
     init();

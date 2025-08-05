@@ -11,6 +11,7 @@ import { useData } from "./hooks/useData";
 import { useMenuData } from "./hooks/useMenuData";
 import { MainContainer } from "./mainStyle";
 import ResourceTimeLineWrapper from "../../components/ResourceTimeLineWrapper";
+import { GridView } from "./components/views/GridView";
 
 export function Main({ menuId = 1 }: { menuId?: number }) {
   const dispatch = useAppDispatch()
@@ -34,43 +35,6 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
       width: item.params.bx24_width
     })
   }
-// console.log(mainSlice.currentTab.params.viewMode)
-//   return (
-//     <>
-//       <Menu
-//         items={tabs.data}
-//         setItem={setTab}
-//         itemsMutation={itemsMutation}
-//         sliderOpenner={handleSliderOpen}
-//       />
-//       {isCorrect ? (
-//         <>
-//           <TopBar
-//             onCloseSlider={reload}
-//             onClosePopup={reload}
-//           />
-//           <GridWrapper
-//             slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
-//             api={mainApi}
-//             onShemaMutation={schemaMutation}
-//             onRowMutation={rowMutation}
-//             checkboxesSetter={setCheckboxes}
-//             schemaSetter={setSchema}
-//             filterSetter={setFilterResponse}
-//             onCloseSlider={reload}
-//             onClosePopup={reload}
-//             onNavigate={(page) => dispatch(setPage(page))}
-//           />
-//         </>
-//       ) : (
-//         <MainContainer>
-//           <img src={webmensLogo} alt="webmens logo" />
-//         </MainContainer>
-//       )}
-//     </>
-//   );
-
-  // console.log(mainSlice.currentTab.params.viewMode);
 
   const renderContent = () => {
     if (!isCorrect) {
@@ -89,18 +53,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
                   onCloseSlider={reload}
                   onClosePopup={reload}
               />
-              <GridWrapper
-                  slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
-                  api={mainApi}
-                  onShemaMutation={schemaMutation}
-                  onRowMutation={rowMutation}
-                  checkboxesSetter={setCheckboxes}
-                  schemaSetter={setSchema}
-                  filterSetter={setFilterResponse}
-                  onCloseSlider={reload}
-                  onClosePopup={reload}
-                  onNavigate={(page) => dispatch(setPage(page))}
-              />
+              <GridView />
             </>
         );
       case 'resource-time-line':
@@ -129,18 +82,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
                   onCloseSlider={reload}
                   onClosePopup={reload}
               />
-              <GridWrapper
-                  slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
-                  api={mainApi}
-                  onShemaMutation={schemaMutation}
-                  onRowMutation={rowMutation}
-                  checkboxesSetter={setCheckboxes}
-                  schemaSetter={setSchema}
-                  filterSetter={setFilterResponse}
-                  onCloseSlider={reload}
-                  onClosePopup={reload}
-                  onNavigate={(page) => dispatch(setPage(page))}
-              />
+              <GridView />
             </>
         );
     }
