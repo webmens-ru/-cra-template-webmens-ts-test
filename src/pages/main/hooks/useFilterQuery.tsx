@@ -81,7 +81,7 @@ export const useFilterQuery = (): TProps => {
     [mainApi.queries, mainSlice.currentTab.params?.entity],
   );
 
-  const fields = useMemo<any>(() => concatFieldsAndAllFields(rawFields, allFields), [allFields, rawFields]);
+  const fields = useMemo<TField[]>(() => concatFieldsAndAllFields(rawFields, allFields), [allFields, rawFields]);
 
   const updateFieldsOrder = async (fields: TField[]) => {
     await axiosInst.post(
@@ -94,12 +94,12 @@ export const useFilterQuery = (): TProps => {
     searchTextRef.current = text
   }
 
-  useEffect(() => {
-    const visibleFields = fields.filter(field => !!field.visible)
-    const filterResponse = getFilterResponsePost(visibleFields)
+  // useEffect(() => {
+  //   const visibleFields = fields.filter((field) => !!field.visible)
+  //   const filterResponse = getFilterResponsePost(visibleFields)
     
-    dispatch(setFilterResponse(filterResponse))
-  }, [dispatch, fields])
+  //   dispatch(setFilterResponse(filterResponse))
+  // }, [dispatch, fields])
 
   return {
     filters,

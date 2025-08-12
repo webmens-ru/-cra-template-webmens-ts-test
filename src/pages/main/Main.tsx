@@ -1,8 +1,7 @@
-import { setCheckboxes, setFilterResponse, setPage, setSchema, useEditRowMutation, useSaveSchemaMutation, useSetTabsMutation } from ".";
+import { setFilterResponse, useSetTabsMutation } from ".";
 import useNavigation from "../../app/hooks/useNavigation";
-import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
+import { useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
-import { GridWrapper } from "../../components/GridWrapper";
 import { Loader } from "../../components/loader";
 import { Menu } from "../../components/menu";
 import type { Item } from "../../components/menu/types";
@@ -14,12 +13,9 @@ import ResourceTimeLineWrapper from "../../components/ResourceTimeLineWrapper";
 import { GridView } from "./components/views/GridView";
 
 export function Main({ menuId = 1 }: { menuId?: number }) {
-  const dispatch = useAppDispatch()
-  const { mainSlice, mainApi } = useAppSelector(state => state)
+  const { mainSlice } = useAppSelector(state => state)
   const { tabs, setTab } = useMenuData(menuId);
   const [itemsMutation] = useSetTabsMutation();
-  const [schemaMutation] = useSaveSchemaMutation()
-  const [rowMutation] = useEditRowMutation()
   const { isCorrect, reload } = useData();
   const navigate = useNavigation()
 
@@ -39,54 +35,41 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
   const renderContent = () => {
     if (!isCorrect) {
       return (
-          <MainContainer>
-            <img src={webmensLogo} alt="webmens logo" />
-          </MainContainer>
+        <MainContainer>
+          <img src={webmensLogo} alt="webmens logo" />
+        </MainContainer>
       );
     }
 
-    switch (mainSlice.currentTab.params.viewMode) {
-      case 'grid':
-        return (
-            <>
-              <TopBar
-                  onCloseSlider={reload}
-                  onClosePopup={reload}
-              />
-              <GridView />
-            </>
-        );
-      case 'resource-time-line':
-        return <>
-          <TopBar
-              onCloseSlider={reload}
-              onClosePopup={reload}
-          />
-          <ResourceTimeLineWrapper
+    return (
+      <>
+        <TopBar
+          onCloseSlider={reload}
+          onClosePopup={reload}
+        />
+        {renderContentView()}
+      </>
+    )
+  };
+
+  const renderContentView = () => {
+    if (!mainSlice.isLoading && mainSlice.filterInited) {
+      switch ('grid') {
+        case 'grid':
+          return <GridView />
+        // @ts-ignore
+        case 'resource-time-line':
+          return (
+            <ResourceTimeLineWrapper
               slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
-              // api={mainApi}
-              // onShemaMutation={schemaMutation}
-              // onRowMutation={rowMutation}
-              // checkboxesSetter={setCheckboxes}
-              // schemaSetter={setSchema}
               filterSetter={setFilterResponse}
               onCloseSlider={reload}
               onClosePopup={reload}
-              // onNavigate={(page) => dispatch(setPage(page))}
-          />
-        </>
-      default:
-        return (
-            <>
-              <TopBar
-                  onCloseSlider={reload}
-                  onClosePopup={reload}
-              />
-              <GridView />
-            </>
-        );
+            />
+          )
+      }
     }
-  };
+  }
 
   return (
       <>

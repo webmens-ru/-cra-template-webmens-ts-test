@@ -12,11 +12,14 @@ import { Toolbar, type IBlockItemMetricFilter, type IBlockItemMetricLink } from 
 import { Grid2 } from "./grid/Grid";
 import { Loader } from "./loader";
 import useNotification from "./notification";
+import type { GridDataResponse } from "../app/model/query";
 
 // TODO: Изучить типизацию redux-toolkit
 interface IGridWrapperProps {
   slice: Partial<IState>;
   api?: any;
+  schema: any,
+  data?: GridDataResponse
   schemaSetter: ActionCreatorWithPayload<any>;
   checkboxesSetter: ActionCreatorWithPayload<any>;
   filterSetter?: ActionCreatorWithPayload<any>;
@@ -29,6 +32,8 @@ interface IGridWrapperProps {
 }
 
 export function GridWrapper({
+  schema,
+  data,
   slice,
   schemaSetter,
   checkboxesSetter,
@@ -151,9 +156,9 @@ export function GridWrapper({
         />
       )}
       <Grid2
-        columns={slice.schema}
-        rows={gridState?.grid}
-        footer={gridState?.footer}
+        columns={schema}
+        rows={data?.grid}
+        footer={data?.footer}
         height={height || window.innerHeight - calcHeight}
         columnMutation={handleSchemaMutation}
         onChangeCheckboxes={checkboxesHandler}

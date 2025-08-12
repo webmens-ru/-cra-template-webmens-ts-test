@@ -10,6 +10,7 @@ interface IState {
   currentTab: Item;
   currentFilter: TFilter;
   filterResponse: null | string;
+  filterInited: boolean;
   toolbarFilterResponse: null | string;
   lastTimeSliderOpened: number | null;
   checkboxes: TRowID[];
@@ -36,6 +37,7 @@ const initialState: IState = {
   checkboxes: [],
   checkedRows: [],
   filterResponse: null,
+  filterInited: false,
   toolbarFilterResponse: null,
   lastTimeSliderOpened: null,
   isLoading: true,
@@ -51,12 +53,14 @@ export const mainSlice = createSlice({
     setCurrentTab: (state, { payload }) => {
       state.currentTab = payload;
       state.filterResponse = null;
+      state.filterInited = false;
     },
     setCurrentFilter: (state, { payload }) => {
       state.currentFilter = payload;
     },
     setFilterResponse: (state, { payload }) => {
       state.filterResponse = payload;
+      state.filterInited = true
     },
     setIsLoading: (state, { payload }) => {
       state.isLoading = payload;

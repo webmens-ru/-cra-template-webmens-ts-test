@@ -1,10 +1,9 @@
-import { useCallback, useLayoutEffect, useMemo } from "react";
-import { setCurrentFilter, setIsLoading} from "..";
+import { useCallback, useEffect, useMemo } from "react";
+import { setCurrentFilter, setFilterResponse, setIsLoading} from "..";
 import { useAppDispatch, useAppSelector } from "../../../app/store/hooks";
+import { useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery } from "../mainApi";
 import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
-import { PostFilterResponseFields, getFilterResponsePost } from "../../../app/utils/postFilterResponse";
-import { useLazyGetAllFieldsQuery, useLazyGetFieldsQuery, useLazyGetFiltersQuery, useLazyGetGridPostQuery, useLazyGetSchemaQuery } from "../mainApi";
-import { setGrid, setPagination, setSchema } from "../mainSlice";
+import { getFilterResponsePost } from "../../../app/utils/postFilterResponse";
 
 export const useData = () => {
   const { mainSlice } = useAppSelector((state) => state);
@@ -12,9 +11,7 @@ export const useData = () => {
 
   const [getFilters] = useLazyGetFiltersQuery();
   const [getAllFields] = useLazyGetAllFieldsQuery();
-  const [getSchema] = useLazyGetSchemaQuery();
   const [getCurrentFiltersFields] = useLazyGetFieldsQuery();
-  const [getGridPost] = useLazyGetGridPostQuery()
 
   const isCorrect = useMemo(() => {
     return (
@@ -34,7 +31,6 @@ export const useData = () => {
       const [filters, allFields] = await Promise.all([
         getFilters(entity),
         getAllFields(entity),
-        // getSchema(entity),
       ]);
 
       if (filters.data) {
@@ -43,38 +39,19 @@ export const useData = () => {
       
       if (currentFilter && "id" in currentFilter) {
         dispatch(setCurrentFilter(currentFilter));
-        await getCurrentFiltersFields(currentFilter.id);
+        currentFields = await getCurrentFiltersFields(currentFilter.id);
+
+        const fields = concatFieldsAndAllFields(currentFields.data, allFields.data)
+        const visibleFields = fields.filter((field) => !!field.visible)
+        const filterResponse = getFilterResponsePost(visibleFields)
+    
+        dispatch(setFilterResponse(filterResponse))
       }
-
-      // if (currentFields) {
-      //   const correctFields = concatFieldsAndAllFields(
-      //     currentFields.data,
-      //     allFields.data,
-      //   ).filter((f) => Boolean(f.visible));
-
-      //   const filterResponse = getFilterResponsePost(correctFields);
-      //   // switch ('') {
-      //   //   case 'grid':
-      //   //   case 'resource-time-line':
-      //   //   default:
-      //   //
-      //   // }
-
-      //   const grid = await getGridPost({
-      //     entity,
-      //     filter: ((mainSlice.filterResponse !== null && mainSlice.filterResponse !== undefined) ? mainSlice.filterResponse : filterResponse) as PostFilterResponseFields,
-      //     pagination: mainSlice.pagination
-      //   });
-
-      //   dispatch(setSchema(schema.data))
-      //   dispatch(setGrid(grid.data))
-      //   dispatch(setPagination(grid.data?.pagination))
-      // }
     }
     dispatch(setIsLoading(false));
-  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, isCorrect, mainSlice.currentTab.params, mainSlice.filterResponse, mainSlice.pagination]);
+  }, [dispatch, getAllFields, getCurrentFiltersFields, getFilters, isCorrect, mainSlice.currentFilter, mainSlice.currentTab.params?.entity]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     init();
   }, [init]);
 

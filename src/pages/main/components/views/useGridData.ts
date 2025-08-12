@@ -1,46 +1,38 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useAppSelector } from "../../../../app/store/hooks";
-import { useLazyGetGridPostQuery, useLazyGetSchemaQuery } from "../../mainApi";
-import { setSchema, setGrid, setPagination } from "../../mainSlice";
+import { useGetGridPostQuery, useGetSchemaQuery } from "../../mainApi";
 import { useDispatch } from "react-redux";
+import { setGrid, setSchema } from "../../mainSlice";
 
 export default function useGridData() {
-  const dispatch = useDispatch();
-  const [getSchema] = useLazyGetSchemaQuery();
-  const [getGridPost] = useLazyGetGridPostQuery();
-
   const { mainSlice } = useAppSelector((state) => state);
+  const dispatch = useDispatch();
+
   const entity = mainSlice.currentTab.params.entity;
 
-  const getGridData = useCallback(async () => {
-    const grid = await getGridPost({
+  const responseSchema = useGetSchemaQuery(entity);
+  const responseData = useGetGridPostQuery(
+    {
       entity,
       // @ts-ignore
       filter: mainSlice.filterResponse,
       pagination: mainSlice.pagination,
-    });
-
-    dispatch(setGrid(grid.data));
-    dispatch(setPagination(grid.data?.pagination));
-  }, [
-    dispatch,
-    entity,
-    getGridPost,
-    mainSlice.filterResponse,
-    mainSlice.pagination,
-  ]);
-
-  const init = useCallback(async () => {
-    const [schema] = await Promise.all([getSchema(entity), getGridData()]);
-
-    dispatch(setSchema(schema.data));
-  }, [dispatch, entity, getGridData, getSchema]);
+    },
+    { refetchOnMountOrArgChange: true }
+  );
 
   useEffect(() => {
-    init();
-  }, [init]);
+    if (responseSchema.isSuccess && responseData.isSuccess) {
+      dispatch(setSchema(responseSchema.data));
+      dispatch(setGrid(responseData.data));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, responseSchema.isSuccess, responseData.isSuccess]);
 
   return {
-    reload: getGridData,
+    schema: responseSchema.data,
+    data: responseData.data,
+    isLoading: responseSchema.isLoading || responseData.isLoading,
+    reload: responseData.refetch,
   };
 }

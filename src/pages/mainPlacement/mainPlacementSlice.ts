@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { TFilter } from "../../components/filter/types";
-import type { TRowID, TRawColumnItem, TRowItem, BurgerItem } from "../../components/grid";
+import type { TRowID, TRawColumnItem } from "../../components/grid";
 import type { PaginationProps } from "../../components/grid/components/pagination";
-import type { IToolbarBlock } from "../../components/toolbar";
+import type { GridDataResponse } from "../../app/model/query";
 
 // TODO: Вынести в generic-типы
 export interface IState {
@@ -14,25 +14,12 @@ export interface IState {
   checkedRows: number[];
   isLoading: boolean;
   isError: boolean;
-  grid: IGridState;
+  grid: GridDataResponse;
   entity: string;
   parentId: string;
   title: string;
   schema: TRawColumnItem[]
   pagination: PaginationProps
-}
-
-export interface IGridState {
-  header?: {
-    blocks: IToolbarBlock[]
-  };
-  grid?: TRowItem[];
-  footer?: TRowItem[];
-  options?: {
-    key: string;
-    actionColumnName: string;
-    actions: BurgerItem[]
-  }
 }
 
 const initialState: IState = {

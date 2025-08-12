@@ -14,12 +14,14 @@ export function GridView() {
   const { mainSlice, mainApi } = useAppSelector((state) => state);
   const [schemaMutation] = useSaveSchemaMutation();
   const [rowMutation] = useEditRowMutation();
-  const { reload } = useGridData();
+  const { schema, data, reload } = useGridData();
 
   return (
     <GridWrapper
       slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
       api={mainApi}
+      schema={schema}
+      data={data}
       onShemaMutation={schemaMutation}
       onRowMutation={rowMutation}
       checkboxesSetter={setCheckboxes}

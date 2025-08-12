@@ -52,6 +52,8 @@ export function MainDetail({ title, entity, body = [], parentId = '' }: MainDeta
         />
       </Container>
       <GridWrapper
+        schema={mainDetail.schema}
+        data={mainDetail.grid}
         slice={{ ...mainDetail, entity }}
         onShemaMutation={schemaMutation}
         checkboxesSetter={setCheckboxes}

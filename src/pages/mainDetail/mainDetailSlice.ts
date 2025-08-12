@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { TFilter } from "../../components/filter/types";
 import type { Item } from "../../components/menu/types";
-import type { TRowID, TRawColumnItem, TRowItem } from "../../components/grid";
-import type { IToolbarBlock } from "../../components/toolbar";
+import type { TRowID, TRawColumnItem } from "../../components/grid";
+import type { GridDataResponse } from "../../app/model/query";
 
 interface IState {
   currentTab: Item;
@@ -14,17 +14,8 @@ interface IState {
   checkedRows: number[];
   isLoading: boolean;
   isError: boolean;
-  grid: IGridState;
+  grid: GridDataResponse;
   schema: TRawColumnItem[]
-}
-
-export interface IGridState {
-  header?: {
-    blocks: IToolbarBlock[]
-  };
-  grid?: TRowItem[];
-  footer?: TRowItem[];
-  options?: any;
 }
 
 const initialState: IState = {
@@ -37,7 +28,10 @@ const initialState: IState = {
   lastTimeSliderOpened: null,
   isLoading: true,
   isError: false,
-  grid: {},
+  grid: {
+    grid: [],
+    footer: [],
+  },
   schema: []
 };
 

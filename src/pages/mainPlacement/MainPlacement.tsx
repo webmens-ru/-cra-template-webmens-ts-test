@@ -41,6 +41,8 @@ export default function MainPlacement({ entity, parentId }: MainPlacementProps) 
             onClosePopup={reload}
           />
           <GridWrapper
+            schema={mainPlacementSlice.schema}
+            data={mainPlacementSlice.grid}
             slice={mainPlacementSlice}
             api={mainPlacementApi}
             onShemaMutation={schemaMutation}

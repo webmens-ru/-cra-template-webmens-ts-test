@@ -4,6 +4,7 @@ import { PostFilterResponseFields } from './../../app/utils/postFilterResponse';
 import type { TRowItem } from "../../components/grid";
 import type { PaginationProps } from "../../components/grid/components/pagination";
 import type { TSelectDynamicItem } from "../../components/filter/types";
+import type { GridDataResponse } from "../../app/model/query";
 
 export const mainApi = createApi({
   reducerPath: "mainApi",
@@ -124,15 +125,16 @@ export const mainApi = createApi({
         body: { id, [key]: value }
       }),      
     }),
-    getGridPost: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[], pagination: PaginationProps}, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+    getGridPost: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
       query: (params) => ({
         url: `${params.entity}/data`,
         params: { page: params.pagination?.currentPage, perPage: params.pagination?.perPage },
         method: "POST",
-        body: {'filter': params.filter}
-      })
+        body: { 'filter': params.filter },
+      }),
+      keepUnusedDataFor: 5
     }),
-    getResourceTimeLinePost: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[], pagination: PaginationProps}, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+    getResourceTimeLinePost: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
       query: (params) => ({
         url: `${params.entity}/data-time-line`,
         params: { page: params.pagination?.currentPage, perPage: params.pagination?.perPage },
@@ -176,6 +178,8 @@ export const mainApi = createApi({
 
 export const {
   useLazyGetTabsQuery,
+  useGetSchemaQuery,
+  useGetGridPostQuery,
   useSetTabsMutation,
   useLazyGetFiltersQuery,
   useCreateFilterMutation,

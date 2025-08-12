@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "../../../app/store/hooks";
 import { useLazyGetTabsQuery } from "../mainApi";
 import { setCurrentTab } from "../mainSlice";
@@ -8,7 +8,7 @@ export const useMenuData = (menuId: number = 1) => {
   const dispatch = useAppDispatch();
   const [getTabs, tabs] = useLazyGetTabsQuery();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getTabs(menuId);
   }, [getTabs, menuId]);
 
