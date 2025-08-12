@@ -15,29 +15,17 @@ import { useAppDispatch } from "../app/store/hooks";
 
 interface IResourceTimeLineWrapperProps {
   slice: Partial<IState>;
-  // api?: any;
-  // schemaSetter: ActionCreatorWithPayload<any>;
-  // checkboxesSetter: ActionCreatorWithPayload<any>;
   filterSetter?: ActionCreatorWithPayload<any>;
-  // onShemaMutation: MutationTrigger<any>;
-  // onRowMutation?: MutationTrigger<any>;
-  // height?: number;
   onCloseSlider?: () => void;
   onClosePopup?: () => void;
-  // onNavigate?: (page: number) => void
 }
 
 export default function ResourceTimeLineWrapper({
   slice,
-  // schemaSetter,
-  // checkboxesSetter,
   filterSetter,
-  // height,
-  // onShemaMutation,
-  // onRowMutation,
   onCloseSlider,
   onClosePopup,
-}: // onNavigate
+}:
 IResourceTimeLineWrapperProps) {
   const dispatch = useAppDispatch();
   const [notificationContext, notificationAPI] = useNotification();

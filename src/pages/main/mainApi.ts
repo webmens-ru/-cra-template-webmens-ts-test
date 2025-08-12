@@ -132,17 +132,7 @@ export const mainApi = createApi({
         method: "POST",
         body: { 'filter': params.filter },
       }),
-      keepUnusedDataFor: 5
     }),
-    getResourceTimeLinePost: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
-      query: (params) => ({
-        url: `${params.entity}/data-time-line`,
-        params: { page: params.pagination?.currentPage, perPage: params.pagination?.perPage },
-        method: "POST",
-        body: {'filter': params.filter}
-      })
-    }),
-
     getDynamicSelectItems: build.query<TSelectDynamicItem[], string>({
       query: (code) => ({
         url: `select-dinamic/get-list?name=${code}`
@@ -172,7 +162,20 @@ export const mainApi = createApi({
       query: ({ entity }) => ({
         url: `${entity}/get-help-button`
       })
-    })
+    }),
+    getTimelineSettings: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+      query: (params) => ({
+        url: `${params.entity}/timeline-settings`,
+        method: "GET",
+      })
+    }),
+    getTimelineData: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+      query: (params) => ({
+        url: `${params.entity}/timeline-data`,
+        method: "POST",
+        body: {'filter': params.filter }
+      })
+    }),
   }),
 });
 
@@ -195,7 +198,8 @@ export const {
   useSaveSchemaMutation,
   useLazyGetGridQuery,
   useLazyGetGridPostQuery,
-  useLazyGetResourceTimeLinePostQuery,
+  useGetTimelineDataQuery,
+  useGetTimelineSettingsQuery,
   useLazyGetDynamicSelectItemsQuery,
   useSendDataOnButtonClickMutation,
   useLazyGetDynamicButtonItemsQuery,
