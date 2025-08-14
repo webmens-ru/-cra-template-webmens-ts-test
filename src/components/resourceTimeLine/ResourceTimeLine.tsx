@@ -1,47 +1,43 @@
-import React from "react";
-import FullCalendar from "@fullcalendar/react";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import type { TimelineProps } from "./types";
+import { useEffect, useRef } from "react";
+import type { CalendarApi } from "@fullcalendar/core";
+import FullCalendar from "@fullcalendar/react";
+import { FullCalendarStyle } from "./styles";
 
-export default function ResourceTimeLine() {
-  const resources = [
-    { id: "a", title: "Комната A" },
-    { id: "b", title: "Комната B" },
-    { id: "c", title: "Комната C" },
-  ];
+export default function ResourceTimeLine({
+  events = [],
+  resources = [],
+  settings,
+}: TimelineProps) {
+  const calendarRef = useRef<{ calendar: CalendarApi }>(null);
 
-  const events = [
-    {
-      id: "1",
-      resourceId: "a",
-      title: "Совещание",
-      start: "2025-04-05T10:00:00",
-      end: "2025-04-05T12:00:00",
-    },
-    {
-      id: "2",
-      resourceId: "b",
-      title: "Презентация",
-      start: "2025-04-06T14:00:00",
-      end: "2025-04-06T16:00:00",
-    },
-  ];
+  useEffect(() => {
+    if (settings?.initialView) {
+      calendarRef.current?.calendar.changeView(settings.initialView);
+    }
+  }, [settings?.initialView]);
 
   return (
-    <div>
+    <>
+      <FullCalendarStyle />
       <FullCalendar
-        plugins={[resourceTimelinePlugin]}
-        initialView="resourceTimelineDay"
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right:
-            "resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth",
+        {...settings}
+        // @ts-ignore
+        ref={calendarRef}
+        buttonText={{
+          today: "Сегодня",
+          month: "Месяц",
+          week: "Неделя",
+          day: "День",
+          list: "Список",
         }}
+        locale="ru"
+        schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
+        plugins={[resourceTimelinePlugin]}
         resources={resources}
         events={events}
-        editable={true}
-        selectable={true}
       />
-    </div>
+    </>
   );
 }

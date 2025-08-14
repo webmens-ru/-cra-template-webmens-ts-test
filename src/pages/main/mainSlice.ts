@@ -2,12 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import { mainApi } from './mainApi';
 import type { TRawColumnItem, TRowID, TRowItem } from "../../components/grid";
 import type { TFilter } from "../../components/filter/types";
-import type { Item } from "../../components/menu/types";
+import type { MenuItem } from "../../components/menu/types";
 import type { PaginationProps } from "../../components/grid/components/pagination";
 import type { IToolbarBlock } from "../../components/toolbar";
 
 interface IState {
-  currentTab: Item;
+  currentTab: MenuItem;
   currentFilter: TFilter;
   filterResponse: null | string;
   filterInited: boolean;
@@ -32,7 +32,7 @@ export interface IGridState {
 }
 
 const initialState: IState = {
-  currentTab: {} as Item,
+  currentTab: {} as MenuItem,
   currentFilter: {} as TFilter,
   checkboxes: [],
   checkedRows: [],

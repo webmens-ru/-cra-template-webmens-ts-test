@@ -4,13 +4,14 @@ import { useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
 import { Loader } from "../../components/loader";
 import { Menu } from "../../components/menu";
-import type { Item } from "../../components/menu/types";
+import type { MenuItem } from "../../components/menu/types";
 import { TopBar } from "./components/TopBar";
 import { useData } from "./hooks/useData";
 import { useMenuData } from "./hooks/useMenuData";
 import { MainContainer } from "./mainStyle";
 import ResourceTimeLineWrapper from "../../components/ResourceTimeLineWrapper";
 import { GridView } from "./components/views/GridView";
+import TimelineView from "./components/views/TimelineView";
 
 export function Main({ menuId = 1 }: { menuId?: number }) {
   const { mainSlice } = useAppSelector(state => state)
@@ -21,7 +22,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
 
   if (tabs.isLoading) return <Loader />;
 
-  const handleSliderOpen = (item: Item) => {
+  const handleSliderOpen = (item: MenuItem) => {
     navigate({
       type: item.type,
       // @ts-ignore
@@ -54,18 +55,13 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
 
   const renderContentView = () => {
     if (!mainSlice.isLoading && mainSlice.filterInited) {
-      switch ('grid') {
+      switch (mainSlice.currentTab.params.viewMode) {
         case 'grid':
           return <GridView />
         // @ts-ignore
-        case 'resource-time-line':
+        case 'resource-timeline':
           return (
-            <ResourceTimeLineWrapper
-              slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
-              filterSetter={setFilterResponse}
-              onCloseSlider={reload}
-              onClosePopup={reload}
-            />
+            <TimelineView />
           )
       }
     }

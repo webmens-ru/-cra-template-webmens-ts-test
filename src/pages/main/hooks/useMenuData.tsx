@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "../../../app/store/hooks";
 import { useLazyGetTabsQuery } from "../mainApi";
 import { setCurrentTab } from "../mainSlice";
-import type { Item } from "../../../components/menu/types";
+import type { MenuItem } from "../../../components/menu/types";
 
 export const useMenuData = (menuId: number = 1) => {
   const dispatch = useAppDispatch();
@@ -13,7 +13,7 @@ export const useMenuData = (menuId: number = 1) => {
   }, [getTabs, menuId]);
 
   const setTab = useCallback(
-    (tab: Item) => {
+    (tab: MenuItem) => {
       dispatch(setCurrentTab(tab));
     },
     [dispatch],

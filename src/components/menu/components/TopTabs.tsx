@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCustomContext } from '../store';
-import { Item, ITopTabs } from '../types/index';
+import { MenuItem, ITopTabs } from '../types/index';
 import Tab from './Tab';
 
 export default function TopTabs({ arr, isDraggable, currentId, setTab }: ITopTabs) {  
@@ -35,7 +35,7 @@ export default function TopTabs({ arr, isDraggable, currentId, setTab }: ITopTab
     dispatch({ type: "set_items", items: [ ...state.items.filter(item => item.id !== dragItem.id), dragItem ] })
   }
 
-  const handleTabClick = (tab: Item) => {
+  const handleTabClick = (tab: MenuItem) => {
     if (!state.disabled) {
       setTab(tab)
     }

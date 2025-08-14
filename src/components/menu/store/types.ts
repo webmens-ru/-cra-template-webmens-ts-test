@@ -1,22 +1,22 @@
-import { IMenuProps, Item, SliderOpenner } from "../types";
+import { IMenuProps, MenuItem, SliderOpenner } from "../types";
 import { MenuStyles } from './../types/index';
 
 export type MenuState = {
-  items: Item[];
+  items: MenuItem[];
   disabled: boolean;
   menuStyle: MenuStyles;
-  currentItem: Item | undefined;
+  currentItem: MenuItem | undefined;
   isReadyForRender: boolean;
   countTopItems: number;
   isEditable: boolean;
-  itemsMutation: (items: Item[]) => void
+  itemsMutation: (items: MenuItem[]) => void
   sliderOpenner: SliderOpenner
 };
 
 export type Action =
-  | { type: "set_items"; items: Item[] }
+  | { type: "set_items"; items: MenuItem[] }
   | { type: "set_count_top_items"; count: number }
-  | { type: "set_current_item"; item: Item }
+  | { type: "set_current_item"; item: MenuItem }
   | { type: "set_disabled"; disabled: boolean };
 
 export interface IContext {

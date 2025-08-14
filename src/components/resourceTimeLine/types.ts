@@ -1,11 +1,14 @@
+import type { TimelineSettingsResponse } from "../../app/model/query"
+
 export interface TimelineProps {
-  resources: TimelineResource[]
-  events: TimelineEvent[]
+  resources?: TimelineResource[]
+  events?: TimelineEvent[]
+  settings?: TimelineSettingsResponse
 }
 
 export interface TimelineResource {
-  id: string | number
-  parentId?: string | number
+  id: string
+  parentId?: string
   title?: string
   eventBackgroundColor?: string
   eventBorderColor?: string
@@ -17,8 +20,9 @@ export interface TimelineResource {
 export type TimelineEventDate = string
 
 export interface TimelineEvent {
-  id: string | number
+  id: string
   start: TimelineEventDate
   end: TimelineEventDate
+  resourceId: TimelineResource['id']
   title?: string
 }

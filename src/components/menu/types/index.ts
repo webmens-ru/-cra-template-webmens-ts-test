@@ -1,9 +1,9 @@
-type TTabsMutation = (props: Item[]) => void;
-type TSetTab = (props: Item) => void;
+type TTabsMutation = (props: MenuItem[]) => void;
+type TSetTab = (props: MenuItem) => void;
 export type SliderOpenner = (params: any) => void
 
 export interface IMenuProps {
-  items?: Item[];
+  items?: MenuItem[];
   disabled?: boolean;
   menuStyle?: MenuStyles;
   setItem?: TSetTab;
@@ -16,7 +16,7 @@ export interface IMenuProps {
 
 export type MenuStyles = "main" | "card";
 
-export type Item = {
+export type MenuItem = {
   id: number;
   title: string;
   visible: boolean;
@@ -26,26 +26,26 @@ export type Item = {
   params: {
     url: string;
     entity: string;
-    viewMode?: string;
+    viewMode?: 'grid' | 'resource-timeline';
   };
   width?: number;
 }
 
 export interface IRenderParagraph {
-  item: Item;
-  setTab: (item: Item) => void
+  item: MenuItem;
+  setTab: (item: MenuItem) => void
 }
 
 export interface ITopTabs {
-  arr: Item[];
+  arr: MenuItem[];
   isDraggable: boolean;
   currentId: number;
   setTab: TSetTab;
 }
 
 export interface IMenuTabs {
-  abroadTabs: Item[];
-  hiddenTabs: Item[];
+  abroadTabs: MenuItem[];
+  hiddenTabs: MenuItem[];
   isDraggable: boolean;
-  setTab: (item: Item) => void;
+  setTab: (item: MenuItem) => void;
 }

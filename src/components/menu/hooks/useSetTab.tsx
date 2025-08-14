@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Action } from '../store';
-import { Item } from '../types';
+import { MenuItem } from '../types';
 
 interface UseSetTabProps {
   dispatch: (act: Action) => void
@@ -8,7 +8,7 @@ interface UseSetTabProps {
 }
 
 export const useSetTab = ({ dispatch, sliderOpenner }: UseSetTabProps) => {
-  const setTab = useCallback((item: Item) => {
+  const setTab = useCallback((item: MenuItem) => {
     switch (item.type) {
       case 'updatePage':
         dispatch({ type: 'set_current_item', item });

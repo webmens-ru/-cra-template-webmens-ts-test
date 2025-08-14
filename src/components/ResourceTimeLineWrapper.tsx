@@ -12,10 +12,15 @@ import { IState } from "../pages/mainPlacement";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { bxOpen } from "../app/utils/bx";
 import { useAppDispatch } from "../app/store/hooks";
+import type { TimelineEvent, TimelineResource } from "./resourceTimeLine/types";
+import type { TimelineSettingsResponse } from "../app/model/query";
 
 interface IResourceTimeLineWrapperProps {
   slice: Partial<IState>;
   filterSetter?: ActionCreatorWithPayload<any>;
+  resources?: TimelineResource[]
+  events?: TimelineEvent[]
+  settings?: TimelineSettingsResponse
   onCloseSlider?: () => void;
   onClosePopup?: () => void;
 }
@@ -23,6 +28,9 @@ interface IResourceTimeLineWrapperProps {
 export default function ResourceTimeLineWrapper({
   slice,
   filterSetter,
+  resources = [],
+  events = [],
+  settings = {},
   onCloseSlider,
   onClosePopup,
 }:
@@ -75,7 +83,11 @@ IResourceTimeLineWrapperProps) {
           onMetricLinkClick={handleMetricLink}
         />
       )}
-      <ResourceTimeLine />
+      <ResourceTimeLine
+        events={events}
+        resources={resources}
+        settings={settings}
+      />
     </>
   );
 }

@@ -2,7 +2,7 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { useCallback, useLayoutEffect } from "react";
 import { useLazyGetTabsQuery } from "../../pages/main";
 import { useAppDispatch } from "../store/hooks";
-import type { Item } from "../../components/menu/types";
+import type { MenuItem } from "../../components/menu/types";
 
 export const useMenuData = (menuId: number, storeSetter?: ActionCreatorWithPayload<any, string>) => {
   const dispatch = useAppDispatch();
@@ -12,7 +12,7 @@ export const useMenuData = (menuId: number, storeSetter?: ActionCreatorWithPaylo
     getTabs(menuId);
   }, [getTabs, menuId]);
 
-  const setTab = useCallback((tab: Item) => {
+  const setTab = useCallback((tab: MenuItem) => {
     if (storeSetter) {
       dispatch(storeSetter(tab));
     }

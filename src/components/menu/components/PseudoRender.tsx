@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useCustomContext } from "../store";
-import { IRenderParagraph, Item } from "../types";
+import { IRenderParagraph, MenuItem } from "../types";
 
 export default function PseudoRender() {
   const { state, dispatch } = useCustomContext();
-  const [itemsWithWidth, setItemsWithWidth] = useState<Item[]>([]);
+  const [itemsWithWidth, setItemsWithWidth] = useState<MenuItem[]>([]);
 
-  const setTab = (item: Item) => {
+  const setTab = (item: MenuItem) => {
     setItemsWithWidth((items) => [...items, item]);
   };
 

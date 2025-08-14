@@ -4,7 +4,7 @@ import { PostFilterResponseFields } from './../../app/utils/postFilterResponse';
 import type { TRowItem } from "../../components/grid";
 import type { PaginationProps } from "../../components/grid/components/pagination";
 import type { TSelectDynamicItem } from "../../components/filter/types";
-import type { GridDataResponse } from "../../app/model/query";
+import type { GridDataResponse, TimelineDataResponse, TimelineSettingsResponse } from "../../app/model/query";
 
 export const mainApi = createApi({
   reducerPath: "mainApi",
@@ -163,13 +163,13 @@ export const mainApi = createApi({
         url: `${entity}/get-help-button`
       })
     }),
-    getTimelineSettings: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+    getTimelineSettings: build.query<TimelineSettingsResponse, { entity: string }>({
       query: (params) => ({
         url: `${params.entity}/timeline-settings`,
         method: "GET",
       })
     }),
-    getTimelineData: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+    getTimelineData: build.query<TimelineDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
       query: (params) => ({
         url: `${params.entity}/timeline-data`,
         method: "POST",

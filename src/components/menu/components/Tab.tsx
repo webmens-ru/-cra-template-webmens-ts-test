@@ -2,10 +2,10 @@ import React, { useRef } from "react";
 import { useDrag, useDrop, XYCoord } from "react-dnd";
 import { useCustomContext } from "../store";
 import { TabContainer, TabDragHandle } from "../styles";
-import { Item } from "../types";
+import { MenuItem } from "../types";
 
 interface MenuTabProps {
-  tab: Item;
+  tab: MenuItem;
   isDraggable: boolean;
   dragType: keyof typeof MENU_DRAG_TYPE
   isCurrent: boolean;
