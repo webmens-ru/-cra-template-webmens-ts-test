@@ -1,12 +1,16 @@
-import { useAppDispatch, useAppSelector } from "../../../../app/store/hooks";
+import { forwardRef, useImperativeHandle } from "react";
+import { useAppSelector } from "../../../../app/store/hooks";
 import { Loader } from "../../../../components/loader";
 import ResourceTimeLineWrapper from "../../../../components/ResourceTimeLineWrapper";
 import useTimelineData from "./useTimelineData";
 
-export default function TimelineView() {
-  const dispatch = useAppDispatch();
-  const { mainSlice, mainApi } = useAppSelector((state) => state);
-  const { settings, data, reload, isLoading } = useTimelineData();
+export const TimelineView = forwardRef(({ entity, parentId }: { entity: string, parentId?: string }, ref) => {
+  const { mainSlice } = useAppSelector((state) => state);
+  const { settings, data, reload, isLoading } = useTimelineData({ entity, parentId });
+
+  useImperativeHandle(ref, () => ({
+    reload
+  }))
 
   return (
     <>
@@ -16,7 +20,8 @@ export default function TimelineView() {
         events={data?.events}
         resources={data?.resources}
         settings={settings}
+        onCloseSlider={reload}
       />
     </>
   );
-}
+})

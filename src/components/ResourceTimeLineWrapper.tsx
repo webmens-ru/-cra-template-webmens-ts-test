@@ -8,15 +8,15 @@ import {
 import ResourceTimeLine from "./resourceTimeLine/ResourceTimeLine";
 import useNotification from "./notification";
 import usePopupHandler from "../app/hooks/usePopupHandler";
-import { IState } from "../pages/mainPlacement";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { bxOpen } from "../app/utils/bx";
 import { useAppDispatch } from "../app/store/hooks";
 import type { TimelineEvent, TimelineResource } from "./resourceTimeLine/types";
 import type { TimelineSettingsResponse } from "../app/model/query";
+import type { MainSliceState } from "../pages/main";
 
 interface IResourceTimeLineWrapperProps {
-  slice: Partial<IState>;
+  slice: Partial<MainSliceState>;
   filterSetter?: ActionCreatorWithPayload<any>;
   resources?: TimelineResource[]
   events?: TimelineEvent[]

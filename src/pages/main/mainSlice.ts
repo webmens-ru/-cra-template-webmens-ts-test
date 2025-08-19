@@ -5,11 +5,13 @@ import type { TFilter } from "../../components/filter/types";
 import type { MenuItem } from "../../components/menu/types";
 import type { PaginationProps } from "../../components/grid/components/pagination";
 import type { IToolbarBlock } from "../../components/toolbar";
+import type { PostFilterResponseFields } from "../../app/utils/postFilterResponse";
 
-interface IState {
+export interface MainSliceState {
+  entity?: string
   currentTab: MenuItem;
   currentFilter: TFilter;
-  filterResponse: null | string;
+  filterResponse: PostFilterResponseFields | null;
   filterInited: boolean;
   toolbarFilterResponse: null | string;
   lastTimeSliderOpened: number | null;
@@ -31,7 +33,7 @@ export interface IGridState {
   options?: any;
 }
 
-const initialState: IState = {
+const initialState: MainSliceState = {
   currentTab: {} as MenuItem,
   currentFilter: {} as TFilter,
   checkboxes: [],

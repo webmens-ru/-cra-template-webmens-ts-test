@@ -8,6 +8,8 @@ import type { ViewOptionsRefined } from "@fullcalendar/core/internal";
 // TODO: Написать тип ошибки сабмита
 export type ErrorResponse = any;
 
+export type ViewMode = 'grid' | 'resource-timeline'
+
 export interface GridDataResponse {
   header?: {
     blocks: IToolbarBlock[]

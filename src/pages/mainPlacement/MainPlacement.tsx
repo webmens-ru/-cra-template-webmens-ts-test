@@ -1,62 +1,61 @@
-import { useEffect } from "react";
-import { setCheckboxes, setEntity, setFilterResponse, setParentId, setSchema, setTitle, useLazyGetTitleQuery, useSaveSchemaMutation } from ".";
-import { useAppDispatch, useAppSelector } from "../../app/store/hooks";
+import {  useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
-import { GridWrapper } from "../../components/GridWrapper";
-import { MainContainer } from "../main";
-import { TopBar } from "./components/TopBar";
-import { usePlacementData } from "./hooks/usePlacementData";
+import { MainStartScreen, useGetTitleQuery } from "../main";
+import { useData } from "../main/hooks/useData";
+import { GridView } from "../main/components/views/GridView";
+import type { ViewMode } from "../../app/model/query";
+import { TopBar } from "../main/components/TopBar";
+import { useRef } from "react";
+import { TimelineView } from "../main/components/views/TimelineView";
 
 export interface MainPlacementProps {
   entity: string,
-  parentId: any
+  parentId: any,
+  viewMode: ViewMode
 }
 
-export default function MainPlacement({ entity, parentId }: MainPlacementProps) {
-  const dispatch = useAppDispatch();
-  const { mainPlacementSlice, mainPlacementApi } = useAppSelector((state) => state)
-  const [schemaMutation] = useSaveSchemaMutation()
-  const [getTitle] = useLazyGetTitleQuery()
-  const { reload } = usePlacementData({ entity, parentId });
+export default function MainPlacement({ entity, parentId, viewMode }: MainPlacementProps) {
+  const { mainSlice } = useAppSelector((state) => state)
+  // TODO: Лучше брать из placementOptions
+  const { data: titleData } = useGetTitleQuery(entity)
+  const { reload } = useData({ entity });
 
-  if (process.env.NODE_ENV === "production" && window._APP_TYPE_ != 'site') {
+  const viewRef = useRef<any>(null)
+
+  if (process.env.NODE_ENV === "production" && window._APP_TYPE_ !== 'site') {
     BX24.resizeWindow(window.innerWidth, 850);
   }
 
-  useEffect(() => {
-    dispatch(setEntity(entity));
-    dispatch(setParentId(parentId));
-    getTitle(entity).then((response) => {
-      dispatch(setTitle(response?.data.name))
-    })
-  }, [dispatch, entity, getTitle, parentId])
+  const renderContentView = () => {
+    if (!mainSlice.isLoading && mainSlice.filterInited) {
+      switch (viewMode) {
+        case 'grid':
+          return <GridView ref={viewRef} entity={entity} parentId={parentId} />
+        case 'resource-timeline':
+          return <TimelineView ref={viewRef} entity={entity} parentId={parentId} />
+        default: 
+          return <GridView ref={viewRef} entity={entity} parentId={parentId} />
+      }
+    }
+  }
 
   return (
     <>
       {parentId ? (
         <>
           <TopBar
+            entity={entity}
             parentId={parentId}
-            onCloseSlider={reload}
-            onClosePopup={reload}
+            title={titleData?.name}
+            onCloseSlider={viewRef.current?.reload}
+            onClosePopup={viewRef.current?.reload}
           />
-          <GridWrapper
-            schema={mainPlacementSlice.schema}
-            data={mainPlacementSlice.grid}
-            slice={mainPlacementSlice}
-            api={mainPlacementApi}
-            onShemaMutation={schemaMutation}
-            checkboxesSetter={setCheckboxes}
-            schemaSetter={setSchema}
-            filterSetter={setFilterResponse}
-            onCloseSlider={reload}
-            onClosePopup={reload}
-          />
+          {renderContentView()}
         </>
       ) : (
-        <MainContainer>
+        <MainStartScreen>
           <img src={webmensLogo} alt="webmens logo" />
-        </MainContainer>
+        </MainStartScreen>
       )}
     </>
 

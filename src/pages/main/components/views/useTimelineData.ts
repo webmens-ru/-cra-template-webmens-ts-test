@@ -1,17 +1,23 @@
 import { useAppSelector } from "../../../../app/store/hooks";
+import type { ResponseOperator } from "../../../../app/utils/postFilterResponse";
 import { useGetTimelineDataQuery, useGetTimelineSettingsQuery } from "../../mainApi";
 
-export default function useTimelineData() {
+export default function useTimelineData({ entity, parentId }: { entity: string, parentId?: string }) {
   const { mainSlice } = useAppSelector((state) => state);
 
-  const entity = mainSlice.currentTab.params.entity;
+  const filter = parentId ? {
+    ...mainSlice.filterResponse,
+    parentId: [{
+      operator: "=" as ResponseOperator,
+      value: parentId
+    }]
+  } : mainSlice.filterResponse
 
   const responseSettings = useGetTimelineSettingsQuery({entity});
   const responseData = useGetTimelineDataQuery(
     {
       entity,
-      // @ts-ignore
-      filter: mainSlice.filterResponse,
+      filter,
     },
     { refetchOnMountOrArgChange: true }
   );

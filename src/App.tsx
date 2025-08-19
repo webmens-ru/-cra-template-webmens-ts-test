@@ -43,7 +43,13 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
             />
           );
         case "mainPlacement":
-          return <MainPlacement entity={opt.entity} parentId={opt.parentId} />;
+          return (
+            <MainPlacement
+              entity={opt.entity}
+              parentId={opt.parentId}
+              viewMode={opt.viewMode}
+            />
+          );
         case "mainCard":
         case "mainCardChildren":
           // return <MainCard entity={opt.entity} parentId={opt.id} menuId={opt.menuId} path={opt.path} title={opt.title} />

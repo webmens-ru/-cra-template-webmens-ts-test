@@ -1,5 +1,7 @@
 /// <reference types="react-scripts" />
 
+import type { ViewMode } from "./app/model/query";
+
 declare global {
 
   type TPlacementOptions = {
@@ -11,6 +13,7 @@ declare global {
     entity: string;
     path?: string;
     menuId?: number;
+    viewMode: ViewMode;
     [index: string]: any
   };
 

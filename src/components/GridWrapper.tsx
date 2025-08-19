@@ -5,7 +5,6 @@ import useNavigation from "../app/hooks/useNavigation";
 import usePopupHandler from "../app/hooks/usePopupHandler";
 import { useAppDispatch } from "../app/store/hooks";
 import { bxOpen } from "../app/utils/bx";
-import { IState } from "../pages/mainPlacement";
 import PopupAction from "./PopupAction";
 import type { BurgerItem, TCellItem, TRowID, TRowItem } from "./grid/types";
 import { Toolbar, type IBlockItemMetricFilter, type IBlockItemMetricLink } from "./toolbar";
@@ -13,10 +12,11 @@ import { Grid2 } from "./grid/Grid";
 import { Loader } from "./loader";
 import useNotification from "./notification";
 import type { GridDataResponse } from "../app/model/query";
+import type { MainSliceState } from "../pages/main";
 
 // TODO: Изучить типизацию redux-toolkit
 interface IGridWrapperProps {
-  slice: Partial<IState>;
+  slice: Partial<MainSliceState>;
   api?: any;
   schema: any,
   data?: GridDataResponse

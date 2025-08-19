@@ -28,7 +28,7 @@ type TFieldYii = {
 export const concatFieldsAndAllFields = (
   fields: TFieldYii[],
   allFields: TAllFieldYii[],
-  parentId?: number
+  parentId?: string
 ): TField[] => {  
   if (!fields || !allFields) {
     return [];

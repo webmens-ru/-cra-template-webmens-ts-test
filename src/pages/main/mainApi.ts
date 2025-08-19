@@ -1,7 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "../../app/api/baseQuery";
 import { PostFilterResponseFields } from './../../app/utils/postFilterResponse';
-import type { TRowItem } from "../../components/grid";
 import type { PaginationProps } from "../../components/grid/components/pagination";
 import type { TSelectDynamicItem } from "../../components/filter/types";
 import type { GridDataResponse, TimelineDataResponse, TimelineSettingsResponse } from "../../app/model/query";
@@ -11,6 +10,11 @@ export const mainApi = createApi({
   tagTypes: ["Tabs", "Filter", "Field", "Schema"],
   baseQuery: baseQuery,
   endpoints: (build) => ({
+    getTitle: build.query({
+      query: (entity) => ({
+        url: `/admin/ui/entity/view?id=${entity}`,
+      }),
+    }),
     getTabs: build.query({
       query: (menuId: number) => ({
         url: `admin/ui/menu/menu-item/items?menuId=${menuId}`,
@@ -113,11 +117,6 @@ export const mainApi = createApi({
       }),
       invalidatesTags: ["Schema"],
     }),
-    getGrid: build.query<{header: any[], grid: TRowItem[], footer: TRowItem[]}, { entity: string, filter: string }>({
-      query: (params) => ({
-        url: `${params.entity}/data?${params.filter}`,
-      }),
-    }),
     editRow: build.mutation<any, { entity: string, id: string | number, key: string, value: any }>({
       query: ({ entity, id, key, value }) => ({
         url: `${entity}/edit-row`,
@@ -125,7 +124,8 @@ export const mainApi = createApi({
         body: { id, [key]: value }
       }),      
     }),
-    getGridPost: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+    // parentId в фильтре
+    getGridPost: build.query<GridDataResponse, { entity: string, filter: PostFilterResponseFields | null, pagination?: PaginationProps }>({
       query: (params) => ({
         url: `${params.entity}/data`,
         params: { page: params.pagination?.currentPage, perPage: params.pagination?.perPage },
@@ -151,7 +151,7 @@ export const mainApi = createApi({
         body,
       }),
     }),
-    getButtonAdd: build.query<{title: string, params: any, items: any, dropdownWidth?: string}, {entity: string, parentId:string | number | undefined}>({
+    getButtonAdd: build.query<{title: string, params: any, items: any, dropdownWidth?: string}, {entity: string, parentId? :string | number }>({
       query: ({entity, parentId}) => ({
         url: `${entity}/get-button-add`,
         method: "POST",
@@ -169,7 +169,8 @@ export const mainApi = createApi({
         method: "GET",
       })
     }),
-    getTimelineData: build.query<TimelineDataResponse, { entity: string, filter: PostFilterResponseFields, pagination?: PaginationProps }>({
+    // parentId в фильтре
+    getTimelineData: build.query<TimelineDataResponse, { entity: string, filter: PostFilterResponseFields | null, pagination?: PaginationProps }>({
       query: (params) => ({
         url: `${params.entity}/timeline-data`,
         method: "POST",
@@ -180,6 +181,8 @@ export const mainApi = createApi({
 });
 
 export const {
+  useGetTitleQuery,
+  useGetTabsQuery,
   useLazyGetTabsQuery,
   useGetSchemaQuery,
   useGetGridPostQuery,
@@ -196,7 +199,6 @@ export const {
   useDeleteFieldMutation,
   useLazyGetSchemaQuery,
   useSaveSchemaMutation,
-  useLazyGetGridQuery,
   useLazyGetGridPostQuery,
   useGetTimelineDataQuery,
   useGetTimelineSettingsQuery,

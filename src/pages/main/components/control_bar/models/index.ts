@@ -1,4 +1,4 @@
 export interface IControlBar {
-  title: string;
+  title?: string;
   children: JSX.Element[];
 }

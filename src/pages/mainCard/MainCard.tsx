@@ -66,7 +66,13 @@ export default function MainCard(props: MainCardProps) {
           />
         )
       case "mainCardChildren":
-        return <MainPlacement entity={currentTab.params.entity} parentId={parentId} />
+        return (
+          <MainPlacement
+            entity={currentTab.params.entity}
+            parentId={parentId}
+            viewMode={currentTab.params.viewMode}
+          />
+        )
       case "mainCardIframe":
         return <MainIframe src={currentTab.params.link} queryParams={{ parentId }} />
       default:

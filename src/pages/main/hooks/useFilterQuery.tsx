@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import {
   setCurrentFilter as setFilter, setFilterResponse,
   setIsLoading, useAddFieldMutation, useCreateFilterMutation, useDeleteFieldMutation, useDeleteFilterMutation,
@@ -10,7 +10,7 @@ import { concatFieldsAndAllFields } from "../../../app/utils/formatters/fields";
 import { getFilterResponsePost } from "../../../app/utils/postFilterResponse";
 import type { TField, TFilter, TProps } from "../../../components/filter/types";
 
-export const useFilterQuery = (): TProps => {
+export const useFilterQuery = ({ entity, parentId }: { entity: string, parentId?: string }): TProps => {
   const dispatch = useAppDispatch();
   const { mainSlice, mainApi } = useAppSelector((state) => state);
   const [createFilter] = useCreateFilterMutation();
@@ -64,9 +64,9 @@ export const useFilterQuery = (): TProps => {
 
   const filters = useMemo<any>(
     () =>
-      mainApi.queries[`getFilters("${mainSlice.currentTab.params?.entity}")`]
+      mainApi.queries[`getFilters("${entity}")`]
         ?.data,
-    [mainApi.queries, mainSlice.currentTab.params?.entity],
+    [mainApi.queries, entity],
   );
 
   const rawFields = useMemo<any>(
@@ -76,12 +76,12 @@ export const useFilterQuery = (): TProps => {
 
   const allFields = useMemo<any>(
     () =>
-      mainApi.queries[`getAllFields("${mainSlice.currentTab.params?.entity}")`]
+      mainApi.queries[`getAllFields("${entity}")`]
         ?.data,
-    [mainApi.queries, mainSlice.currentTab.params?.entity],
+    [mainApi.queries, entity],
   );
 
-  const fields = useMemo<TField[]>(() => concatFieldsAndAllFields(rawFields, allFields), [allFields, rawFields]);
+  const fields = useMemo<TField[]>(() => concatFieldsAndAllFields(rawFields, allFields, parentId), [allFields, rawFields, parentId]);
 
   const updateFieldsOrder = async (fields: TField[]) => {
     await axiosInst.post(
@@ -93,13 +93,6 @@ export const useFilterQuery = (): TProps => {
   const updateTextSearch = (text: string) => {    
     searchTextRef.current = text
   }
-
-  // useEffect(() => {
-  //   const visibleFields = fields.filter((field) => !!field.visible)
-  //   const filterResponse = getFilterResponsePost(visibleFields)
-    
-  //   dispatch(setFilterResponse(filterResponse))
-  // }, [dispatch, fields])
 
   return {
     filters,

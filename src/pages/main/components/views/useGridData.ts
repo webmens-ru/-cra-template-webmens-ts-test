@@ -1,21 +1,26 @@
 import { useEffect } from "react";
-import { useAppSelector } from "../../../../app/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../app/store/hooks";
 import { useGetGridPostQuery, useGetSchemaQuery } from "../../mainApi";
-import { useDispatch } from "react-redux";
-import { setGrid, setSchema } from "../../mainSlice";
+import { setGrid, setPagination, setSchema } from "../../mainSlice";
+import type { ResponseOperator } from "../../../../app/utils/postFilterResponse";
 
-export default function useGridData() {
+export default function useGridData({ entity, parentId }: { entity: string, parentId?: string }) {
   const { mainSlice } = useAppSelector((state) => state);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const entity = mainSlice.currentTab.params.entity;
+  const filter = parentId ? {
+    ...mainSlice.filterResponse,
+    parentId: [{
+      operator: "=" as ResponseOperator,
+      value: parentId
+    }]
+  } : mainSlice.filterResponse
 
   const responseSchema = useGetSchemaQuery(entity);
   const responseData = useGetGridPostQuery(
     {
       entity,
-      // @ts-ignore
-      filter: mainSlice.filterResponse,
+      filter,
       pagination: mainSlice.pagination,
     },
     { refetchOnMountOrArgChange: true }
@@ -25,6 +30,10 @@ export default function useGridData() {
     if (responseSchema.isSuccess && responseData.isSuccess) {
       dispatch(setSchema(responseSchema.data));
       dispatch(setGrid(responseData.data));
+      
+      if (responseData.data.pagination) {
+        dispatch(setPagination(responseData.data.pagination))
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, responseSchema.isSuccess, responseData.isSuccess]);

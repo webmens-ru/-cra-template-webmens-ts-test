@@ -1,4 +1,4 @@
-import { setFilterResponse, useSetTabsMutation } from ".";
+import { useSetTabsMutation } from ".";
 import useNavigation from "../../app/hooks/useNavigation";
 import { useAppSelector } from "../../app/store/hooks";
 import webmensLogo from "../../assets/logo/WebMens_407-268.png";
@@ -8,19 +8,19 @@ import type { MenuItem } from "../../components/menu/types";
 import { TopBar } from "./components/TopBar";
 import { useData } from "./hooks/useData";
 import { useMenuData } from "./hooks/useMenuData";
-import { MainContainer } from "./mainStyle";
-import ResourceTimeLineWrapper from "../../components/ResourceTimeLineWrapper";
+import { MainContainer, MainContent, MainStartScreen } from "./mainStyle";
 import { GridView } from "./components/views/GridView";
-import TimelineView from "./components/views/TimelineView";
+import { TimelineView } from "./components/views/TimelineView";
+import { useRef } from "react";
 
 export function Main({ menuId = 1 }: { menuId?: number }) {
   const { mainSlice } = useAppSelector(state => state)
-  const { tabs, setTab } = useMenuData(menuId);
+  const { tabs, isLoading: tabsLoading, setTab } = useMenuData(menuId);
   const [itemsMutation] = useSetTabsMutation();
-  const { isCorrect, reload } = useData();
+  const { reload } = useData({ entity: mainSlice.currentTab.params?.entity });
   const navigate = useNavigation()
 
-  if (tabs.isLoading) return <Loader />;
+  const viewRef = useRef<any>(null)
 
   const handleSliderOpen = (item: MenuItem) => {
     navigate({
@@ -34,19 +34,21 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
   }
 
   const renderContent = () => {
-    if (!isCorrect) {
+    if (!mainSlice.currentTab.params?.entity) {
       return (
-        <MainContainer>
+        <MainStartScreen>
           <img src={webmensLogo} alt="webmens logo" />
-        </MainContainer>
+        </MainStartScreen>
       );
     }
 
     return (
       <>
         <TopBar
-          onCloseSlider={reload}
-          onClosePopup={reload}
+          entity={mainSlice.currentTab.params.entity}
+          title={mainSlice.currentTab.title}
+          onCloseSlider={viewRef.current?.reload}
+          onClosePopup={viewRef.current?.reload}
         />
         {renderContentView()}
       </>
@@ -57,25 +59,28 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
     if (!mainSlice.isLoading && mainSlice.filterInited) {
       switch (mainSlice.currentTab.params.viewMode) {
         case 'grid':
-          return <GridView />
-        // @ts-ignore
+          return <GridView ref={viewRef} entity={mainSlice.currentTab.params.entity} />
         case 'resource-timeline':
-          return (
-            <TimelineView />
-          )
+          return <TimelineView entity={mainSlice.currentTab.params.entity} />
+        default: 
+          return <GridView ref={viewRef} entity={mainSlice.currentTab.params.entity} />
       }
     }
   }
 
+  if (tabsLoading) return <Loader />;
+
   return (
-      <>
+      <MainContainer>
         <Menu
-            items={tabs.data}
-            setItem={setTab}
-            itemsMutation={itemsMutation}
-            sliderOpenner={handleSliderOpen}
+          items={tabs}
+          setItem={setTab}
+          itemsMutation={itemsMutation}
+          sliderOpenner={handleSliderOpen}
         />
-        {renderContent()}
-      </>
+        <MainContent>
+          {renderContent()}
+        </MainContent>
+      </MainContainer>
   );
 }

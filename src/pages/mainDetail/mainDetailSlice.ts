@@ -1,24 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { TFilter } from "../../components/filter/types";
 import type { MenuItem } from "../../components/menu/types";
-import type { TRowID, TRawColumnItem } from "../../components/grid";
-import type { GridDataResponse } from "../../app/model/query";
+import type { MainSliceState } from "../main/mainSlice";
 
-interface IState {
-  currentTab: MenuItem;
-  currentFilter: TFilter;
-  filterResponse: null | string;
-  toolbarFilterResponse: null | string;
-  lastTimeSliderOpened: number | null;
-  checkboxes: TRowID[];
-  checkedRows: number[];
-  isLoading: boolean;
-  isError: boolean;
-  grid: GridDataResponse;
-  schema: TRawColumnItem[]
-}
-
-const initialState: IState = {
+const initialState: MainSliceState = {
   currentTab: {} as MenuItem,
   currentFilter: {} as TFilter,
   checkboxes: [],
@@ -32,7 +17,8 @@ const initialState: IState = {
     grid: [],
     footer: [],
   },
-  schema: []
+  schema: [],
+  filterInited: false
 };
 
 export const mainDetailSlice = createSlice({

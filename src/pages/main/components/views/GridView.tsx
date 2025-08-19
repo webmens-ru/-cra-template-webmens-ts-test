@@ -1,3 +1,4 @@
+import { forwardRef, useImperativeHandle } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../app/store/hooks";
 import { GridWrapper } from "../../../../components/GridWrapper";
 import { useSaveSchemaMutation, useEditRowMutation } from "../../mainApi";
@@ -9,16 +10,20 @@ import {
 } from "../../mainSlice";
 import useGridData from "./useGridData";
 
-export function GridView() {
+export const GridView = forwardRef(({ entity, parentId }: { entity: string, parentId?: string }, ref) => {
   const dispatch = useAppDispatch();
   const { mainSlice, mainApi } = useAppSelector((state) => state);
   const [schemaMutation] = useSaveSchemaMutation();
   const [rowMutation] = useEditRowMutation();
-  const { schema, data, reload } = useGridData();
+  const { schema, data, reload } = useGridData({ entity, parentId });
+
+  useImperativeHandle(ref, () => ({
+    reload
+  }))
 
   return (
     <GridWrapper
-      slice={{ ...mainSlice, entity: mainSlice.currentTab.params.entity }}
+      slice={{ ...mainSlice, entity }}
       api={mainApi}
       schema={schema}
       data={data}
@@ -32,4 +37,4 @@ export function GridView() {
       onNavigate={(page) => dispatch(setPage(page))}
     />
   );
-}
+})

@@ -7,13 +7,22 @@ import { useFilterQuery } from "../hooks/useFilterQuery";
 import ControlBar from "./control_bar";
 
 interface ITopBarProps {
+  entity: string,
+  title?: string
+  parentId?: string
   onCloseSlider?: () => void
   onClosePopup?: () => void
 }
 
-export function TopBar({onCloseSlider, onClosePopup} : ITopBarProps) {
+export function TopBar({
+  entity,
+  parentId,
+  title,
+  onCloseSlider,
+  onClosePopup
+}: ITopBarProps) {
   const { mainSlice } = useAppSelector((state) => state);
-  const filterProps = useFilterQuery();  
+  const filterProps = useFilterQuery({ entity, parentId });
   const [getItems] = useLazyGetDynamicSelectItemsQuery()
 
   const getSelectItems = async (type: string, queryKey: string) => {
@@ -22,7 +31,7 @@ export function TopBar({onCloseSlider, onClosePopup} : ITopBarProps) {
   }
 
   return (
-    <ControlBar title={mainSlice.currentTab.title}>
+    <ControlBar title={title}>
       <CopyToClipboard append={window._PARAMS_.placementOptions} />
       <FilterAlpha
         currentFilter={mainSlice.currentFilter}
@@ -30,10 +39,11 @@ export function TopBar({onCloseSlider, onClosePopup} : ITopBarProps) {
         onClearFilter={() => filterProps?.onSearch && filterProps.onSearch([])}
         getSelectItems={getSelectItems}
       />
-      <TopBarButtons 
+      <TopBarButtons
+        entity={entity}
+        parentId={parentId}
         involvedState={mainSlice} 
-        entity={mainSlice.currentTab?.params?.entity} 
-        excelTitle={mainSlice.currentTab.title}
+        excelTitle={title}
         onCloseSlider={onCloseSlider}
         onClosePopup={onClosePopup}
       />
