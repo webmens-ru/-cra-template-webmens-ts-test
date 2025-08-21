@@ -27,6 +27,17 @@ export interface GridDataResponse {
 export interface TimelineDataResponse {
   resources: TimelineResource[]
   events: TimelineEvent[]
+  options: TimelineOptions
+}
+
+export interface TimelineOptions {
+  dateClick?: TimelineActionList
+  datesSelect?: TimelineActionList
+}
+
+export interface TimelineActionList {
+  key: string
+  actions: BurgerItem[]
 }
 
 export interface TimelineSettingsResponse {

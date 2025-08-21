@@ -19,6 +19,7 @@ export const TimelineView = forwardRef(({ entity, parentId }: { entity: string, 
         slice={mainSlice}
         events={data?.events}
         resources={data?.resources}
+        options={data?.options}
         settings={settings}
         onCloseSlider={reload}
       />

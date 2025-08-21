@@ -1,10 +1,13 @@
-import type { TimelineSettingsResponse } from "../../app/model/query"
+import type { ResourceApi } from "@fullcalendar/resource-common"
+import type { TimelineOptions, TimelineSettingsResponse } from "../../app/model/query"
 
 export interface TimelineProps {
   resources?: TimelineResource[]
   events?: TimelineEvent[]
   settings?: TimelineSettingsResponse
+  options?: TimelineOptions
   onEventClick?: (event: TimelineEvent) => void
+  onDateClick?: (resource: TimelineResourceApi) => void
 }
 
 export interface TimelineResource {
@@ -15,6 +18,18 @@ export interface TimelineResource {
   eventBorderColor?: string
   eventTextColor?: string
   [key: string]: unknown
+}
+
+export interface TimelineResourceApi extends ResourceApi {
+  extendedProps: {
+    dateClickActions?: string[]
+    datesSelectActions?: string[]
+    burgerActions?: string[]
+  }
+}
+
+export interface TimelineResourceAction {
+  type: 'openApplication' | 'openPath' | 'openPopup' | 'openLink'
 }
 
 // Дата формата 2018-09-01T12:30:00
