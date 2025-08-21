@@ -280,7 +280,7 @@ export function TopBarButtons({
   useEffect(() => {
     if (entity) {
       getItems({ entity, parentId: propParentId });
-      getButtonAdd({ entity, parentId });
+      getButtonAdd({ entity, parentId: propParentId });
       getHelpButton({ entity });
     }
   }, [getItems, getButtonAdd, entity, parentId, propParentId, getHelpButton]);
