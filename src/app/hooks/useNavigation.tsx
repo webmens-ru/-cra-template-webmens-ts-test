@@ -36,7 +36,11 @@ export default function useNavigation() {
             onClose: onCloseComponentSlider
           })
         } else if (BX24) {
-          BX24.openApplication(params, onCloseSlider);
+          const widthToUse = params?.bx24_width || width;
+          BX24.openApplication({
+            ...params,
+            bx24_width: widthToUse
+          }, onCloseSlider);
         }
         break;
       case "openApplicationPortal":

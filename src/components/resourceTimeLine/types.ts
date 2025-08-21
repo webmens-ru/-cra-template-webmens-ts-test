@@ -4,6 +4,7 @@ export interface TimelineProps {
   resources?: TimelineResource[]
   events?: TimelineEvent[]
   settings?: TimelineSettingsResponse
+  onEventClick?: (event: TimelineEvent) => void
 }
 
 export interface TimelineResource {
@@ -25,4 +26,14 @@ export interface TimelineEvent {
   end: TimelineEventDate
   resourceId: TimelineResource['id']
   title?: string
+  action?: {
+    type?: string; // тип для навигации
+    path?: string;
+    url?: string; // URL для перехода
+    iframeUrl?: string; // для openApplication
+    bx24_width?: string; // ширина слайдера
+    updateOnCloseSlider?: boolean; // флаг обновления при закрытии
+    params?: any; // дополнительные параметры
+  }
+  [key: string]: unknown;
 }
