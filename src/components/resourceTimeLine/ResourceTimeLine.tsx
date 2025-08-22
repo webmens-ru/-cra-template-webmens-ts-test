@@ -64,13 +64,13 @@ export default function ResourceTimeLine({
         {...settings}
         // @ts-ignore
         ref={calendarRef}
-        buttonText={{
-          today: "Сегодня",
-          month: "Месяц",
-          week: "Неделя",
-          day: "День",
-          list: "Список",
-        }}
+        // buttonText={{
+        //   today: "Сегодня",
+        //   month: "Месяц",
+        //   week: "Неделя",
+        //   day: "День",
+        //   list: "Список",
+        // }}
         schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
         plugins={[resourceTimelinePlugin, interactionPlugin]}
         resources={resources}
