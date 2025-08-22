@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react'; // Добавлен useEffect
 import { DatePicker } from '../../../../date_picker';
 import Select, { IDataItem } from '../../../../select';
 import { useCustomContext } from '../../../store/Context';
@@ -8,15 +8,19 @@ import { dateDropDown, getYearsDropDown, monthsDropDown, quartersDropDown } from
 
 export default function DateField({ item, updateField }: IField) {
   const { dispatch } = useCustomContext();
+  const variantList: IDataItem[] = item?.options?.variants || dateDropDown;
 
   const [dropDownValue, setDropDownValue] = useState<IDataItem>(() => {
-    const list: IDataItem[] = item?.options?.variants || dateDropDown;
-    return (
-      list.find(
-        (dateItem) => dateItem.value === item.value[0]
-      ) || list[0]
-    );
+    return variantList.find((dateItem) => dateItem.value === item.value[0]) || variantList[0];
   });
+
+  // Синхронизация локального состояния с глобальным
+  useEffect(() => {
+    const newDropDownValue = variantList.find(dateItem => dateItem.value === item.value[0]);
+    if (newDropDownValue) {
+      setDropDownValue(newDropDownValue);
+    }
+  }, [item.value[0], variantList]);
 
   const updateValue = useCallback((value: string[]) => {
     const field = { ...item, value };
@@ -52,42 +56,42 @@ export default function DateField({ item, updateField }: IField) {
       case 'year':
       case 'exactDate':
         return (
-          <TwoField
-            value={dropDownValue}
-            setValue={setDDV}
-            updateValue={updateValue}
-            item={item}
-          />
+            <TwoField
+                value={dropDownValue}
+                setValue={setDDV}
+                updateValue={updateValue}
+                item={item}
+            />
         );
       case 'month':
       case 'quarter':
       case 'range':
         return (
-          <ThreeField
-            value={dropDownValue}
-            setValue={setDDV}
-            updateValue={updateValue}
-            item={item}
-          />
+            <ThreeField
+                value={dropDownValue}
+                setValue={setDDV}
+                updateValue={updateValue}
+                item={item}
+            />
         );
       default:
         return (
-          <Select
-            filterable={false}
-            value={dropDownValue}
-            data={item?.options?.variants || dateDropDown}
-            closeOnSelect={true}
-            selectWidth="100%"
-            onChange={setDDV}
-          />
+            <Select
+                filterable={false}
+                value={dropDownValue}
+                data={variantList}
+                closeOnSelect={true}
+                selectWidth="100%"
+                onChange={setDDV}
+            />
         );
     }
-  }, [dropDownValue, item, setDDV, updateValue]);
+  }, [dropDownValue, item, setDDV, updateValue, variantList]);
 
   return (
-    <DateFieldContainer>
-      {currentComponent}
-    </DateFieldContainer>
+      <DateFieldContainer>
+        {currentComponent}
+      </DateFieldContainer>
   );
 }
 
@@ -96,7 +100,7 @@ function TwoField({ value, setValue, updateValue, item }: ITwoField) {
 
   const setInputValueCheck = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.match(/^\d*$/)) {
-      updateValue([`${value.title}`, e.target.value, '']);
+      updateValue([`${value.value}`, e.target.value, '']); // Исправлено: value.value вместо value.title
     }
   }, [updateValue, value]);
 
@@ -111,132 +115,129 @@ function TwoField({ value, setValue, updateValue, item }: ITwoField) {
     } else {
       secondValue = `0`;
     }
-    updateValue([`${value.title}`, secondValue, '']);
-  }, [item.value, updateValue, value.title]);
+    updateValue([`${value.value}`, secondValue, '']); // Исправлено: value.value вместо value.title
+  }, [item.value, updateValue, value]);
 
   const [selectYear, setSelectYear] = useState<IDataItem[]>(() => {
     const year = item.value[1] && /^(19|20)\d{2}$/.test(item.value[1]) ? item.value[1] : new Date().getFullYear()
-    // if (item.value[0] === "year") {
-    //   updateValue([item.value[0], year.toString(), ""])
-    // }
-    return [{ value: year, title: year }]
+    return [{ value: year, title: year.toString() }]
   });
 
   const setYear = useCallback((year: IDataItem[]) => {
     setSelectYear(year);
-    updateValue([`${value.value}`, `${year[0].title}`, '']);
+    updateValue([`${value.value}`, `${year[0].value}`, '']); // Исправлено: year[0].value вместо year[0].title
   }, [updateValue, value.value]);
 
   const setDate = useCallback((date: string) => {
-    updateValue([`${value.title}`, date, '']);
-  }, [updateValue, value.title]);
+    updateValue([`${value.value}`, date, '']); // Исправлено: value.value вместо value.title
+  }, [updateValue, value.value]);
 
   switch (value.value) {
     case 'year':
       return (
-        <>
-          <Select
-            filterable={false}
-            value={value}
-            data={item?.options?.variants || dateDropDown}
-            closeOnSelect={true}
-            selectWidth="49%"
-            onChange={setValue}
-          />
-          <Select
-            filterable={false}
-            value={selectYear}
-            data={yearsDropdown}
-            closeOnSelect={true}
-            selectWidth="49%"
-            onChange={setYear}
-          />
-        </>
+          <>
+            <Select
+                filterable={false}
+                value={value}
+                data={item?.options?.variants || dateDropDown}
+                closeOnSelect={true}
+                selectWidth="49%"
+                onChange={setValue}
+            />
+            <Select
+                filterable={false}
+                value={selectYear}
+                data={yearsDropdown}
+                closeOnSelect={true}
+                selectWidth="49%"
+                onChange={setYear}
+            />
+          </>
       );
     case 'exactDate':
       return (
-        <>
-          <Select
-            filterable={false}
-            value={value}
-            data={item?.options?.variants || dateDropDown}
-            closeOnSelect={true}
-            selectWidth="49%"
-            onChange={setValue}
-          />
-          <DatePicker
-            fieldWidth="49%"
-            onSelect={setDate}
-            initialDateISO={item.value[1]}
-            withTime={false}
-            format="DD.MM.YYYY"
-            svg="left"
-          />
-        </>
+          <>
+            <Select
+                filterable={false}
+                value={value}
+                data={item?.options?.variants || dateDropDown}
+                closeOnSelect={true}
+                selectWidth="49%"
+                onChange={setValue}
+            />
+            <DatePicker
+                fieldWidth="49%"
+                onSelect={setDate}
+                initialDateISO={item.value[1]}
+                withTime={false}
+                format="DD.MM.YYYY"
+                svg="left"
+            />
+          </>
       );
     default:
       return (
-        <>
-          <Select
-            filterable={false}
-            value={value}
-            data={item?.options?.variants || dateDropDown}
-            closeOnSelect={true}
-            selectWidth="49%"
-            onChange={setValue}
-          />
-          <DateInput width="49%">
-            <input
-              type="text"
-              value={item.value[1]}
-              onChange={setInputValueCheck}
+          <>
+            <Select
+                filterable={false}
+                value={value}
+                data={item?.options?.variants || dateDropDown}
+                closeOnSelect={true}
+                selectWidth="49%"
+                onChange={setValue}
             />
-            <button onClick={() => buttonChange(1)}></button>
-            <button onClick={() => buttonChange(-1)}></button>
-          </DateInput>
-        </>
+            <DateInput width="49%">
+              <input
+                  type="text"
+                  value={item.value[1]}
+                  onChange={setInputValueCheck}
+              />
+              <button onClick={() => buttonChange(1)}></button>
+              <button onClick={() => buttonChange(-1)}></button>
+            </DateInput>
+          </>
       );
   }
 }
 
 function ThreeField({ value, setValue, updateValue, item }: IThreeField) {
   const firstDropDown = (
-    <Select
-      filterable={false}
-      value={value}
-      data={item?.options?.variants || dateDropDown}
-      closeOnSelect={true}
-      selectWidth="32%"
-      onChange={setValue}
-    />
+      <Select
+          filterable={false}
+          value={value}
+          data={item?.options?.variants || dateDropDown}
+          closeOnSelect={true}
+          selectWidth="32%"
+          onChange={setValue}
+      />
   );
 
-  const [selectYear, setSelectYear] = useState<IDataItem[]>([
-    {
-      title: `${new Date().getFullYear()}`,
-      value: new Date().getFullYear(),
-    },
-  ]);
+  const [selectYear, setSelectYear] = useState<IDataItem[]>(() => {
+    const yearFromValue = item.value[2] && /^(19|20)\d{2}$/.test(item.value[2])
+        ? parseInt(item.value[2])
+        : new Date().getFullYear();
+    return [{ value: yearFromValue, title: yearFromValue.toString() }];
+  });
 
   const setYear = useCallback((year: IDataItem[]) => {
     setSelectYear(year);
-    updateValue([item.value[0], item.value[1], `${year[0].title}`]);
+    updateValue([item.value[0], item.value[1], `${year[0].value}`]); // Исправлено: year[0].value вместо year[0].title
   }, [item.value, updateValue]);
 
   const yearDropDown = useMemo(() => (
-    <Select
-      filterable={false}
-      value={selectYear}
-      data={item?.params?.data || getYearsDropDown()}
-      closeOnSelect={true}
-      selectWidth="32%"
-      onChange={setYear}
-    />
+      <Select
+          filterable={false}
+          value={selectYear}
+          data={item?.params?.data || getYearsDropDown()}
+          closeOnSelect={true}
+          selectWidth="32%"
+          onChange={setYear}
+      />
   ), [item?.params?.data, selectYear, setYear]);
 
   const [selectMonth, setSelectMonth] = useState<IDataItem[]>(() => {
-    const currentMonth = new Date().getMonth() + 1
-    return [monthsDropDown.find(item => item.value === currentMonth) as IDataItem]
+    const monthFromValue = item.value[1] ? parseInt(item.value[1]) : new Date().getMonth() + 1;
+    return [monthsDropDown.find(m => m.value === monthFromValue) as IDataItem] || [monthsDropDown[0]];
   });
 
   const setMonth = useCallback((month: IDataItem[]) => {
@@ -245,26 +246,21 @@ function ThreeField({ value, setValue, updateValue, item }: IThreeField) {
   }, [item.value, updateValue]);
 
   const monthDropDown = useMemo(() => (
-    <Select
-      key="month"
-      filterable={false}
-      value={selectMonth}
-      data={item?.params?.data || monthsDropDown}
-      closeOnSelect={true}
-      selectWidth="32%"
-      onChange={setMonth}
-    />
+      <Select
+          key="month"
+          filterable={false}
+          value={selectMonth}
+          data={item?.params?.data || monthsDropDown}
+          closeOnSelect={true}
+          selectWidth="32%"
+          onChange={setMonth}
+      />
   ), [item?.params?.data, selectMonth, setMonth]);
 
   const [selectQuarter, setSelectQuarter] = useState<IDataItem[]>(() => {
+    const quarterFromValue = item.value[1] ? parseInt(item.value[1]) : 1;
     const quarters: IDataItem[] = item?.params?.data || quartersDropDown;
-    let quarter;
-
-    if (item.value[1]) {
-      quarter = quarters.find(q => q.value === +item.value[1])
-    }
-
-    return quarter ? [quarter] : [quarters[0]!]
+    return [quarters.find(q => q.value === quarterFromValue) || quarters[0]];
   });
 
   const setQuarter = useCallback((quarter: IDataItem[]) => {
@@ -273,15 +269,15 @@ function ThreeField({ value, setValue, updateValue, item }: IThreeField) {
   }, [item.value, updateValue]);
 
   const quarterDropDown = useMemo(() => (
-    <Select
-      key="quarter"
-      filterable={false}
-      value={selectQuarter}
-      data={item?.params?.data || quartersDropDown}
-      closeOnSelect={true}
-      selectWidth="32%"
-      onChange={setQuarter}
-    />
+      <Select
+          key="quarter"
+          filterable={false}
+          value={selectQuarter}
+          data={item?.params?.data || quartersDropDown}
+          closeOnSelect={true}
+          selectWidth="32%"
+          onChange={setQuarter}
+      />
   ), [item?.params?.data, selectQuarter, setQuarter]);
 
   const setFirstDate = useCallback((date: string) => {
@@ -293,41 +289,41 @@ function ThreeField({ value, setValue, updateValue, item }: IThreeField) {
   }, [item.value, updateValue]);
 
   return (
-    <>
-      {value.value === "month" ? (
-        <>
-          {firstDropDown}
-          {monthDropDown}
-          {yearDropDown}
-        </>
+      <>
+        {value.value === "month" ? (
+            <>
+              {firstDropDown}
+              {monthDropDown}
+              {yearDropDown}
+            </>
 
-      ) : value.value === "quarter" ? (
-        <>
-          {firstDropDown}
-          {quarterDropDown}
-          {yearDropDown}
-        </>
-      ) : (
-        <>
-          {firstDropDown}
-          <DatePicker
-            onSelect={setFirstDate}
-            initialDateISO={item.value[1]}
-            fieldWidth="32%"
-            withTime={false}
-            format="DD.MM.YYYY"
-            svg="left"
-          />
-          <DatePicker
-            onSelect={setSecondDate}
-            initialDateISO={item.value[2]}
-            fieldWidth="32%"
-            withTime={false}
-            format="DD.MM.YYYY"
-            svg="left"
-          />
-        </>
-      )}
-    </>
+        ) : value.value === "quarter" ? (
+            <>
+              {firstDropDown}
+              {quarterDropDown}
+              {yearDropDown}
+            </>
+        ) : (
+            <>
+              {firstDropDown}
+              <DatePicker
+                  onSelect={setFirstDate}
+                  initialDateISO={item.value[1]}
+                  fieldWidth="32%"
+                  withTime={false}
+                  format="DD.MM.YYYY"
+                  svg="left"
+              />
+              <DatePicker
+                  onSelect={setSecondDate}
+                  initialDateISO={item.value[2]}
+                  fieldWidth="32%"
+                  withTime={false}
+                  format="DD.MM.YYYY"
+                  svg="left"
+              />
+            </>
+        )}
+      </>
   )
 }
