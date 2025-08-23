@@ -136,14 +136,13 @@ const reducer = (state: IState, action: Action) => {
           .slice()
           .map((item) => (item.id === action.field.id ? action.field : item)),
       };
-    case "SET_FILTER_FIELD_VALUE":
-      
-      const index = state.fields.findIndex(item => item.id === action.field.id);
-      const fields = state.fields.slice();
-      
-      fields[index].value = action.field.value;
-
-      return { ...state, fields };
+    case 'SET_FILTER_FIELD_VALUE':
+      return {
+        ...state,
+        fields: state.fields.map(f =>
+            f.id === action.field.id ? { ...action.field } : f
+        )
+      };
     default:
       return state;
   }
