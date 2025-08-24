@@ -12,9 +12,9 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { bxOpen } from "../app/utils/bx";
 import { useAppDispatch } from "../app/store/hooks";
 import type {
+  TimelineActionArgs,
   TimelineEvent,
   TimelineResource,
-  TimelineResourceApi,
 } from "./resourceTimeLine/types";
 import type {
   TimelineOptions,
@@ -22,10 +22,10 @@ import type {
 } from "../app/model/query";
 import type { MainSliceState } from "../pages/main";
 import useNavigation from "../app/hooks/useNavigation";
-import type { DateClickArg } from "@fullcalendar/interaction";
 
-interface IResourceTimeLineWrapperProps {
+interface ResourceTimelineWrapperProps {
   slice: Partial<MainSliceState>;
+  parentId?: string
   filterSetter?: ActionCreatorWithPayload<any>;
   resources?: TimelineResource[];
   events?: TimelineEvent[];
@@ -37,6 +37,7 @@ interface IResourceTimeLineWrapperProps {
 
 export default function ResourceTimeLineWrapper({
   slice,
+  parentId,
   filterSetter,
   resources = [],
   events = [],
@@ -44,7 +45,7 @@ export default function ResourceTimeLineWrapper({
   options = {},
   onCloseSlider,
   onClosePopup,
-}: IResourceTimeLineWrapperProps) {
+}: ResourceTimelineWrapperProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigation(); // Добавьте эту строку
   const [notificationContext, notificationAPI] = useNotification();
@@ -56,20 +57,12 @@ export default function ResourceTimeLineWrapper({
 
   const handleEventClick = (event: TimelineEvent) => {
     if (event.action) {
-      const {
-        type,
-        url,
-        iframeUrl,
-        path,
-        bx24_width,
-        updateOnCloseSlider,
-        params,
-      } = event.action;
+      const { updateOnCloseSlider, params } = event.action;
 
       // Предполагаем, что params уже содержит правильную структуру
       const navigationParams = {
-        type: type || "openApplication",
-        path: path,
+        type: event.action.type || "openApplication",
+        path: event.action.path,
         updateOnCloseSlider: updateOnCloseSlider ? "true" : "false",
         id: event.id,
         params: params || {}, // Используем готовые params из action
@@ -79,11 +72,28 @@ export default function ResourceTimeLineWrapper({
         type: navigationParams.type,
         url: navigationParams.path,
         params: navigationParams,
-        width: bx24_width,
+        width: event.action.bx24_width,
         onCloseSlider: () => handleCloseSlider(updateOnCloseSlider),
       });
     }
   };
+
+  const handleAction = ({ action, dates, resource }: TimelineActionArgs) => {
+    console.log(action, dates, resource)
+    navigate({
+      type: action.params.type,
+      params: {
+        ...action.params,
+        queryParams: {
+          resourceId: resource.id,
+          dateStart: dates.start,
+          dateEnd: dates.end,
+          parentId
+        }
+      }
+    })
+  }
+
   const handleMetricFilter = (item: IBlockItemMetricFilter) => {
     if (filterSetter && item.params && item.params.url !== null) {
       dispatch(filterSetter(item.params.url));
@@ -131,6 +141,7 @@ export default function ResourceTimeLineWrapper({
         settings={settings}
         options={options}
         onEventClick={handleEventClick}
+        onAction={handleAction}
       />
     </>
   );

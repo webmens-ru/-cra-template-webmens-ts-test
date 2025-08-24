@@ -17,6 +17,7 @@ export const TimelineView = forwardRef(({ entity, parentId }: { entity: string, 
       {isLoading && <Loader />}
       <ResourceTimeLineWrapper
         slice={mainSlice}
+        parentId={parentId}
         events={data?.events}
         resources={data?.resources}
         options={data?.options}

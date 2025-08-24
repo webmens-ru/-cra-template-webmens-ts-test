@@ -1,5 +1,6 @@
 import type { ResourceApi } from "@fullcalendar/resource-common"
 import type { TimelineOptions, TimelineSettingsResponse } from "../../app/model/query"
+import type { BurgerItem } from "../grid"
 
 export interface TimelineProps {
   resources?: TimelineResource[]
@@ -8,6 +9,16 @@ export interface TimelineProps {
   options?: TimelineOptions
   onEventClick?: (event: TimelineEvent) => void
   onDateClick?: (resource: TimelineResourceApi) => void
+  onAction?: ({ action, resource, dates }: TimelineActionArgs) => void
+}
+
+export interface TimelineActionArgs {
+  action: TimelineAction
+  resource: TimelineResourceApi
+  dates: {
+    start: string
+    end: string | null
+  }
 }
 
 export interface TimelineResource {
@@ -51,4 +62,10 @@ export interface TimelineEvent {
     params?: any; // дополнительные параметры
   }
   [key: string]: unknown;
+}
+
+export interface TimelineAction {
+  id: string
+  title: string
+  params: BurgerItem
 }

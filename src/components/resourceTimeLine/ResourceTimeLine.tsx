@@ -1,14 +1,17 @@
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import type { TimelineEvent, TimelineProps, TimelineResourceApi } from "./types";
+import type { TimelineAction, TimelineActionArgs, TimelineEvent, TimelineProps, TimelineResourceApi } from "./types";
 import React, { useEffect, useRef, useState } from "react";
 import type { CalendarApi, EventClickArg } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import { FullCalendarStyle } from "./styles";
 import CellContent from "./components/CellContent";
 import interactionPlugin, { type DateClickArg } from "@fullcalendar/interaction"
-import { Tooltip } from 'react-tooltip'
-import { BurgerItem } from "../grid";
 import ActionsTooltip from "./components/ActionsTooltip";
+
+interface TimelineActionState extends Omit<TimelineActionArgs, 'action'> {
+  actions: TimelineAction[]
+  cellRect: DOMRect
+}
 
 export default function ResourceTimeLine({
   events = [],
@@ -16,10 +19,9 @@ export default function ResourceTimeLine({
   options = {},
   settings,
   onEventClick,
-  onDateClick,
+  onAction
 }: TimelineProps) {
-  const [actions, setActions] = useState<BurgerItem[]>([])
-  const tooltipCel = useRef<HTMLElement | null>(null)
+  const [actionState, setActionState] = useState<TimelineActionState | null>(null)
   const calendarRef = useRef<{ calendar: CalendarApi }>(null);
 
   useEffect(() => {
@@ -43,6 +45,7 @@ export default function ResourceTimeLine({
   };
 
   const handleDateClick = (evt: DateClickArg) => {
+    console.log(evt)
     const resource = evt.resource as unknown as TimelineResourceApi
     const allActions = options?.dateClick?.actions
     const resourceActions = resource.extendedProps.dateClickActions
@@ -50,16 +53,38 @@ export default function ResourceTimeLine({
     if (!allActions?.length || !resourceActions?.length) return
 
     const allowedActions = allActions.filter(action => resourceActions.includes(action.id))
-    setActions(allowedActions);
-
     const target = evt.jsEvent.target as HTMLElement
-    target.dataset.tooltipId = 'timeline-action-tooltip'
+    const cellRect = target.getBoundingClientRect()
+
+    if (target.classList.contains('fc-highlight')) {
+      setActionState({
+        actions: allowedActions,
+        // @ts-ignore
+        resource: evt.resource?._resource!,
+        dates: {
+          start: evt.dateStr,
+          end: null
+        },
+        cellRect
+      });
+    }
+  }
+
+  const handleAction = (action: TimelineAction) => {
+    if (!actionState) return
+
+    onAction?.({ action, dates: actionState?.dates, resource: actionState.resource })
+    setActionState(null)
   }
 
   return (
     <>
       <FullCalendarStyle />
-      <ActionsTooltip target={tooltipCel.current} actions={actions} />
+      <ActionsTooltip
+        cellRect={actionState?.cellRect}
+        actions={actionState?.actions}
+        onAction={handleAction}
+      />
       <FullCalendar
         {...settings}
         // @ts-ignore
