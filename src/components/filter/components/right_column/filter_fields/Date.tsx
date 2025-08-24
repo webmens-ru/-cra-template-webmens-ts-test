@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react'; // Добавлен useEffect
+import React, { useCallback, useMemo, useState } from 'react'; // Добавлен useEffect
 import { DatePicker } from '../../../../date_picker';
 import Select, { IDataItem } from '../../../../select';
 import { useCustomContext } from '../../../store/Context';
@@ -11,16 +11,20 @@ export default function DateField({ item, updateField }: IField) {
   const variantList: IDataItem[] = item?.options?.variants || dateDropDown;
 
   const [dropDownValue, setDropDownValue] = useState<IDataItem>(() => {
-    return variantList.find((dateItem) => dateItem.value === item.value[0]) || variantList[0];
-  });
-
-  // Синхронизация локального состояния с глобальным
-  useEffect(() => {
-    const newDropDownValue = variantList.find(dateItem => dateItem.value === item.value[0]);
-    if (newDropDownValue) {
-      setDropDownValue(newDropDownValue);
+    const defaultValue = variantList.find((dateItem) => dateItem.value === item.value[0]) || variantList[0];
+    
+    if (defaultValue?.value) {
+      dispatch({
+        type: 'SET_FILTER_FIELD_VALUE',
+        field: {
+          ...item,
+          value: [defaultValue.value.toString(), '', '']
+        }
+      });
     }
-  }, [item.value[0], variantList]);
+    
+    return defaultValue
+  });
 
   const updateValue = useCallback((value: string[]) => {
     const field = { ...item, value };

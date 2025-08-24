@@ -1,7 +1,7 @@
 import { IDataItem } from "../../select";
 
 
-export type TProps = {
+export type FilterProps = {
   filters?: TFilter[];
   currentFilter?: TFilter;
   fields?: TField[];

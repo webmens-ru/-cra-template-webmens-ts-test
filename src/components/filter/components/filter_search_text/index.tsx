@@ -56,7 +56,6 @@ export default function FilterSearchText({ textSearch, onClick, onSearch }: Filt
       </SquaresContainer>
       <input
         type="text"
-        value={textSearch}
         placeholder={searchInputPlaceholder}
         ref={inputRef}
         onChange={handleTextSearchChange}

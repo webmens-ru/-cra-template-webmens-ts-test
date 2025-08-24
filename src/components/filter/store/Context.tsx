@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
-import { TField, TFilter, TGetSelectItems, TProps, TUpdateFilter } from "../types";
+import { TField, TFilter, TGetSelectItems, FilterProps, TUpdateFilter } from "../types";
 import { propsFormatter } from "../utils/propsFormatter";
 
 export interface IState {
@@ -50,7 +50,7 @@ const initialState = {
 };
 
 type Action =
-  | { type: "INITIAL"; props: TProps }
+  | { type: "INITIAL"; props: FilterProps }
   | { type: "SET_CURRENT_FILTER"; filter: TFilter }
   | { type: "SET_IS_SETUP"; isSetup: boolean }
   | { type: "SET_FILTERS", filters: TFilter[] }
