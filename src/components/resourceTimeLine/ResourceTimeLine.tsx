@@ -1,7 +1,7 @@
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import type { TimelineAction, TimelineActionArgs, TimelineEvent, TimelineProps, TimelineResourceApi } from "./types";
 import React, { useEffect, useRef, useState } from "react";
-import type { CalendarApi, EventClickArg } from "@fullcalendar/core";
+import type { CalendarApi, DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import { FullCalendarStyle } from "./styles";
 import CellContent from "./components/CellContent";
@@ -44,8 +44,7 @@ export default function ResourceTimeLine({
     }
   };
 
-  const handleDateClick = (evt: DateClickArg) => {
-    console.log(evt)
+  const handleDatesSelect = (evt: DateSelectArg) => {
     const resource = evt.resource as unknown as TimelineResourceApi
     const allActions = options?.dateClick?.actions
     const resourceActions = resource.extendedProps.dateClickActions
@@ -53,7 +52,7 @@ export default function ResourceTimeLine({
     if (!allActions?.length || !resourceActions?.length) return
 
     const allowedActions = allActions.filter(action => resourceActions.includes(action.id))
-    const target = evt.jsEvent.target as HTMLElement
+    const target = evt.jsEvent?.target as HTMLElement
     const cellRect = target.getBoundingClientRect()
 
     if (target.classList.contains('fc-highlight')) {
@@ -62,8 +61,8 @@ export default function ResourceTimeLine({
         // @ts-ignore
         resource: evt.resource?._resource!,
         dates: {
-          start: evt.dateStr,
-          end: null
+          start: evt.startStr,
+          end: evt.endStr
         },
         cellRect
       });
@@ -77,14 +76,21 @@ export default function ResourceTimeLine({
     setActionState(null)
   }
 
+  const onCloseTooltip = () => {
+    setActionState(null)
+  }
+
   return (
     <>
       <FullCalendarStyle />
-      <ActionsTooltip
-        cellRect={actionState?.cellRect}
-        actions={actionState?.actions}
-        onAction={handleAction}
-      />
+      {actionState && (
+        <ActionsTooltip
+          cellRect={actionState?.cellRect}
+          actions={actionState?.actions}
+          onAction={handleAction}
+          onClose={onCloseTooltip}
+        />
+      )}
       <FullCalendar
         {...settings}
         // @ts-ignore
@@ -103,7 +109,7 @@ export default function ResourceTimeLine({
         eventClick={handleEventClick}
         dayCellContent={CellContent}
         selectable
-        dateClick={handleDateClick}
+        select={handleDatesSelect}
       />
     </>
   );

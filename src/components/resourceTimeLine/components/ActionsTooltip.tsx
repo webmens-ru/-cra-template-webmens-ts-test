@@ -1,12 +1,14 @@
-import { useRef, type CSSProperties } from "react";
+import { type CSSProperties } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import type { TimelineAction } from "../types";
+import { useClickOutside } from "../../../hooks/useClickOutside";
 
 interface ActionsTooltipProps {
-  cellRect?: DOMRect;
+  cellRect: DOMRect;
   actions?: TimelineAction[];
   onAction: (action: TimelineAction) => void
+  onClose?: VoidFunction
 }
 
 const TooltipContainer = styled.div`
@@ -44,18 +46,27 @@ const TooltipContainer = styled.div`
 `
 
 const TooltipListItem = styled.li`
+  padding: 4px;
   font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(198, 205, 211);
+  }
 `
 
 export default function ActionsTooltip({
   cellRect,
-  actions,
-  onAction
+  actions = [],
+  onAction,
+  onClose = () => {}
 }: ActionsTooltipProps) {
-  const tooltipRef = useRef<HTMLDivElement | null>(null)
+  const tooltipRef = useClickOutside<HTMLDivElement>(onClose, {
+    ignoreSelectors: ['.fc-timeline-slots']
+  })
   const timelineBodyContainer = document.querySelector('.fc .fc-scrollgrid .fc-scroller.fc-scroller-liquid-absolute .fc-timeline-body')
 
-  if (!timelineBodyContainer || !cellRect) return <></>
+  if (!timelineBodyContainer) return <></>
 
   const containerRect = timelineBodyContainer.getBoundingClientRect()
 
@@ -64,6 +75,7 @@ export default function ActionsTooltip({
     left: cellRect.x - containerRect.x
   }
 
+  // TODO: Доработать определение стороны открытия тултипа
   const haveSpaceBottom = true
 
   const tooltipPosition: CSSProperties = {
@@ -80,7 +92,12 @@ export default function ActionsTooltip({
   }
 
   return ReactDOM.createPortal(
-    <TooltipContainer ref={tooltipRef} className="wm-timeline-tooltip" style={tooltipPosition} onClick={handleClickTooltip}>
+    <TooltipContainer
+      ref={tooltipRef}
+      className="wm-timeline-tooltip"
+      style={tooltipPosition}
+      onClick={handleClickTooltip}
+    >
       <ul>
         {actions?.map(action => (
           <TooltipListItem key={action.id} onClick={() => onAction(action)}>
