@@ -15,6 +15,7 @@ interface Window {
   "_APP_URL_": string;
   "_HOSTNAME_": string;
   "_APP_TYPE_"?: string;
+  "_LANG_"?: string;
   BX24?: BX24;
 }
 

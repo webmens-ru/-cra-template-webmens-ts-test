@@ -1,3 +1,14 @@
 {
-  "hello": "Hello"
+  "menu_show_more": "more",
+  "filter_placeholder": "Filter and search",
+  "search_placeholder": "+ search",
+  "filter_add_field": "Add field",
+  "filter_reset_to_default": "Restore default fields",
+  "filter_btn_save": "Save",
+  "filter_save_cancel": "Cancel",
+  "filter_search": "Search",
+  "filter_reset": "Reset",
+  "filters": "Filters",
+  "filter_save": "Save filter",
+  "filter_title": "Filter name"
 }

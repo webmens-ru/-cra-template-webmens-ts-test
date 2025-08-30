@@ -1,3 +1,14 @@
 {
-  "hello": "Привет"
+  "menu_show_more": "ещё",
+  "filter_placeholder": "Фильтр + поиск",
+  "search_placeholder": "+ поиск",
+  "filter_add_field": "Добавить поле",
+  "filter_reset_to_default": "Вернуть поля по умолчанию",
+  "filter_btn_save": "Сохранить",
+  "filter_save_cancel": "Отменить",
+  "filter_search": "Найти",
+  "filter_reset": "Сбросить",
+  "filters": "Фильтры",
+  "filter_save": "Сохранить фильтр",
+  "filter_title": "Название фильтра"
 }

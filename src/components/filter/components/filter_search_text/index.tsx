@@ -4,6 +4,28 @@ import useSquares from "../../hooks/useSquares";
 import { useCustomContext } from "../../store/Context";
 import { SquareItem, SquaresContainer } from "../../styles";
 import { SearchFilterField } from "./styles";
+import ruTranslation from '../../../../translations/ru.json'
+import enTranslation from '../../../../translations/en.json'
+import i18next from "i18next";
+import {initReactI18next, useTranslation} from "react-i18next";
+
+i18next
+    .use(initReactI18next) // passes i18n down to react-i18next
+    .init({
+        resources: {
+            ru: {
+                translation: ruTranslation
+            },
+            en: {
+                translation: enTranslation
+            }
+        },
+        lng: window._LANG_,
+        fallbackLng: "ru",
+        interpolation: {
+            escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
+        }
+    });
 
 interface FilterFieldProps {
   textSearch?: string;
@@ -15,9 +37,10 @@ export default function FilterSearchText({ textSearch, onClick, onSearch }: Filt
   const inputRef = useRef<HTMLInputElement>(null)
   const { squares, validFieldsCount } = useSquares()
 
-  const { state } = useCustomContext()
+  const { state } = useCustomContext();
+  const{ t } = useTranslation()
 
-  const searchInputPlaceholder = squares.length === 0 ? "Фильтр + поиск" : "+ поиск"
+  const searchInputPlaceholder = squares.length === 0 ? t('filter_placeholder') : t('search_placeholder')
 
   const searchProxy = () => {
     state.onSearch(state.fields.filter((f) => Boolean(f.visible)));

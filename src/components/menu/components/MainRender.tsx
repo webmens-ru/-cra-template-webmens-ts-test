@@ -6,9 +6,32 @@ import { useCustomContext } from "../store";
 import { MenuContainer, MoreBtn, SettingBtn, TabsContainer } from "../styles/index";
 import MenuTabs from "./MenuTabs";
 import TopTabs from "./TopTabs";
+import ruTranslation from '../../../translations/ru.json'
+import enTranslation from '../../../translations/en.json'
+import i18next from "i18next";
+import {initReactI18next, useTranslation} from "react-i18next";
+
+i18next
+    .use(initReactI18next) // passes i18n down to react-i18next
+    .init({
+        resources: {
+            ru: {
+                translation: ruTranslation
+            },
+            en: {
+                translation: enTranslation
+            }
+        },
+        lng: window._LANG_,
+        fallbackLng: "ru",
+        interpolation: {
+            escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
+        }
+    });
 
 export default function MainRender() {
   const [isDraggable, setIsDraggable] = useState<boolean>(false);
+  const{ t } = useTranslation()
 
   const { state, dispatch } = useCustomContext();
   const { setTab } = useSetTab({ dispatch, sliderOpenner: state.sliderOpenner });
@@ -33,7 +56,7 @@ export default function MainRender() {
         {state.menuStyle === "main" && (
           <MoreBtn
             current={isShow}
-            children="Ещё"
+            children={t('menu_show_more')}
             onClick={() => setShow(!isShow)}
           />
         )}

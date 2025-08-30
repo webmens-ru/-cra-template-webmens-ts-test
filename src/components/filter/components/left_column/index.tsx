@@ -3,10 +3,33 @@ import { useCustomContext } from "../../store/Context";
 import { TFilter } from "../../types";
 import MenuItem from "../menu_item";
 import { CreateFilterInput } from "./styles";
+import ruTranslation from '../../../../translations/ru.json'
+import enTranslation from '../../../../translations/en.json'
+import i18next from "i18next";
+import {initReactI18next, useTranslation} from "react-i18next";
+
+i18next
+    .use(initReactI18next) // passes i18n down to react-i18next
+    .init({
+      resources: {
+        ru: {
+          translation: ruTranslation
+        },
+        en: {
+          translation: enTranslation
+        }
+      },
+      lng: window._LANG_,
+      fallbackLng: "ru",
+      interpolation: {
+        escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
+      }
+    });
 
 export function LeftColumn() {
   const { state, dispatch } = useCustomContext();
   const createFilterRef = useRef<HTMLInputElement>(null);
+  const{ t } = useTranslation()
 
   const handleMoveItems = (dragItem: TFilter, hoverItem: TFilter) => {
     const draggedItem = { ...dragItem, order: hoverItem.order }
@@ -52,7 +75,7 @@ export function LeftColumn() {
 
   return (
     <menu>
-      <h3>Фильтры</h3>
+      <h3>{t('filters')}</h3>
       {state.filters
         .filter((f) => Boolean(f.visible))
         .sort((a, b) => a.order - b.order)
@@ -70,14 +93,14 @@ export function LeftColumn() {
         <div key="000">
           <CreateFilterInput
             ref={createFilterRef}
-            placeholder="Название фильтра"
+            placeholder={t('filter_name')}
             type="text"
             value={state.filterTemplate.title || ''}
             onChange={(e) => setFilterTemplateValue(e.target.value)}
           />
         </div>
       )}
-      <button children="Сохранить фильтр" onClick={setIsCreateFilter} />
+      <button children={t('filter_save')} onClick={setIsCreateFilter} />
       <button onClick={setIsSetup} />
     </menu>
   );

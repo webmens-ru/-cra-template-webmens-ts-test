@@ -7,13 +7,35 @@ import { TField } from "../types";
 import { DashedBlueBtn, DashedGreyBtn } from "./Buttons";
 import { AddFieldInput } from "./mini_components/Input";
 import { FilterFields } from "./right_column/FilterFields";
+import ruTranslation from '../../../translations/ru.json'
+import enTranslation from '../../../translations/en.json'
+import i18next from "i18next";
+import {initReactI18next, useTranslation} from "react-i18next";
 
+i18next
+    .use(initReactI18next) // passes i18n down to react-i18next
+    .init({
+      resources: {
+        ru: {
+          translation: ruTranslation
+        },
+        en: {
+          translation: enTranslation
+        }
+      },
+      lng: window._LANG_,
+      fallbackLng: "ru",
+      interpolation: {
+        escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
+      }
+    });
 export function RightColumn({
   setShowFilter,
 }: {
   setShowFilter: (arg: boolean) => void;
 }) {
   const { state, dispatch } = useCustomContext();
+  const{ t } = useTranslation()
 
   const searchProxy = () => {
     state.onSearch(state.fields.filter((f) => Boolean(f.visible)));
@@ -64,18 +86,18 @@ export function RightColumn({
   return (
     <div draggable={false}>
       <FilterFields />
-      <DashedBlueBtn onClick={() => setShow(!isShow)} children="Добавить поле" />
-      <DashedGreyBtn onClick={state.returnDefaultFields} children="Вернуть поля по умолчанию" />
+      <DashedBlueBtn onClick={() => setShow(!isShow)} children={t('filter_add_field')} />
+      <DashedGreyBtn onClick={state.returnDefaultFields} children={t('filter_reset_to_default')} />
       <FilterMenuFooter>
         {state.isSetup || state.isCreateFilter ? (
           <>
-            <Button color="success" onClick={saveChanges} children="Сохранить" />
-            <Button color="light" onClick={cancelChanges} children="Отменить" />
+            <Button color="success" onClick={saveChanges} children={t('filter_btn_save')} />
+            <Button color="light" onClick={cancelChanges} children={t('filter_save_cancel')} />
           </>
         ) : (
           <>
-            <Button color="primary" onClick={searchProxy} children="Найти" svgBefore="white-search" />
-            <Button color="light" onClick={onClear} children="Сбросить" />
+            <Button color="primary" onClick={searchProxy} children={t('filter_search')} svgBefore="white-search" />
+            <Button color="light" onClick={onClear} children={t('filter_reset')} />
           </>
         )}
       </FilterMenuFooter>
