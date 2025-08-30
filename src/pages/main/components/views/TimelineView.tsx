@@ -1,11 +1,10 @@
 import { forwardRef, useImperativeHandle } from "react";
-import { useAppSelector } from "../../../../app/store/hooks";
 import { Loader } from "../../../../components/loader";
 import ResourceTimeLineWrapper from "../../../../components/ResourceTimeLineWrapper";
 import useTimelineData from "./useTimelineData";
+import { setFilterResponse } from "../../mainSlice";
 
 export const TimelineView = forwardRef(({ entity, parentId }: { entity: string, parentId?: string }, ref) => {
-  const { mainSlice } = useAppSelector((state) => state);
   const { settings, data, reload, isLoading } = useTimelineData({ entity, parentId });
 
   useImperativeHandle(ref, () => ({
@@ -16,8 +15,9 @@ export const TimelineView = forwardRef(({ entity, parentId }: { entity: string, 
     <>
       {isLoading && <Loader />}
       <ResourceTimeLineWrapper
-        slice={mainSlice}
         parentId={parentId}
+        filterSetter={setFilterResponse}
+        header={data?.header}
         events={data?.events}
         resources={data?.resources}
         options={data?.options}

@@ -25,6 +25,9 @@ export interface GridDataResponse {
 }
 
 export interface TimelineDataResponse {
+  header: {
+    blocks: IToolbarBlock[]
+  }
   resources: TimelineResource[]
   events: TimelineEvent[]
   options: TimelineOptions

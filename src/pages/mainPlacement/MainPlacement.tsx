@@ -18,7 +18,7 @@ export default function MainPlacement({ entity, parentId, viewMode }: MainPlacem
   const { mainSlice } = useAppSelector((state) => state)
   // TODO: Лучше брать из placementOptions
   const { data: titleData } = useGetTitleQuery(entity)
-  const { reload } = useData({ entity });
+  useData({ entity });
 
   const viewRef = useRef<any>(null)
 

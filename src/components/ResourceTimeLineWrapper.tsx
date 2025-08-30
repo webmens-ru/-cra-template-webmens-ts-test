@@ -4,6 +4,7 @@ import {
   IBlockItemMetricFilter,
   IBlockItemMetricLink,
   Toolbar,
+  type IToolbarBlock,
 } from "./toolbar";
 import ResourceTimeLine from "./resourceTimeLine/ResourceTimeLine";
 import useNotification from "./notification";
@@ -20,13 +21,14 @@ import type {
   TimelineOptions,
   TimelineSettingsResponse,
 } from "../app/model/query";
-import type { MainSliceState } from "../pages/main";
 import useNavigation from "../app/hooks/useNavigation";
 
 interface ResourceTimelineWrapperProps {
-  slice: Partial<MainSliceState>;
   parentId?: string
   filterSetter?: ActionCreatorWithPayload<any>;
+  header?: {
+    blocks: IToolbarBlock[]
+  }
   resources?: TimelineResource[];
   events?: TimelineEvent[];
   options?: TimelineOptions;
@@ -36,9 +38,9 @@ interface ResourceTimelineWrapperProps {
 }
 
 export default function ResourceTimeLineWrapper({
-  slice,
   parentId,
   filterSetter,
+  header,
   resources = [],
   events = [],
   settings = {},
@@ -53,7 +55,6 @@ export default function ResourceTimeLineWrapper({
     notificationAPI,
     onClosePopup,
   });
-  const rtlState = slice.grid;
 
   const handleEventClick = (event: TimelineEvent) => {
     if (event.action) {
@@ -128,9 +129,9 @@ export default function ResourceTimeLineWrapper({
           onAfterSubmit={popupProps.afterPopupSubmit}
         />
       )}
-      {rtlState?.header?.blocks && (
+      {header?.blocks && (
         <Toolbar
-          blocks={rtlState.header.blocks}
+          blocks={header.blocks}
           onMetricFilterClick={handleMetricFilter}
           onMetricLinkClick={handleMetricLink}
         />
