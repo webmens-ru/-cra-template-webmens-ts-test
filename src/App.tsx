@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import useBX24Window from "./app/hooks/useBX24Window";
 import { useAppSelector } from "./app/store/hooks";
 import { Slider } from "./components/slider";
@@ -7,6 +8,27 @@ import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
 import MainIframe from "./pages/mainIframe/mainIframe";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
+import { initReactI18next } from "react-i18next";
+import ruTranslation from './translations/ru.json'
+import enTranslation from './translations/en.json'
+
+i18next
+  .use(initReactI18next) // passes i18n down to react-i18next
+  .init({
+    resources: {
+      ru: {
+        translation: ruTranslation
+      },
+      en: {
+        translation: enTranslation
+      }
+    },
+    lng: "en",
+    fallbackLng: "ru",
+    interpolation: {
+      escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
+    }
+  });
 
 function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
   const { show: showSlider, ...sliderProps } = useAppSelector(store => store.sliderSlice)
