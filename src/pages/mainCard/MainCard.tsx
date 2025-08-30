@@ -56,7 +56,7 @@ export default function MainCard(props: MainCardProps) {
       case "mainCard":
         return (
           <MainForm
-            height="calc(100vh - 110px)"
+            height="calc(100vh - 128px)"
             {...props.form}
             entity={props.entity}
             id={parentId}

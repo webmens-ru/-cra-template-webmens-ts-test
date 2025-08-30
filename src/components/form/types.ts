@@ -24,6 +24,7 @@ export interface IFormProps {
   onAfterSubmit?: (response: any) => void;
   onInit?: (form: FormValues) => void;
   onEditEnd?: () => void;
+  onValuesChange?: (values: FormValues) => void;
 }
 
 export interface IFormRefHandlers {

@@ -9,22 +9,23 @@ import { prepareFormData } from "./utils/parse";
 import { validator } from "./utils/validator";
 
 export const Form = React.forwardRef(({
-  fields = [],
-  values = {},
-  errors = [],
-  mode = "edit",
-  viewType = "full",
-  formTitle = "Форма",
-  width = "100%",
-  height = "100vh",
-  canToggleMode = true,
-  validationRules = [],
-  onFieldChange = () => { },
-  onSubmit = () => Promise.resolve(),
-  onAfterSubmit = () => { },
-  onInit = () => { },
-  onEditEnd = () => { }
-}: IFormProps, ref: React.ForwardedRef<IFormRefHandlers>) => {
+                                        fields = [],
+                                        values = {},
+                                        errors = [],
+                                        mode = "edit",
+                                        viewType = "full",
+                                        formTitle = "Форма",
+                                        width = "100%",
+                                        height = "100vh",
+                                        canToggleMode = true,
+                                        validationRules = [],
+                                        onFieldChange = () => { },
+                                        onSubmit = () => Promise.resolve(),
+                                        onAfterSubmit = () => { },
+                                        onInit = () => { },
+                                        onEditEnd = () => { },
+                                        onValuesChange = () => { }
+                                      }: IFormProps, ref: React.ForwardedRef<IFormRefHandlers>) => {
   const [form, dispatch] = useReducer(reducer, {
     fields,
     values,
@@ -33,6 +34,13 @@ export const Form = React.forwardRef(({
     mode,
     onFieldChange
   }, init)
+
+  // ДОБАВИМ ЭФФЕКТ ДЛЯ ВЫЗОВА onValuesChange ПРИ ИЗМЕНЕНИИ tempValues
+  useEffect(() => {
+    if (form.inited && Object.keys(form.tempValues).length > 0) {
+      onValuesChange(form.tempValues);
+    }
+  }, [form.tempValues, form.inited, onValuesChange]);
 
   useEffect(() => {
     onInit(form.values)
@@ -101,55 +109,55 @@ export const Form = React.forwardRef(({
 
   if (viewType === "full") {
     return (
-      <FormContainer mode={form.mode} viewType={viewType} width={width} height={height} >
-        <GlobalStyleForm />
-        <FormHeader>
-          <FormTitle children={formTitle} />
-          {canToggleMode &&
-            <FormModeToggler
-              children={form.mode === 'view' ? "Изменить" : "Отменить"}
-              onClick={toggleFormMode}
-            />
-          }
-        </FormHeader>
-        <FormInnerContainer mode={form.mode} viewType={viewType} >
-          {form.mode === 'edit'
-            ? <EditForm
-              form={form}
-              dispatch={dispatch}
-              fields={fields}
-              validationRules={form.validationRules}
-              onFieldChange={onFieldChange}
-            />
-            : <ViewForm
-              form={form}
-              fields={fields}
-            />
-          }
-        </FormInnerContainer>
-        {form.mode === "edit" && (
-          <FormButtonsContainer>
-            <Button color="success" children="Сохранить" buttonProps={{ onClick: handleFormSubmit }} />
-            <Button color="gray" children="Отменить" buttonProps={{ onClick: toggleFormMode }} />
-          </FormButtonsContainer>
-        )}
+        <FormContainer mode={form.mode} viewType={viewType} width={width} height={height} >
+          <GlobalStyleForm />
+          <FormHeader>
+            <FormTitle children={formTitle} />
+            {canToggleMode &&
+                <FormModeToggler
+                    children={form.mode === 'view' ? "Изменить" : "Отменить"}
+                    onClick={toggleFormMode}
+                />
+            }
+          </FormHeader>
+          <FormInnerContainer mode={form.mode} viewType={viewType} >
+            {form.mode === 'edit'
+                ? <EditForm
+                    form={form}
+                    dispatch={dispatch}
+                    fields={fields}
+                    validationRules={form.validationRules}
+                    onFieldChange={onFieldChange}
+                />
+                : <ViewForm
+                    form={form}
+                    fields={fields}
+                />
+            }
+          </FormInnerContainer>
+          {form.mode === "edit" && (
+              <FormButtonsContainer>
+                <Button color="success" children="Сохранить" buttonProps={{ onClick: handleFormSubmit }} />
+                <Button color="gray" children="Отменить" buttonProps={{ onClick: toggleFormMode }} />
+              </FormButtonsContainer>
+          )}
 
-      </FormContainer>
+        </FormContainer>
     )
   } else {
     return (
-      <>
-        <GlobalStyleForm />
-        <FormInnerContainer mode="edit" viewType={viewType} >
-          <EditForm
-            form={form}
-            dispatch={dispatch}
-            fields={fields}
-            validationRules={form.validationRules}
-            onFieldChange={onFieldChange}
-          />
-        </FormInnerContainer>
-      </>
+        <>
+          <GlobalStyleForm />
+          <FormInnerContainer mode="edit" viewType={viewType} >
+            <EditForm
+                form={form}
+                dispatch={dispatch}
+                fields={fields}
+                validationRules={form.validationRules}
+                onFieldChange={onFieldChange}
+            />
+          </FormInnerContainer>
+        </>
     )
   }
 })

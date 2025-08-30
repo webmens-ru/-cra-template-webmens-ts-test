@@ -6,6 +6,7 @@ import { mainCardApi } from "../../pages/mainCard/mainCardApi";
 import { mainDetailApi } from "../../pages/mainDetail/mainDetailApi";
 import { mainDetailSlice } from "../../pages/mainDetail/mainDetailSlice";
 import { mainFormApi } from "../../pages/mainForm/mainFormApi";
+import { customCardApi } from "../../pages/customCard/customCardApi";
 
 export const store = configureStore({
   reducer: {
@@ -16,12 +17,14 @@ export const store = configureStore({
     [mainDetailApi.reducerPath]: mainDetailApi.reducer,
     [mainFormApi.reducerPath]: mainFormApi.reducer,
     [mainCardApi.reducerPath]: mainCardApi.reducer,
+    [customCardApi.reducerPath]: customCardApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(mainApi.middleware)
       .concat(mainDetailApi.middleware)
       .concat(mainCardApi.middleware)
+      .concat(customCardApi.middleware)
 });
 
 export type AppDispatch = typeof store.dispatch;

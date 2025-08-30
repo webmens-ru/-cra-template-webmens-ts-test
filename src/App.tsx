@@ -7,6 +7,7 @@ import { MainDetail } from "./pages/mainDetail";
 import MainForm from "./pages/mainForm/mainForm";
 import MainIframe from "./pages/mainIframe/mainIframe";
 import MainPlacement from "./pages/mainPlacement/MainPlacement";
+import CustomCard from "./pages/customCard/CustomCard";
 
 function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
   const { show: showSlider, ...sliderProps } = useAppSelector(store => store.sliderSlice)
@@ -65,6 +66,20 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
                 ...opt.params.form
               }}
             />
+          )
+        case "customCard":
+          return (
+              <CustomCard
+                  parentId={opt.id}
+                  entity={opt.params.entity}
+                  menuId={opt.params.menuId}
+                  path={opt.path}
+                  form={{
+                    entity: opt.params.entity,
+                    closeSliderOnSubmit: stringToBoolean(opt.params.closeSliderOnSubmit),
+                    ...opt.params.form
+                  }}
+              />
           )
         case "mainIframe":
           return <MainIframe src={opt.params.link} />
