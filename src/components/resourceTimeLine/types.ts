@@ -15,9 +15,9 @@ export interface TimelineProps {
 export interface TimelineActionArgs {
   action: TimelineAction
   resource: TimelineResourceApi
-  dates: {
+  dates?: {
     start: string
-    end: string | null
+    end: string
   }
 }
 

@@ -1,12 +1,14 @@
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import type { TimelineAction, TimelineActionArgs, TimelineEvent, TimelineProps, TimelineResourceApi } from "./types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { CalendarApi, DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import { FullCalendarStyle } from "./styles";
 import CellContent from "./components/CellContent";
-import interactionPlugin, { type DateClickArg } from "@fullcalendar/interaction"
+import interactionPlugin from "@fullcalendar/interaction"
 import ActionsTooltip from "./components/ActionsTooltip";
+import { ColSpec } from "@fullcalendar/resource-common";
+import BurgerCellContent from "./components/BurgerCellContent";
 
 interface TimelineActionState extends Omit<TimelineActionArgs, 'action'> {
   actions: TimelineAction[]
@@ -17,18 +19,35 @@ export default function ResourceTimeLine({
   events = [],
   resources = [],
   options = {},
-  settings,
+  settings = {},
   onEventClick,
   onAction
 }: TimelineProps) {
   const [actionState, setActionState] = useState<TimelineActionState | null>(null)
-  const calendarRef = useRef<{ calendar: CalendarApi }>(null);
+  const calendarRef = useRef<{ calendar: CalendarApi, elRef: RefObject<HTMLElement> }>(null);
 
-  useEffect(() => {
-    if (settings?.initialView) {
-      calendarRef.current?.calendar.changeView(settings.initialView);
-    }
-  }, [settings?.initialView]);
+  const resourceAreaColumns = useMemo<ColSpec[]>(() => {
+    return [
+      {
+        field: '_wm_burger',
+        headerContent: '#',
+        width: 40,
+        cellClassNames: 'wm-burger-cell',
+        cellContent(props: any) {
+          return (
+            <BurgerCellContent
+              {...props}
+              actions={options.burger?.actions}
+              onAction={(action) => onAction?.({ action, resource: props.resource })}
+            />)
+        },
+      },
+      {
+        field: 'title',
+        headerContent: settings.resourceAreaHeaderContent
+      }
+    ]
+  }, [onAction, options.burger?.actions, settings.resourceAreaHeaderContent])
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     if (onEventClick) {
@@ -49,13 +68,13 @@ export default function ResourceTimeLine({
     const allActions = options?.dateClick?.actions
     const resourceActions = resource.extendedProps.dateClickActions
 
-    if (!allActions?.length || !resourceActions?.length) return
+    if (!allActions?.length || !resourceActions?.length || !calendarRef.current) return
 
     const allowedActions = allActions.filter(action => resourceActions.includes(action.id))
-    const target = evt.jsEvent?.target as HTMLElement
-    const cellRect = target.getBoundingClientRect()
+    const target = calendarRef.current.elRef.current?.querySelector('.fc-highlight')
+    const cellRect = target?.getBoundingClientRect()
 
-    if (target.classList.contains('fc-highlight')) {
+    if (cellRect) {
       setActionState({
         actions: allowedActions,
         // @ts-ignore
@@ -80,6 +99,12 @@ export default function ResourceTimeLine({
     setActionState(null)
   }
 
+  useEffect(() => {
+    if (settings?.initialView) {
+      calendarRef.current?.calendar.changeView(settings.initialView);
+    }
+  }, [settings?.initialView]);
+
   return (
     <>
       <FullCalendarStyle />
@@ -91,6 +116,7 @@ export default function ResourceTimeLine({
           onClose={onCloseTooltip}
         />
       )}
+      {/* @ts-ignore */}
       <FullCalendar
         {...settings}
         // @ts-ignore
@@ -105,6 +131,8 @@ export default function ResourceTimeLine({
         schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
         plugins={[resourceTimelinePlugin, interactionPlugin]}
         resources={resources}
+        resourceAreaColumns={resourceAreaColumns}
+        resourceAreaHeaderContent={null}
         events={events}
         eventClick={handleEventClick}
         dayCellContent={CellContent}

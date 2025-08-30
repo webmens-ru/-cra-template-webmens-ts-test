@@ -33,5 +33,16 @@ export const FullCalendarStyle = createGlobalStyle`
         box-shadow: none !important;
       }
     }
+
+    .wm-burger-cell {
+      .fc-datagrid-cell-cushion {
+        height: 100%;
+        padding: 0;
+      }
+
+      .fc-icon, .fc-datagrid-expander {
+        display: none;
+      }
+    }
   }
 `

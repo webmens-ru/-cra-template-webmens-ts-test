@@ -86,8 +86,8 @@ export default function ResourceTimeLineWrapper({
         ...action.params,
         queryParams: {
           resourceId: resource.id,
-          dateStart: dates.start,
-          dateEnd: dates.end,
+          dateStart: dates?.start,
+          dateEnd: dates?.end,
           parentId
         }
       }

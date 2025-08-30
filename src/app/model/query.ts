@@ -33,6 +33,7 @@ export interface TimelineDataResponse {
 export interface TimelineOptions {
   dateClick?: TimelineActionList
   datesSelect?: TimelineActionList
+  burger?: TimelineActionList
 }
 
 export interface TimelineActionList {
@@ -46,6 +47,7 @@ export interface TimelineSettingsResponse {
   editable?: boolean
   selectable?: boolean
   resourceGroupField?: string
+  resourceAreaHeaderContent?: string
   views?: {
     [key: string]: ViewOptionsRefined
   }
