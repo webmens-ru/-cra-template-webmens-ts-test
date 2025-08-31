@@ -167,12 +167,12 @@ export const Form = React.forwardRef(
             <FormButtonsContainer>
               <Button
                 color="success"
-                children="Сохранить"
+                children="Save"
                 buttonProps={{ onClick: handleFormSubmit }}
               />
               <Button
                 color="gray"
-                children="Отменить"
+                children="Cancel"
                 buttonProps={{ onClick: toggleFormMode }}
               />
             </FormButtonsContainer>
