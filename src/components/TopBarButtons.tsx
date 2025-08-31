@@ -28,6 +28,7 @@ interface ITopBarButtonsProps {
   parentId?: string | number;
   onCloseSlider?: () => void;
   onClosePopup?: () => void;
+  viewMode?: string;
 }
 
 interface IActionItem {
@@ -45,6 +46,7 @@ export function TopBarButtons({
   parentId: propParentId,
   onCloseSlider,
   onClosePopup,
+  viewMode,
 }: ITopBarButtonsProps) {
   const [getItems, items] = useLazyGetDynamicButtonItemsQuery();
   const [getButtonAdd, buttonAdd] = useLazyGetButtonAddQuery();
@@ -314,14 +316,16 @@ export function TopBarButtons({
           {buttonAdd.data?.title}
         </Button>
       )}
-      <Button
-        variant="square"
-        color="light"
-        svgBefore="setting"
-        items={[{ label: "Выгрузка в Excel", value: "excel" }]}
-        dropdownDirection="left"
-        itemsProps={{ onClick: handleGearClick }}
-      />
+      {viewMode !== 'resource-timeline' && (
+          <Button
+              variant="square"
+              color="light"
+              svgBefore="setting"
+              items={[{ label: "Выгрузка в Excel", value: "excel" }]}
+              dropdownDirection="left"
+              itemsProps={{ onClick: handleGearClick }}
+          />
+      )}
       {!!items.data?.length && (
         <Button
           children="Действия"

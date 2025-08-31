@@ -12,6 +12,7 @@ interface ITopBarProps {
   parentId?: string
   onCloseSlider?: () => void
   onClosePopup?: () => void
+  viewMode?: string
 }
 
 export function TopBar({
@@ -19,7 +20,8 @@ export function TopBar({
   parentId,
   title,
   onCloseSlider,
-  onClosePopup
+  onClosePopup,
+  viewMode
 }: ITopBarProps) {
   const { mainSlice } = useAppSelector((state) => state);
   const filterProps = useFilterQuery({ entity, parentId });
@@ -46,6 +48,7 @@ export function TopBar({
         excelTitle={title}
         onCloseSlider={onCloseSlider}
         onClosePopup={onClosePopup}
+        viewMode={viewMode}
       />
     </ControlBar>
   );

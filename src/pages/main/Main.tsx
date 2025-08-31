@@ -49,6 +49,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
           title={mainSlice.currentTab.title}
           onCloseSlider={viewRef.current?.reload}
           onClosePopup={viewRef.current?.reload}
+          viewMode={mainSlice.currentTab.params.viewMode}
         />
         {renderContentView()}
       </>

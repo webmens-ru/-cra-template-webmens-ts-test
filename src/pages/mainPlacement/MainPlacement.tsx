@@ -49,6 +49,7 @@ export default function MainPlacement({ entity, parentId, viewMode }: MainPlacem
             title={titleData?.name}
             onCloseSlider={viewRef.current?.reload}
             onClosePopup={viewRef.current?.reload}
+            viewMode={viewMode}
           />
           {renderContentView()}
         </>
