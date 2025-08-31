@@ -99,18 +99,7 @@ export default function CustomCard(props: MainCardProps) {
     switch (currentTab?.params?.path) {
       case "mainCard":
         return (
-            <>
-              <PriceContainer>
-                {isPriceLoading ? (
-                    <PriceLoading>Calculating price...</PriceLoading>
-                ) : currentPrice !== null ? (
-                    <PriceValue>Calculated price: {currentPrice}</PriceValue>
-                ) : (
-                    <PriceError>Failed to calculate cost</PriceError>
-                )}
-              </PriceContainer>
-
-              <MainForm
+            <MainForm
                   height="calc(100vh - 128px)"
                   {...props.form}
                   entity={props.entity}
@@ -120,7 +109,6 @@ export default function CustomCard(props: MainCardProps) {
                   onAfterSubmit={handleFormSubmit}
                   onValuesChange={handleFormValuesChange}
               />
-            </>
         );
       case "mainCardChildren":
         return (
@@ -167,6 +155,15 @@ export default function CustomCard(props: MainCardProps) {
       <MainCardContainer>
         <MainCardHeaderContainer>
           <MainCardTitle children={title || "Создание"} />
+          <>
+            {isPriceLoading ? (
+                <PriceLoading>Price...</PriceLoading>
+            ) : currentPrice !== null ? (
+                <PriceValue>Price: {currentPrice}</PriceValue>
+            ) : (
+                <PriceError>Failed to calculate cost</PriceError>
+            )}
+          </>
           <MainCardHeaderActionsContainer>
             {(actionButtons.isSuccess && actionButtons.data) && (
                 <ActionButtons disabled={onCreateState} actions={actionButtons.data} parentId={parentId} />
