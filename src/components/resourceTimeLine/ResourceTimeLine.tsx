@@ -25,6 +25,9 @@ export default function ResourceTimeLine({
 }: TimelineProps) {
   const [actionState, setActionState] = useState<TimelineActionState | null>(null)
   const calendarRef = useRef<{ calendar: CalendarApi, elRef: RefObject<HTMLElement> }>(null);
+  const selectionTimeoutRef = useRef<NodeJS.Timeout>()
+
+  console.log(resources)
 
   const resourceAreaColumns = useMemo<ColSpec[]>(() => {
     return [
@@ -64,28 +67,33 @@ export default function ResourceTimeLine({
   };
 
   const handleDatesSelect = (evt: DateSelectArg) => {
-    const resource = evt.resource as unknown as TimelineResourceApi
-    const allActions = options?.dateClick?.actions
-    const resourceActions = resource.extendedProps.dateClickActions
-
-    if (!allActions?.length || !resourceActions?.length || !calendarRef.current) return
-
-    const allowedActions = allActions.filter(action => resourceActions.includes(action.id))
-    const target = calendarRef.current.elRef.current?.querySelector('.fc-highlight')
-    const cellRect = target?.getBoundingClientRect()
-
-    if (cellRect) {
-      setActionState({
-        actions: allowedActions,
-        // @ts-ignore
-        resource: evt.resource?._resource!,
-        dates: {
-          start: evt.startStr,
-          end: evt.endStr
-        },
-        cellRect
-      });
+    if (!evt.jsEvent || evt.jsEvent.type !== 'mouseup') {
+      return
     }
+    selectionTimeoutRef.current = setTimeout(() => {
+      const resource = evt.resource as unknown as TimelineResourceApi
+      const allActions = options?.dateClick?.actions
+      const resourceActions = resource.extendedProps.dateClickActions
+
+      if (!allActions?.length || !resourceActions?.length || !calendarRef.current) return
+
+      const allowedActions = allActions.filter(action => resourceActions.includes(action.id))
+      const target = calendarRef.current.elRef.current?.querySelector('.fc-highlight')
+      const cellRect = target?.getBoundingClientRect()
+
+      if (cellRect) {
+        setActionState({
+          actions: allowedActions,
+          // @ts-ignore
+          resource: evt.resource?._resource!,
+          dates: {
+            start: evt.startStr,
+            end: evt.endStr
+          },
+          cellRect
+        })
+      }
+    }, 50)
   }
 
   const handleAction = (action: TimelineAction) => {
@@ -97,6 +105,10 @@ export default function ResourceTimeLine({
 
   const onCloseTooltip = () => {
     setActionState(null)
+  }
+
+  const resourceRender = function(info:any) {
+    info.el.classList.add(info.resource.className); // добавление CSS класса
   }
 
   useEffect(() => {
@@ -131,6 +143,7 @@ export default function ResourceTimeLine({
         schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
         plugins={[resourceTimelinePlugin, interactionPlugin]}
         resources={resources}
+        handleCustomRendering={resourceRender}
         resourceAreaColumns={resourceAreaColumns}
         resourceAreaHeaderContent={null}
         events={events}
