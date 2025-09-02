@@ -80,7 +80,7 @@ export default function ResourceTimeLineWrapper({
   };
 
   const handleAction = ({ action, dates, resource }: TimelineActionArgs) => {
-    console.log(action, dates, resource)
+    console.log(action)
     navigate({
       type: action.params.type,
       params: {
@@ -91,7 +91,9 @@ export default function ResourceTimeLineWrapper({
           dateEnd: dates?.end,
           parentId
         }
-      }
+      },
+      // @ts-ignore
+      onCloseSlider: () => handleCloseSlider(action.params.updateOnCloseSlider),
     })
   }
 

@@ -105,6 +105,7 @@ export type BurgerItem = BurgerOpenApplication | BurgerOpenPath | BurgerOpenAppl
 
 interface BurgerOpenApplication extends BurgetItemGeneric {
   type: "openApplication";
+  updateOnCloseSlider: boolean;
   params: {
     path: string;
     width: number;
