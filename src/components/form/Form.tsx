@@ -35,6 +35,8 @@ export const Form = React.forwardRef(
       onInit = () => {},
       onEditEnd = () => {},
       onValuesChange = () => {},
+      dealData,
+      onDealClick,
     }: IFormProps,
     ref: React.ForwardedRef<IFormRefHandlers>
   ) => {
@@ -128,6 +130,15 @@ export const Form = React.forwardRef(
       submit: handleFormSubmit,
     }));
 
+      const handleDealClick = () => {
+          if (dealData && onDealClick) {
+              onDealClick({
+                  type: dealData.type,
+                  url: dealData.url
+              });
+          }
+      };
+
     if (!form.inited) {
       return <></>;
     }
@@ -162,6 +173,20 @@ export const Form = React.forwardRef(
             ) : (
               <ViewForm form={form} fields={fields} />
             )}
+              {dealData && (
+              <div style={{
+                  fontSize: 14,
+                  color: '#525c69',
+              }}>
+                  <div>Связанная сделка:</div>
+                  <div onClick={handleDealClick} style={{
+                      fontSize: 18,
+                      color: '#2066B0',
+                  }}>
+                      {dealData.title}
+                  </div>
+              </div>
+              )}
           </FormInnerContainer>
           {form.mode === "edit" && (
             <FormButtonsContainer>

@@ -19,6 +19,7 @@ import { Loader } from "../../components/loader";
 import { Menu } from "../../components/menu";
 import { Button } from "../../components/button";
 import { FormValues } from "../../components/form";
+import useNavigation from "../../app/hooks/useNavigation";
 
 interface MainCardProps {
   path: MainCardPath;
@@ -30,6 +31,7 @@ interface MainCardProps {
 
 export default function CustomCard(props: MainCardProps) {
   const sliderService = useSlider()
+  const navigate = useNavigation();
 
   const [parentId, setParentId] = useState(props.parentId)
   const [currentTab, setCurrentTab] = useState<any>(null)
@@ -91,6 +93,14 @@ export default function CustomCard(props: MainCardProps) {
     setLastFormValues(values);
   }, []);
 
+  const handleDealClick = useCallback((dealData: { type: string; url: string }) => {
+    navigate({
+      type: dealData.type,
+      url: dealData.url,
+      onCloseSlider: () => sliderService.hide()
+    });
+  }, [navigate, sliderService]);
+
   const renderContentByPath = useCallback(() => {
     if (tabs.isLoading || !currentTab) {
       return <Loader />;
@@ -108,6 +118,7 @@ export default function CustomCard(props: MainCardProps) {
                   mode={formMode}
                   onAfterSubmit={handleFormSubmit}
                   onValuesChange={handleFormValuesChange}
+                  onDealClick={handleDealClick}
               />
         );
       case "mainCardChildren":
@@ -123,7 +134,7 @@ export default function CustomCard(props: MainCardProps) {
       default:
         return "error";
     }
-  }, [currentTab, formMode, parentId, props.entity, props.form, tabs.isLoading, isPriceLoading, currentPrice, handleFormValuesChange]);
+  }, [currentTab, formMode, parentId, props.entity, props.form, tabs.isLoading, isPriceLoading, currentPrice, handleFormValuesChange, handleDealClick]);
 
   useLayoutEffect(() => {
     if (parentId) {
