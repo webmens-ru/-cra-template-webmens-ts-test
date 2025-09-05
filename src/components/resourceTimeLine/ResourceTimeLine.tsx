@@ -1,5 +1,5 @@
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import type { TimelineAction, TimelineActionArgs, TimelineEvent, TimelineProps, TimelineResourceApi } from "./types";
+import type { TimelineAction, TimelineActionArgs, TimelineEvent, TimelineProps, TimelineResourceApi, TimelineResource} from "./types";
 import React, { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { CalendarApi, DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
@@ -21,13 +21,17 @@ export default function ResourceTimeLine({
   options = {},
   settings = {},
   onEventClick,
-  onAction
+  onAction,
+  onResourceClick,
 }: TimelineProps) {
   const [actionState, setActionState] = useState<TimelineActionState | null>(null)
   const calendarRef = useRef<{ calendar: CalendarApi, elRef: RefObject<HTMLElement> }>(null);
   const selectionTimeoutRef = useRef<NodeJS.Timeout>()
-
-  console.log(resources)
+  const handleResourceClick = (resource: TimelineResource) => {
+    if (onResourceClick) {
+      onResourceClick(resource);
+    }
+  };
 
   const resourceAreaColumns = useMemo<ColSpec[]>(() => {
     return [
@@ -38,19 +42,60 @@ export default function ResourceTimeLine({
         cellClassNames: 'wm-burger-cell',
         cellContent(props: any) {
           return (
-            <BurgerCellContent
-              {...props}
-              actions={options.burger?.actions}
-              onAction={(action) => onAction?.({ action, resource: props.resource })}
-            />)
+              <BurgerCellContent
+                  {...props}
+                  actions={options.burger?.actions}
+                  onAction={(action) => onAction?.({action, resource: props.resource})}
+              />)
         },
       },
       {
         field: 'title',
-        headerContent: settings.resourceAreaHeaderContent
+        headerContent: settings.resourceAreaHeaderContent,
+        cellContent: (props: any) => {
+          const realResource = props.resource._resource;
+          // Ищем action в extendedProps
+          const hasAction = realResource?.extendedProps?.action;
+          return (
+              <div
+                  onClick={(e) => {
+                    if (hasAction) {
+                      // Передаем весь ресурс, но обработчик будет брать action из extendedProps
+                      onResourceClick?.(realResource);
+                    } else {
+                      console.log('No action found in extendedProps');
+                    }
+                  }}
+                  style={{
+                    cursor: hasAction ? 'pointer' : 'default',
+                    width: '100%',
+                    height: '100%',
+                    // padding: '8px 4px',
+                    ...(hasAction && {
+                      // color: '#206bc4',
+                      fontWeight: '500'
+                    })
+                  }}
+                  onMouseOver={(e) => {
+                    if (hasAction) {
+                      e.currentTarget.style.textDecoration = 'underline';
+                      e.currentTarget.style.backgroundColor = '#EEF2F4';
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (hasAction) {
+                      e.currentTarget.style.textDecoration = 'none';
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
+              >
+                {props.resource.title}
+              </div>
+          );
+        },
       }
     ]
-  }, [onAction, options.burger?.actions, settings.resourceAreaHeaderContent])
+  }, [onAction, options.burger?.actions, settings.resourceAreaHeaderContent, onResourceClick])
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     if (onEventClick) {

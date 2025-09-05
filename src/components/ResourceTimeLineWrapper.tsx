@@ -35,6 +35,7 @@ interface ResourceTimelineWrapperProps {
   settings?: TimelineSettingsResponse;
   onCloseSlider?: () => void;
   onClosePopup?: () => void;
+  onResourceClick?: (resource: TimelineResource) => void;
 }
 
 export default function ResourceTimeLineWrapper({
@@ -47,6 +48,7 @@ export default function ResourceTimeLineWrapper({
   options = {},
   onCloseSlider,
   onClosePopup,
+  onResourceClick,
 }: ResourceTimelineWrapperProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigation(); // Добавьте эту строку
@@ -55,6 +57,25 @@ export default function ResourceTimeLineWrapper({
     notificationAPI,
     onClosePopup,
   });
+  const handleResourceClick = (resource: TimelineResource) => {
+    // Берем action из extendedProps
+    // @ts-ignore
+    const action = resource.extendedProps?.action;
+
+    if (action) {
+      const { type, url, params, bx24_width, updateOnCloseSlider } = action;
+
+      navigate({
+        type: type || "openApplication",
+        url: url,
+        params: params || {},
+        width: bx24_width,
+        onCloseSlider: () => handleCloseSlider(updateOnCloseSlider),
+      });
+    } else {
+      console.log('No action found in resource.extendedProps');
+    }
+  };
 
   const handleEventClick = (event: TimelineEvent) => {
     if (event.action) {
@@ -80,7 +101,6 @@ export default function ResourceTimeLineWrapper({
   };
 
   const handleAction = ({ action, dates, resource }: TimelineActionArgs) => {
-    console.log(action)
     navigate({
       type: action.params.type,
       params: {
@@ -145,6 +165,7 @@ export default function ResourceTimeLineWrapper({
         options={options}
         onEventClick={handleEventClick}
         onAction={handleAction}
+        onResourceClick={handleResourceClick}
       />
     </>
   );

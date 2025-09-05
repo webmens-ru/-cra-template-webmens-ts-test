@@ -10,6 +10,7 @@ export interface TimelineProps {
   onEventClick?: (event: TimelineEvent) => void
   onDateClick?: (resource: TimelineResourceApi) => void
   onAction?: ({ action, resource, dates }: TimelineActionArgs) => void
+  onResourceClick?: (resource: TimelineResource) => void;
 }
 
 export interface TimelineActionArgs {
@@ -29,6 +30,16 @@ export interface TimelineResource {
   eventBorderColor?: string
   eventTextColor?: string
   [key: string]: unknown
+  action?: {
+    type?: string;
+    url?:string;
+    path: string;
+    updateOnCloseSlider?: boolean;
+    bx24_width?: string;
+    params?: {
+      [key: string]: any;
+    };
+  };
 }
 
 export interface TimelineResourceApi extends ResourceApi {
