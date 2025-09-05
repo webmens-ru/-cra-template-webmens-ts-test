@@ -178,7 +178,7 @@ export const Form = React.forwardRef(
                   fontSize: 14,
                   color: '#525c69',
               }}>
-                  <div>Связанная сделка:</div>
+                  <div>Deal:</div>
                   <div onClick={handleDealClick} style={{
                       fontSize: 18,
                       color: '#2066B0',
