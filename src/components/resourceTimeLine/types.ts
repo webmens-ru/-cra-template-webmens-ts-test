@@ -1,6 +1,7 @@
 import type { ResourceApi } from "@fullcalendar/resource-common"
 import type { TimelineOptions, TimelineSettingsResponse } from "../../app/model/query"
 import type { BurgerItem } from "../grid"
+import type { Colors } from "../../app/model/colors"
 
 export interface TimelineProps {
   resources?: TimelineResource[]
@@ -44,6 +45,8 @@ export interface TimelineResource {
 
 export interface TimelineResourceApi extends ResourceApi {
   extendedProps: {
+    wmCellColor?: keyof typeof Colors;
+    action?: TimelineAction
     dateClickActions?: string[]
     datesSelectActions?: string[]
     burgerActions?: string[]

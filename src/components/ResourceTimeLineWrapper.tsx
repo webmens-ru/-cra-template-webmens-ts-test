@@ -35,7 +35,6 @@ interface ResourceTimelineWrapperProps {
   settings?: TimelineSettingsResponse;
   onCloseSlider?: () => void;
   onClosePopup?: () => void;
-  onResourceClick?: (resource: TimelineResource) => void;
 }
 
 export default function ResourceTimeLineWrapper({
@@ -48,7 +47,6 @@ export default function ResourceTimeLineWrapper({
   options = {},
   onCloseSlider,
   onClosePopup,
-  onResourceClick,
 }: ResourceTimelineWrapperProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigation(); // Добавьте эту строку
