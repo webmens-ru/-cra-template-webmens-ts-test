@@ -178,10 +178,14 @@ export const Form = React.forwardRef(
                   fontSize: 14,
                   color: '#525c69',
               }}>
-                  <div>Deal:</div>
+                  <div style={{
+                      marginBottom: 5,
+                  }}>Deal:</div>
                   <div onClick={handleDealClick} style={{
-                      fontSize: 18,
+                      fontSize: 16,
                       color: '#2066B0',
+                      cursor: 'pointer',
+                      textDecoration: 'none',
                   }}>
                       {dealData.title}
                   </div>

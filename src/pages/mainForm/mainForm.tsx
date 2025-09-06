@@ -24,7 +24,7 @@ export interface MainFormProps {
   defaultValue?: any;
   closeSliderOnSubmit?: boolean;
   onAfterSubmit?: (values: any) => void;
-  onValuesChange?: (values: FormValues) => void; // ДОБАВЛЕННЫЙ ПРОПС
+  onValuesChange?: (values: FormValues) => void;
   onDealClick?: (dealData: { type: string; url: string }) => void;
 }
 
