@@ -3,28 +3,8 @@ import { useCustomContext } from "../../store/Context";
 import { TFilter } from "../../types";
 import MenuItem from "../menu_item";
 import { CreateFilterInput } from "./styles";
-import ruTranslation from '../../../../translations/ru.json'
-import enTranslation from '../../../../translations/en.json'
-import i18next from "i18next";
-import {initReactI18next, useTranslation} from "react-i18next";
+import {useTranslation} from "react-i18next";
 
-i18next
-    .use(initReactI18next) // passes i18n down to react-i18next
-    .init({
-      resources: {
-        ru: {
-          translation: ruTranslation
-        },
-        en: {
-          translation: enTranslation
-        }
-      },
-      lng: window._LANG_,
-      fallbackLng: "ru",
-      interpolation: {
-        escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
-      }
-    });
 
 export function LeftColumn() {
   const { state, dispatch } = useCustomContext();

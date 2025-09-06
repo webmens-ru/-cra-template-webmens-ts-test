@@ -4,7 +4,8 @@ import Select, { IDataItem } from '../../../../select';
 import { useCustomContext } from '../../../store/Context';
 import { SelectTextStyle } from '../../../styles';
 import { IField } from '../../../types';
-import { stringDropDownValues } from './const';
+// import { stringDropDownValues } from './const';
+import { useTranslation } from 'react-i18next';
 
 export default function SelectStringField({
   item,
@@ -12,9 +13,42 @@ export default function SelectStringField({
   ...props
 }: IField) {
   const { dispatch } = useCustomContext();
+  const { t } = useTranslation();
+  const localizedStringDropDownValues = [
+    {
+      title: t('filter.not_used'),
+      value: 'isNotUsed',
+    },
+    {
+      title: t('filter.exactly'),
+      value: '=',
+    },
+    {
+      title: t('filter.not_filled'),
+      value: 'isNull',
+    },
+    {
+      title: t('filter.filled'),
+      value: 'isNotNull',
+    },
+    {
+      title: t('filter.contains'),
+      value: '%like%',
+    },
+    {
+      title: t('filter.starts_with'),
+      value: 'like%',
+    },
+    {
+      title: t('filter.ends_with'),
+      value: '%like',
+    },
+  ];
+
+
   const [selectValue, setSelectValue] = useState<IDataItem>(
-    stringDropDownValues.find((val) => val.value === item.value[0]) ||
-    stringDropDownValues[0]
+      localizedStringDropDownValues.find((val) => val.value === item.value[0]) ||
+      localizedStringDropDownValues[0]
   );
 
   const checkFirstValue = (value: string) => {
@@ -40,7 +74,7 @@ export default function SelectStringField({
         <Select
           filterable={false}
           value={selectValue}
-          data={item?.options?.variants || stringDropDownValues}
+          data={item?.options?.variants || localizedStringDropDownValues}
           closeOnSelect={true}
           selectWidth="100%"
           onChange={changeAttr}
@@ -50,7 +84,7 @@ export default function SelectStringField({
           <Select
             filterable={false}
             value={selectValue}
-            data={item?.options?.variants || stringDropDownValues}
+            data={item?.options?.variants || localizedStringDropDownValues}
             closeOnSelect={true}
             selectWidth="33%"
             onChange={changeAttr}
@@ -66,7 +100,7 @@ export default function SelectStringField({
       {/* <Select
         filterable={false}
         value={selectValue}
-        data={item?.options?.variants || stringDropDownValues}
+        data={item?.options?.variants || localizedStringDropDownValues}
         closeOnSelect={true}
         selectWidth="33%"
         onChange={changeAttr}

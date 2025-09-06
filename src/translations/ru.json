@@ -10,5 +10,22 @@
   "filter_reset": "Сбросить",
   "filters": "Фильтры",
   "filter_save": "Сохранить фильтр",
-  "filter_title": "Название фильтра"
+  "filter_title": "Название фильтра",
+  "filter": {
+    "not_used": "Не используется",
+    "exactly": "Точно",
+    "not_filled": "Не заполнено",
+    "filled": "Заполнено",
+    "contains": "Содержится",
+    "starts_with": "Начинается с",
+    "ends_with": "Заканчивается на",
+    "not_equal": "Не равно",
+    "range": "Диапазон",
+    "greater_than": "Больше чем",
+    "less_than": "Меньше чем",
+    "greater_than_or_equal": "Больше или равно",
+    "less_than_or_equal": "Меньше или равно",
+    "from": "От",
+    "to": "До"
+  }
 }

@@ -4,28 +4,8 @@ import useSquares from "../../hooks/useSquares";
 import { useCustomContext } from "../../store/Context";
 import { SquareItem, SquaresContainer } from "../../styles";
 import { SearchFilterField } from "./styles";
-import ruTranslation from '../../../../translations/ru.json'
-import enTranslation from '../../../../translations/en.json'
-import i18next from "i18next";
-import {initReactI18next, useTranslation} from "react-i18next";
+import { useTranslation} from "react-i18next";
 
-i18next
-    .use(initReactI18next) // passes i18n down to react-i18next
-    .init({
-        resources: {
-            ru: {
-                translation: ruTranslation
-            },
-            en: {
-                translation: enTranslation
-            }
-        },
-        lng: window._LANG_,
-        fallbackLng: "ru",
-        interpolation: {
-            escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
-        }
-    });
 
 interface FilterFieldProps {
   textSearch?: string;

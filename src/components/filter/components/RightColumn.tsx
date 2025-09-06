@@ -7,28 +7,9 @@ import { TField } from "../types";
 import { DashedBlueBtn, DashedGreyBtn } from "./Buttons";
 import { AddFieldInput } from "./mini_components/Input";
 import { FilterFields } from "./right_column/FilterFields";
-import ruTranslation from '../../../translations/ru.json'
-import enTranslation from '../../../translations/en.json'
-import i18next from "i18next";
-import {initReactI18next, useTranslation} from "react-i18next";
 
-i18next
-    .use(initReactI18next) // passes i18n down to react-i18next
-    .init({
-      resources: {
-        ru: {
-          translation: ruTranslation
-        },
-        en: {
-          translation: enTranslation
-        }
-      },
-      lng: window._LANG_,
-      fallbackLng: "ru",
-      interpolation: {
-        escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
-      }
-    });
+import {useTranslation} from "react-i18next";
+
 export function RightColumn({
   setShowFilter,
 }: {

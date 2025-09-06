@@ -10,5 +10,22 @@
   "filter_reset": "Reset",
   "filters": "Filters",
   "filter_save": "Save filter",
-  "filter_title": "Filter name"
+  "filter_title": "Filter name",
+  "filter": {
+    "not_used": "Not used",
+    "exactly": "Exactly",
+    "not_filled": "Not filled",
+    "filled": "Filled",
+    "contains": "Contains",
+    "starts_with": "Starts with",
+    "ends_with": "Ends with",
+    "not_equal": "Not equal",
+    "range": "Range",
+    "greater_than": "Greater than",
+    "less_than": "Less than",
+    "greater_than_or_equal": "Greater than or equal",
+    "less_than_or_equal": "Less than or equal",
+    "from": "From",
+    "to": "To"
+  }
 }

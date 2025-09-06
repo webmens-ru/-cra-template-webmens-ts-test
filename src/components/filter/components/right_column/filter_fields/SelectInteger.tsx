@@ -3,8 +3,8 @@ import Select, { IDataItem } from '../../../../select';
 import { useCustomContext } from '../../../store/Context';
 import { SelectTextStyle } from '../../../styles';
 import { IField } from '../../../types';
-import { integerDropDownValues } from './const';
 import Input from '../../../../input';
+import { useTranslation } from 'react-i18next';
 
 export default function SelectIntegerField({
   item,
@@ -12,10 +12,54 @@ export default function SelectIntegerField({
   ...props
 }: IField) {
   const { dispatch } = useCustomContext();
+  const { t } = useTranslation();
+
+  const localizedIntegerDropDownValues = [
+    {
+      title: t('filter.not_used'),
+      value: 'isNotUsed',
+    },
+    {
+      title: t('filter.not_filled'),
+      value: 'isNull',
+    },
+    {
+      title: t('filter.filled'),
+      value: 'isNotNull',
+    },
+    {
+      title: t('filter.exactly'),
+      value: '=',
+    },
+    {
+      title: t('filter.not_equal'),
+      value: '<>',
+    },
+    {
+      title: t('filter.range'),
+      value: 'range',
+    },
+    {
+      title: t('filter.greater_than'),
+      value: '>',
+    },
+    {
+      title: t('filter.less_than'),
+      value: '<',
+    },
+    {
+      title: t('filter.greater_than_or_equal'),
+      value: '>=',
+    },
+    {
+      title: t('filter.less_than_or_equal'),
+      value: '<=',
+    },
+  ];
 
   const [selectValue, setSelectValue] = useState<IDataItem>(
-    integerDropDownValues.find((val) => val.value === item.value[0]) ||
-    integerDropDownValues[0]
+      localizedIntegerDropDownValues.find((val) => val.value === item.value[0]) ||
+      localizedIntegerDropDownValues[0]
   );
 
   const checkFirstValue = (value: string) => {
@@ -43,7 +87,7 @@ export default function SelectIntegerField({
     field = <Select
       filterable={false}
       value={selectValue}
-      data={item?.options?.variants || integerDropDownValues}
+      data={item?.options?.variants || localizedIntegerDropDownValues}
       closeOnSelect={true}
       selectWidth="100%"
       onChange={changeAttr}
@@ -54,7 +98,7 @@ export default function SelectIntegerField({
       <Select
         filterable={false}
         value={selectValue}
-        data={item?.options?.variants || integerDropDownValues}
+        data={item?.options?.variants || localizedIntegerDropDownValues}
         closeOnSelect={true}
         selectWidth="33%"
         onChange={changeAttr}
@@ -77,7 +121,7 @@ export default function SelectIntegerField({
       <Select
         filterable={false}
         value={selectValue}
-        data={item?.options?.variants || integerDropDownValues}
+        data={item?.options?.variants || localizedIntegerDropDownValues}
         closeOnSelect={true}
         selectWidth="33%"
         onChange={changeAttr}
@@ -98,7 +142,7 @@ export default function SelectIntegerField({
       {/* {<Select
         filterable={false}
         value={selectValue}
-        data={item?.options?.variants || integerDropDownValues}
+        data={item?.options?.variants || localizedIntegerDropDownValues}
         closeOnSelect={true}
         selectWidth="33%"
         onChange={changeAttr}
