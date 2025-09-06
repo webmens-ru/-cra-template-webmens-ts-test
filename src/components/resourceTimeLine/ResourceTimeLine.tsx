@@ -159,6 +159,30 @@ export default function ResourceTimeLine({
         dayCellContent={CellContent}
         selectable
         select={handleDatesSelect}
+        eventDidMount={(arg) => { // ← ДОБАВЬТЕ ЭТУ СТРОЧКУ
+          const eventData = arg.event.extendedProps as TimelineEvent;
+
+          // Применяем стили из данных события
+          if (eventData.style) {
+            Object.assign(arg.el.style, eventData.style);
+          }
+
+          // Или применяем конкретные свойства
+          if (eventData.style?.borderRadius) {
+            arg.el.style.borderRadius = eventData.style.borderRadius;
+          }
+          if (eventData.style?.border) {
+            arg.el.style.border = eventData.style.border;
+          }
+          if (eventData.style?.backgroundColor) {
+            arg.el.style.backgroundColor = eventData.style.backgroundColor;
+          }
+
+          // Добавляем CSS классы, если они есть
+          if (eventData.className && typeof eventData.className === 'string') {
+            arg.el.classList.add(eventData.className);
+          }
+        }}
       />
     </>
   );

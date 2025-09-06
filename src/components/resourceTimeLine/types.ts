@@ -75,6 +75,12 @@ export interface TimelineEvent {
     updateOnCloseSlider?: boolean; // флаг обновления при закрытии
     params?: any; // дополнительные параметры
   }
+  style?: {
+    borderRadius?: string;
+    border?: string;
+    backgroundColor?: string;
+    color?: string;
+  };
   [key: string]: unknown;
 }
 
