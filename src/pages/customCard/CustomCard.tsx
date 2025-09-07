@@ -101,6 +101,14 @@ export default function CustomCard(props: MainCardProps) {
     });
   }, [navigate, sliderService]);
 
+  const handleContactClick = useCallback((contactData: { type: string; url: string }) => {
+    navigate({
+      type: contactData.type,
+      url: contactData.url,
+      onCloseSlider: () => sliderService.hide()
+    });
+  }, [navigate, sliderService]);
+
   const renderContentByPath = useCallback(() => {
     if (tabs.isLoading || !currentTab) {
       return <Loader />;
@@ -119,6 +127,7 @@ export default function CustomCard(props: MainCardProps) {
                   onAfterSubmit={handleFormSubmit}
                   onValuesChange={handleFormValuesChange}
                   onDealClick={handleDealClick}
+                  onContactClick={handleContactClick}
               />
         );
       case "mainCardChildren":

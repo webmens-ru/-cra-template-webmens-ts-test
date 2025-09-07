@@ -30,7 +30,13 @@ export interface IFormProps {
     type: string;
     url: string;
   };
+  contactData?: {
+    title: string;
+    type: string;
+    url: string;
+  };
   onDealClick?: (dealData: { type: string; url: string }) => void;
+  onContactClick?: (dealData: { type: string; url: string }) => void;
 }
 
 export interface IFormRefHandlers {

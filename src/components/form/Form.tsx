@@ -36,7 +36,9 @@ export const Form = React.forwardRef(
       onEditEnd = () => {},
       onValuesChange = () => {},
       dealData,
+      contactData,
       onDealClick,
+      onContactClick,
     }: IFormProps,
     ref: React.ForwardedRef<IFormRefHandlers>
   ) => {
@@ -139,6 +141,15 @@ export const Form = React.forwardRef(
           }
       };
 
+      const handleContactClick = () => {
+          if (contactData && onContactClick) {
+              onContactClick({
+                  type: contactData.type,
+                  url: contactData.url
+              });
+          }
+      };
+
     if (!form.inited) {
       return <></>;
     }
@@ -177,6 +188,7 @@ export const Form = React.forwardRef(
               <div style={{
                   fontSize: 14,
                   color: '#525c69',
+                  marginBottom: '15px',
               }}>
                   <div style={{
                       marginBottom: 5,
@@ -190,6 +202,25 @@ export const Form = React.forwardRef(
                       {dealData.title}
                   </div>
               </div>
+              )}
+              {contactData && (
+                  <div style={{
+                      fontSize: 14,
+                      color: '#525c69',
+                      marginBottom: '15px',
+                  }}>
+                      <div style={{
+                          marginBottom: 5,
+                      }}>Contact:</div>
+                      <div onClick={handleContactClick} style={{
+                          fontSize: 16,
+                          color: '#2066B0',
+                          cursor: 'pointer',
+                          textDecoration: 'none',
+                      }}>
+                          {contactData.title}
+                      </div>
+                  </div>
               )}
           </FormInnerContainer>
           {form.mode === "edit" && (
