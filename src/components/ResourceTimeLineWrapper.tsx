@@ -107,6 +107,7 @@ export default function ResourceTimeLineWrapper({
           updateOnCloseSlider: action.params.params?.updateOnCloseSlider
         },
         handler: action.params.params?.link,
+        row: resource
       });
       return;
     }
