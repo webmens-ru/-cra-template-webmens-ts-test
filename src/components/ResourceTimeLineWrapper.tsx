@@ -99,6 +99,18 @@ export default function ResourceTimeLineWrapper({
   };
 
   const handleAction = ({ action, dates, resource }: TimelineActionArgs) => {
+    if (action.params.type === 'trigger') {
+      popupProps.show({
+        params: {
+          popup: action.params.params?.popup,
+          output: action.params.params?.output,
+          updateOnCloseSlider: action.params.params?.updateOnCloseSlider
+        },
+        handler: action.params.params?.link,
+      });
+      return;
+    }
+
     navigate({
       type: action.params.type,
       params: {

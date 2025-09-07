@@ -132,10 +132,11 @@ interface BurgerOpenApplicationPortal extends BurgetItemGeneric {
 
 interface BurgerTrigger extends BurgetItemGeneric {
   type: "trigger";
+  link: string;
   params: {
     updateOnCloseSlider: boolean;
     popup: any;
-    output: any;
+    output?: any;
     [key: string]: any;
   }
 }
