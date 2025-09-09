@@ -9,9 +9,15 @@ import type { NotificationAPI } from "../../components/notification/types";
 interface usePopupHandlerProps {
   notificationAPI: NotificationAPI;
   onClosePopup?: VoidFunction;
+  onReloadData?: () => void;
 }
 
-export default function usePopupHandler({ notificationAPI, onClosePopup }: usePopupHandlerProps) {
+export default function usePopupHandler(
+    {
+      notificationAPI,
+      onClosePopup,
+      onReloadData
+}: usePopupHandlerProps) {
   const [isShowPopup, setIsShowPopup] = useState(false)
   const [popupAction, setPopupAction] = useState<PopupAction | null>(null)
 
@@ -21,7 +27,7 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
     }
 
     const responseType = !popupAction.params.output?.action || popupAction.params.output.action === "download" ? "blob"
-      : popupAction.params.output.action === "print" ? "document" : "json"
+        : popupAction.params.output.action === "print" ? "document" : "json"
 
     return axiosInst
         .post(popupAction.handler, {
@@ -29,19 +35,22 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
           row: popupAction.row,
           grid: popupAction.grid
         }, { responseType })
-      .then((response) => {
-        if (response?.data && "notification" in response.data) {
-          notificationAPI.show(response.data.notification)
-        }
-        setIsShowPopup(false)
-        return response
-      })
-      .catch((err: AxiosError<ErrorResponse>) => {
-        setIsShowPopup(false)
-        if (err.response?.data && "notification" in err.response.data) {
-          notificationAPI.show(err.response.data.notification)
-        }
-      })
+        .then((response) => {
+          if (response?.data && "notification" in response.data) {
+            notificationAPI.show(response.data.notification)
+          }
+          setIsShowPopup(false)
+          afterPopupSubmit(response);
+          return response
+        })
+        .catch((err: AxiosError<ErrorResponse>) => {
+          setIsShowPopup(false)
+          if (err.response?.data && "notification" in err.response.data) {
+            notificationAPI.show(err.response.data.notification)
+          }
+          // Можно также вызвать afterPopupSubmit с ошибкой, если нужно
+          // afterPopupSubmit(err.response);
+        })
   }
 
   const afterPopupSubmit = (response: any) => {
@@ -67,8 +76,13 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
       }, 1000)
     }
 
-    if (popupAction && popupAction.params.updateOnCloseSlider && onClosePopup) {
-      onClosePopup()
+    if (popupAction && popupAction.params.updateOnCloseSlider) {
+      if (onReloadData) {
+        onReloadData();
+      }
+      if (onClosePopup) {
+        onClosePopup();
+      }
     }
   }
 

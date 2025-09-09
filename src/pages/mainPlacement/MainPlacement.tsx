@@ -20,7 +20,11 @@ export default function MainPlacement({ entity, parentId, viewMode }: MainPlacem
   const { data: titleData } = useGetTitleQuery(entity)
   useData({ entity });
 
-  const viewRef = useRef<any>(null)
+  const viewRef = useRef<{ reload: () => void }>(null);
+
+  const handleReload = () => {
+    viewRef.current?.reload();
+  };
 
   if (process.env.NODE_ENV === "production" && window._APP_TYPE_ !== 'site') {
     BX24.resizeWindow(window.innerWidth, 850);
@@ -47,8 +51,8 @@ export default function MainPlacement({ entity, parentId, viewMode }: MainPlacem
             entity={entity}
             parentId={parentId}
             title={titleData?.name}
-            onCloseSlider={viewRef.current?.reload}
-            onClosePopup={viewRef.current?.reload}
+            onCloseSlider={handleReload}
+            onClosePopup={handleReload}
             viewMode={viewMode}
           />
           {renderContentView()}

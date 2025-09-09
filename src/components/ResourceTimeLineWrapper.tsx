@@ -35,6 +35,7 @@ interface ResourceTimelineWrapperProps {
   settings?: TimelineSettingsResponse;
   onCloseSlider?: () => void;
   onClosePopup?: () => void;
+  onReload?: () => void;
 }
 
 export default function ResourceTimeLineWrapper({
@@ -47,6 +48,7 @@ export default function ResourceTimeLineWrapper({
   options = {},
   onCloseSlider,
   onClosePopup,
+  onReload,
 }: ResourceTimelineWrapperProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigation(); // Добавьте эту строку
@@ -54,6 +56,7 @@ export default function ResourceTimeLineWrapper({
   const { isShowPopup, popupAction, ...popupProps } = usePopupHandler({
     notificationAPI,
     onClosePopup,
+    onReloadData: onReload
   });
   const handleResourceClick = (resource: TimelineResource) => {
     // Берем action из extendedProps
@@ -140,8 +143,13 @@ export default function ResourceTimeLineWrapper({
   };
 
   const handleCloseSlider = (updateOnClose: boolean = true) => {
-    if (updateOnClose && onCloseSlider) {
-      onCloseSlider();
+    if (updateOnClose) {
+      if (onReload) {
+        onReload();
+      }
+      if (onCloseSlider) {
+        onCloseSlider();
+      }
     }
   };
 

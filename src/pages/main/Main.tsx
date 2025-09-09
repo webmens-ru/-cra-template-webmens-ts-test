@@ -62,7 +62,7 @@ export function Main({ menuId = 1 }: { menuId?: number }) {
         case 'grid':
           return <GridView ref={viewRef} entity={mainSlice.currentTab.params.entity} />
         case 'resource-timeline':
-          return <TimelineView entity={mainSlice.currentTab.params.entity} />
+          return <TimelineView ref={viewRef} entity={mainSlice.currentTab.params.entity} />
         default: 
           return <GridView ref={viewRef} entity={mainSlice.currentTab.params.entity} />
       }
