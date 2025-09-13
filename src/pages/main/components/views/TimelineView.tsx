@@ -7,6 +7,10 @@ import { setFilterResponse } from "../../mainSlice";
 export const TimelineView = forwardRef(({ entity, parentId }: { entity: string, parentId?: string }, ref) => {
   const { settings, data, reload, isLoading } = useTimelineData({ entity, parentId });
 
+  const handleChangeView = (start: string, end: string) => {
+    reload({ start, end })
+  }
+
   useImperativeHandle(ref, () => ({
     reload
   }))
@@ -23,6 +27,7 @@ export const TimelineView = forwardRef(({ entity, parentId }: { entity: string, 
         options={data?.options}
         settings={settings}
         onCloseSlider={reload}
+        onChangeView={handleChangeView}
       />
     </>
   );

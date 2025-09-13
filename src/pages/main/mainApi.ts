@@ -170,11 +170,11 @@ export const mainApi = createApi({
       })
     }),
     // parentId в фильтре
-    getTimelineData: build.query<TimelineDataResponse, { entity: string, filter: PostFilterResponseFields | null, pagination?: PaginationProps }>({
+    getTimelineData: build.query<TimelineDataResponse, { entity: string, filter: PostFilterResponseFields | null, period?: { start: string, end: string }, pagination?: PaginationProps }>({
       query: (params) => ({
         url: `${params.entity}/timeline-data`,
         method: "POST",
-        body: {'filter': params.filter }
+        body: {'filter': params.filter, period: params.period }
       })
     }),
   }),
@@ -201,6 +201,7 @@ export const {
   useSaveSchemaMutation,
   useLazyGetGridPostQuery,
   useGetTimelineDataQuery,
+  useLazyGetTimelineDataQuery,
   useGetTimelineSettingsQuery,
   useLazyGetDynamicSelectItemsQuery,
   useSendDataOnButtonClickMutation,

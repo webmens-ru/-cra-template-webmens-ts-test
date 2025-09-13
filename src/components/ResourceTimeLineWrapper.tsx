@@ -36,6 +36,7 @@ interface ResourceTimelineWrapperProps {
   onCloseSlider?: () => void;
   onClosePopup?: () => void;
   onReload?: () => void;
+  onChangeView?: (start: string, end: string) => void
 }
 
 export default function ResourceTimeLineWrapper({
@@ -49,6 +50,7 @@ export default function ResourceTimeLineWrapper({
   onCloseSlider,
   onClosePopup,
   onReload,
+  onChangeView
 }: ResourceTimelineWrapperProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigation(); // Добавьте эту строку
@@ -177,15 +179,18 @@ export default function ResourceTimeLineWrapper({
           onMetricLinkClick={handleMetricLink}
         />
       )}
-      <ResourceTimeLine
-        events={events}
-        resources={resources}
-        settings={settings}
-        options={options}
-        onEventClick={handleEventClick}
-        onAction={handleAction}
-        onResourceClick={handleResourceClick}
-      />
+      {settings.initialView && (
+        <ResourceTimeLine
+          events={events}
+          resources={resources}
+          settings={settings}
+          options={options}
+          onEventClick={handleEventClick}
+          onAction={handleAction}
+          onResourceClick={handleResourceClick}
+          onChangeView={onChangeView}
+        />
+      )}
     </>
   );
 }

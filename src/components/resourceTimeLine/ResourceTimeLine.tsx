@@ -24,6 +24,7 @@ export default function ResourceTimeLine({
   onEventClick,
   onAction,
   onResourceClick,
+  onChangeView
 }: TimelineProps) {
   const [actionState, setActionState] = useState<TimelineActionState | null>(null)
   const calendarRef = useRef<{ calendar: CalendarApi, elRef: RefObject<HTMLElement> }>(null);
@@ -119,12 +120,6 @@ export default function ResourceTimeLine({
     info.el.classList.add(info.resource.className); // добавление CSS класса
   }
 
-  useEffect(() => {
-    if (settings?.initialView) {
-      calendarRef.current?.calendar.changeView(settings.initialView);
-    }
-  }, [settings?.initialView]);
-
   return (
     <>
       <FullCalendarStyle />
@@ -159,6 +154,7 @@ export default function ResourceTimeLine({
         dayCellContent={CellContent}
         selectable
         select={handleDatesSelect}
+        datesSet={(evt) => onChangeView?.(evt.startStr, evt.endStr)}
         eventDidMount={(arg) => { // ← ДОБАВЬТЕ ЭТУ СТРОЧКУ
           const eventData = arg.event.extendedProps as TimelineEvent;
 

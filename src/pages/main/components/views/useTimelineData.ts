@@ -1,31 +1,39 @@
+import { useEffect, useMemo } from "react";
 import { useAppSelector } from "../../../../app/store/hooks";
 import type { ResponseOperator } from "../../../../app/utils/postFilterResponse";
-import { useGetTimelineDataQuery, useGetTimelineSettingsQuery } from "../../mainApi";
+import { useGetTimelineSettingsQuery, useLazyGetTimelineDataQuery } from "../../mainApi";
 
-export default function useTimelineData({ entity, parentId }: { entity: string, parentId?: string }) {
+interface UseTimelineDataProps {
+  entity: string
+  parentId?: string
+  period?: {
+    start: string
+    end: string
+  }
+}
+
+export default function useTimelineData({ entity, parentId }: UseTimelineDataProps) {
   const { mainSlice } = useAppSelector((state) => state);
 
-  const filter = parentId ? {
+  const filter = useMemo(() => parentId ? {
     ...mainSlice.filterResponse,
     parentId: [{
       operator: "=" as ResponseOperator,
       value: parentId
     }]
-  } : mainSlice.filterResponse
+  } : mainSlice.filterResponse, [mainSlice.filterResponse, parentId])
 
-  const responseSettings = useGetTimelineSettingsQuery({entity});
-  const responseData = useGetTimelineDataQuery(
-    {
-      entity,
-      filter,
-    },
-    { refetchOnMountOrArgChange: true }
-  );
+  const responseSettings = useGetTimelineSettingsQuery({entity}, { refetchOnMountOrArgChange: true });
+  const [fetch, responseData] = useLazyGetTimelineDataQuery()
+
+  const reload = (queryPeriod?: UseTimelineDataProps['period']) => {
+    fetch({ filter, entity, period: queryPeriod })
+  }
 
   return {
     settings: responseSettings.data,
     data: responseData.data,
     isLoading: responseSettings.isLoading || responseData.isLoading,
-    reload: responseData.refetch,
+    reload,
   };
 }

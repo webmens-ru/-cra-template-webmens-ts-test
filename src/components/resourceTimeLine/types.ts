@@ -12,6 +12,7 @@ export interface TimelineProps {
   onDateClick?: (resource: TimelineResourceApi) => void
   onAction?: ({ action, resource, dates }: TimelineActionArgs) => void
   onResourceClick?: (resource: TimelineResource) => void;
+  onChangeView?: (start: string, end: string) => void;
 }
 
 export interface TimelineActionArgs {
