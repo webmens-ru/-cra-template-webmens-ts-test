@@ -2,15 +2,18 @@ import React, { useState, useCallback, useMemo } from "react";
 import { StyledComponent } from "styled-components";
 import { useCustomContext } from "../Context";
 import { MonthContainer, YearContainer } from "../styles/Calendar";
-import { yearArray, monthArray } from "./const";
+import { useTranslation } from 'react-i18next';
+import { yearArray, getMonthArray  } from "./const";
 
 type DropdownProps = {
   variant: "month" | "year";
 };
 
 export function Dropdown({ variant }: DropdownProps) {
+  const { t } = useTranslation();
   const { state, dispatch } = useCustomContext();
   const [isShow, setIsShow] = useState(false);
+  const monthArray = useMemo(() => getMonthArray(t), [t]);
 
   const select = useCallback(
     (item: number) => {

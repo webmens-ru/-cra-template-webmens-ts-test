@@ -15,8 +15,9 @@ export const CalendarContainer = styled.div`
   right: ${({ right }: CalendarContainerProps) => right || "auto"};
   bottom: ${({ bottom }: CalendarContainerProps) => bottom || "auto"};
   z-index: 1000;
-  padding: 5px;
-  width: 220px;
+  padding: 10px;
+  width: 230px;
+  border-radius: 10px;
   height: auto;
   background: #ffffff;
   box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.9);
