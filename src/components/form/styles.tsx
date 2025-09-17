@@ -20,6 +20,7 @@ export const FormContainer = styled.div<FormContainerProps>`
   font-family: 'Open Sans', sans-serif;
   background: ${({mode}) => mode === "edit" ? '#ffffff' : '#f9fafb'};
   width: ${({width}) => width || "100%"};
+  // height: ${({height}) => height || "100vh"};
   padding: 10px;
   font-size: 14px;
   //margin-bottom: 60px;
@@ -28,7 +29,7 @@ export const FormContainer = styled.div<FormContainerProps>`
   box-sizing: border-box;
   border-radius: 10px;
 
-  overflow: hidden;
+  //overflow: hidden;
 `
 
 export const FormHeader = styled.div`
@@ -65,7 +66,8 @@ export const FormInnerContainer = styled.div<FormContainerProps>`
   padding: 15px 10px;
   height: 100%;
   background: ${({mode, viewType}) => mode === "edit" && viewType === "full" ? '#FFFFFF' : viewType === "full" ? '#f9fafb' : "transparent"};
-  overflow-y: auto;
+  //overflow-y: auto;
+  //flex: 1;
 `
 
 export const FormButtonsContainer = styled.div`
