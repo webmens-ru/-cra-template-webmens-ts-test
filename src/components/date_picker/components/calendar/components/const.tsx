@@ -13,12 +13,11 @@ export const monthArray = [
   "Декабрь",
 ];
 
-export const yearArray = [
-  2018,
-  2019,
-  2020,
-  2021,
-  2022,
-  2023,
-  2024,
-]
+export const yearArray = (() => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let i = -7; i <= 3; i++) {
+    years.push(currentYear + i);
+  }
+  return years;
+})();
