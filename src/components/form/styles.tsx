@@ -18,17 +18,15 @@ export const GlobalStyleForm = createGlobalStyle`
 
 export const FormContainer = styled.div<FormContainerProps>`
   font-family: 'Open Sans', sans-serif;
-  max-height: 100vh;
-  min-height: ${({height}) => height || "100vh"};
-  height: ${({height}) => height || "100vh"};
   background: ${({mode}) => mode === "edit" ? '#ffffff' : '#f9fafb'};
   width: ${({width}) => width || "100%"};
   padding: 10px;
   font-size: 14px;
-  margin-bottom: 60px;
+  //margin-bottom: 60px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  border-radius: 10px;
 
   overflow: hidden;
 `
@@ -66,7 +64,7 @@ export const FormInnerContainer = styled.div<FormContainerProps>`
   font-family: 'Open Sans', sans-serif;
   padding: 15px 10px;
   height: 100%;
-  background: ${({mode, viewType}) => mode === "edit" && viewType === "full" ? '#ffffff' : viewType === "full" ? '#f9fafb' : "transparent"};
+  background: ${({mode, viewType}) => mode === "edit" && viewType === "full" ? '#FFFFFF' : viewType === "full" ? '#f9fafb' : "transparent"};
   overflow-y: auto;
 `
 
@@ -75,12 +73,31 @@ export const FormButtonsContainer = styled.div`
   justify-content: center;
   gap: 10px;
   align-items: center;
+  padding: 15px 10px;
 
   background: #fff;
   box-shadow: 0 -2px 4px 0 rgba(0,0,0,.1);
-  border-top: 2px solid #e8ecee;
+  border-top: 1px solid #e8ecee;
   z-index: 200;
 
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
-  padding-top: 10px;
+`;
+
+export const BlockContainer = styled.div`
+  background: #F9FAFB;
+  margin-top: 20px;
+  border-radius: 10px;
+  padding: 10px;
+`
+
+export const BlockInnerContainer = styled.div`
+  font-family: 'Open Sans', sans-serif;
+  padding: 15px 10px 0px 10px;
+  height: 100%;
+  background: #f9fafb;
+  overflow-y: auto;
 `
