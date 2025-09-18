@@ -173,6 +173,9 @@ export default function ResourceTimeLine({
           if (eventData.style?.backgroundColor) {
             arg.el.style.backgroundColor = eventData.style.backgroundColor;
           }
+          if (eventData.style?.height) {
+            arg.el.style.height = eventData.style.height;
+          }
 
           // Добавляем CSS классы, если они есть
           if (eventData.className && typeof eventData.className === 'string') {

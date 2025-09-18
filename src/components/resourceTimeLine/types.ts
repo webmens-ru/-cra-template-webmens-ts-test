@@ -81,6 +81,7 @@ export interface TimelineEvent {
     border?: string;
     backgroundColor?: string;
     color?: string;
+    height?: string;
   };
   [key: string]: unknown;
 }
