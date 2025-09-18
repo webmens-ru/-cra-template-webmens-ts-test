@@ -1,13 +1,14 @@
 import styled from 'styled-components'
 
-export const MainContainer = styled.div`
-  width: 100vw;
-  height: calc(100vh - 60px);
+export const MainPlacementContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  & > img {
-    width: 256px;
-    height: auto;
-  }
+  flex-direction: column;
+  height: 100vh;
+`
+
+export const MainPlacementContent = styled.div`
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 `
