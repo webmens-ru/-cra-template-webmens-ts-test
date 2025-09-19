@@ -51,6 +51,8 @@ export interface TimelineSettingsResponse {
   selectable?: boolean
   resourceGroupField?: string
   resourceAreaHeaderContent?: string
+  minSlotsForTooltip?: number;
+  slotDuration?:string;
   views?: {
     [key: string]: ViewOptionsRefined
   }

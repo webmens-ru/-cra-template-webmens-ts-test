@@ -30,6 +30,8 @@ export default function ResourceTimeLine({
   const calendarRef = useRef<{ calendar: CalendarApi, elRef: RefObject<HTMLElement> }>(null);
   const selectionTimeoutRef = useRef<NodeJS.Timeout>()
 
+  const minSlotsForTooltip = settings.minSlotsForTooltip ?? 1;
+
   const resourceAreaColumns = useMemo<ColSpec[]>(() => {
     return [
       {
@@ -76,9 +78,39 @@ export default function ResourceTimeLine({
   };
 
   const handleDatesSelect = (evt: DateSelectArg) => {
+    console.log(evt)
     if (!evt.jsEvent || evt.jsEvent.type !== 'mouseup') {
       return
     }
+
+    // Рассчитываем количество выбранных клеточек
+    const start = new Date(evt.startStr);
+    const end = new Date(evt.endStr);
+
+    // Получаем длительность слота из настроек календаря
+    const slotDuration = settings?.slotDuration || '24:00:00'; // Значение по умолчанию
+
+    // Парсим длительность слота в миллисекундах
+    const parseSlotDuration = (duration: string): number => {
+      const [hours, minutes, seconds] = duration.split(':').map(Number);
+      return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000);
+    };
+
+    const slotDurationMs = parseSlotDuration(slotDuration);
+
+    // Рассчитываем разницу во времени
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+
+    // Вычисляем количество клеточек
+    const diffSlots = Math.ceil(diffTime / slotDurationMs);
+
+    // Если выбрано меньше клеточек чем минимальное требование - не показываем тултип
+    if (diffSlots < minSlotsForTooltip) {
+      console.log(`Selected ${diffSlots} slots, but need at least ${minSlotsForTooltip}`);
+      return;
+    }
+
+
     selectionTimeoutRef.current = setTimeout(() => {
       const resource = evt.resource as unknown as TimelineResourceApi
       const allActions = options?.dateClick?.actions
