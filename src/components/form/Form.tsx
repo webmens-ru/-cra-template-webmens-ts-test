@@ -13,8 +13,8 @@ import {
   GlobalStyleForm,
 } from "./styles";
 import { IFormProps, IFormRefHandlers, IValidationErrorItem } from "./types";
-import { prepareFormData } from "./utils/parse";
 import { validator } from "./utils/validator";
+import { prepareFormData } from "./utils/parse";
 
 export const Form = React.forwardRef(
   (
@@ -112,7 +112,7 @@ export const Form = React.forwardRef(
             return true;
           })
           .catch(({ response }) => {
-            console.log("FORM CATCH", response, response.status);
+            console.error("FORM CATCH", response, response.status);
             if (response.status !== 500) {
               dispatch({ type: "set_errors", errors: response.data });
             }
