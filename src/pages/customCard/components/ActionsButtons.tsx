@@ -41,7 +41,7 @@ export default function ActionButtons({ actions, disabled, parentId, onClosePopu
 
       <Button
         disabled={disabled}
-        children="Действие"
+        children="Actions"
         color="gray"
         variant="dropdown"
         items={actions}

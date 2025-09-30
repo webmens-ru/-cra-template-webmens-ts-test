@@ -19,6 +19,7 @@ import { Loader } from "../../components/loader";
 import { Menu } from "../../components/menu";
 import { Button } from "../../components/button";
 import { FormValues } from "../../components/form";
+import useNavigation from "../../app/hooks/useNavigation";
 
 interface MainCardProps {
   path: MainCardPath;
@@ -30,6 +31,7 @@ interface MainCardProps {
 
 export default function CustomCard(props: MainCardProps) {
   const sliderService = useSlider()
+  const navigate = useNavigation();
 
   const [parentId, setParentId] = useState(props.parentId)
   const [currentTab, setCurrentTab] = useState<any>(null)
@@ -91,6 +93,22 @@ export default function CustomCard(props: MainCardProps) {
     setLastFormValues(values);
   }, []);
 
+  const handleDealClick = useCallback((dealData: { type: string; url: string }) => {
+    navigate({
+      type: dealData.type,
+      url: dealData.url,
+      onCloseSlider: () => sliderService.hide()
+    });
+  }, [navigate, sliderService]);
+
+  const handleContactClick = useCallback((contactData: { type: string; url: string }) => {
+    navigate({
+      type: contactData.type,
+      url: contactData.url,
+      onCloseSlider: () => sliderService.hide()
+    });
+  }, [navigate, sliderService]);
+
   const renderContentByPath = useCallback(() => {
     if (tabs.isLoading || !currentTab) {
       return <Loader />;
@@ -99,18 +117,7 @@ export default function CustomCard(props: MainCardProps) {
     switch (currentTab?.params?.path) {
       case "mainCard":
         return (
-            <>
-              <PriceContainer>
-                {isPriceLoading ? (
-                    <PriceLoading>Calculating price...</PriceLoading>
-                ) : currentPrice !== null ? (
-                    <PriceValue>Calculated price: {currentPrice}</PriceValue>
-                ) : (
-                    <PriceError>Failed to calculate cost</PriceError>
-                )}
-              </PriceContainer>
-
-              <MainForm
+            <MainForm
                   height="calc(100vh - 128px)"
                   {...props.form}
                   entity={props.entity}
@@ -119,8 +126,9 @@ export default function CustomCard(props: MainCardProps) {
                   mode={formMode}
                   onAfterSubmit={handleFormSubmit}
                   onValuesChange={handleFormValuesChange}
+                  onDealClick={handleDealClick}
+                  onContactClick={handleContactClick}
               />
-            </>
         );
       case "mainCardChildren":
         return (
@@ -135,7 +143,7 @@ export default function CustomCard(props: MainCardProps) {
       default:
         return "error";
     }
-  }, [currentTab, formMode, parentId, props.entity, props.form, tabs.isLoading, isPriceLoading, currentPrice, handleFormValuesChange]);
+  }, [currentTab, formMode, parentId, props.entity, props.form, tabs.isLoading, isPriceLoading, currentPrice, handleFormValuesChange, handleDealClick]);
 
   useLayoutEffect(() => {
     if (parentId) {
@@ -167,6 +175,15 @@ export default function CustomCard(props: MainCardProps) {
       <MainCardContainer>
         <MainCardHeaderContainer>
           <MainCardTitle children={title || "Создание"} />
+          <>
+            {isPriceLoading ? (
+                <PriceLoading>Price...</PriceLoading>
+            ) : currentPrice !== null ? (
+                <PriceValue>Price: {currentPrice}</PriceValue>
+            ) : (
+                <PriceError>Failed to calculate cost</PriceError>
+            )}
+          </>
           <MainCardHeaderActionsContainer>
             {(actionButtons.isSuccess && actionButtons.data) && (
                 <ActionButtons disabled={onCreateState} actions={actionButtons.data} parentId={parentId} />

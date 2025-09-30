@@ -36,13 +36,14 @@ export const PriceLoading = styled.div`
   color: #666;
   font-style: italic;
   text-align: center;
-  font-size: 14px;
+  font-size: 26px;
+  font-weight: 600;
 `
 
 export const PriceValue = styled.div`
   color: #2e7d32;
-  font-weight: bold;
-  font-size: 16px;
+  font-size: 26px;
+  font-weight: 600;
   text-align: center;
 `
 
@@ -50,5 +51,6 @@ export const PriceError = styled.div`
   color: #d32f2f;
   font-style: italic;
   text-align: center;
-  font-size: 14px;
+  font-size: 26px;
+  font-weight: 600;
 `

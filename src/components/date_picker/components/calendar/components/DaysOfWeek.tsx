@@ -11,4 +11,4 @@ export const DaysOfWeek = React.memo(() => {
   );
 });
 
-const names = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+const names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];

@@ -24,7 +24,9 @@ export interface MainFormProps {
   defaultValue?: any;
   closeSliderOnSubmit?: boolean;
   onAfterSubmit?: (values: any) => void;
-  onValuesChange?: (values: FormValues) => void; // ДОБАВЛЕННЫЙ ПРОПС
+  onValuesChange?: (values: FormValues) => void;
+  onDealClick?: (dealData: { type: string; url: string }) => void;
+  onContactClick?: (dealData: { type: string; url: string }) => void;
 }
 
 export default function MainForm({
@@ -38,7 +40,9 @@ export default function MainForm({
   closeSliderOnSubmit = true,
   defaultValue = {},
   onAfterSubmit = () => {},
-  onValuesChange, // ДОБАВЛЕННЫЙ ПРОПС
+  onValuesChange,
+  onDealClick,
+  onContactClick,
 }: MainFormProps) {
   const [getValues] = useLazyGetFormValuesQuery();
   const formFields = useGetFormFieldsQuery(entity);
@@ -154,7 +158,6 @@ export default function MainForm({
           canToggleMode={canToggleMode}
           onInit={(values) => {
             setForm({ isLoading: false, values });
-            // ВЫЗЫВАЕМ CALLBACK ПРИ ИНИЦИАЛИЗАЦИИ ФОРМЫ
             if (onValuesChange) {
               onValuesChange(values);
             }
@@ -162,6 +165,10 @@ export default function MainForm({
           onValuesChange={updateFormValues}
           onSubmit={handleFormSubmit}
           onAfterSubmit={handleAfterSubmit}
+          onDealClick={onDealClick}
+          dealData={form.values?.deal}
+          onContactClick={onContactClick}
+          contactData={form.values?.contact}
         />
       </div>
     </>

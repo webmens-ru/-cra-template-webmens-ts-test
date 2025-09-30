@@ -47,8 +47,19 @@ export function CalendarProvider(props: IProviderProps) {
 
   const dispatchWithMiddleware = useCallback((action: Action) => {
     if (props.onSelect) {
-      if (action.type === "submit") props.onSelect(state.date.toISOString());
-      if (action.type === "set_date") props.onSelect(action.date.toISOString());
+      // Форматируем дату в простую строку без указания временной зоны
+      const formatDateToLocalString = (date: Date) => {
+        const pad = (n: number) => String(n).padStart(2, '0');
+        // Формат: "YYYY-MM-DD HH:mm"
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      };
+
+      if (action.type === "submit") {
+        props.onSelect(formatDateToLocalString(state.date));
+      }
+      if (action.type === "set_date") {
+        props.onSelect(formatDateToLocalString(action.date));
+      }
     }
     dispatch(action);
   }, [props, state.date]);

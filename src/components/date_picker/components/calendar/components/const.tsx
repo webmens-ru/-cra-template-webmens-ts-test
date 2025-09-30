@@ -1,24 +1,23 @@
 export const monthArray = [
-  "Январь",
-  "Февраль",
-  "Март",
-  "Апрель",
-  "Май",
-  "Июнь",
-  "Июль",
-  "Август",
-  "Сентябрь",
-  "Октябрь",
-  "Ноябрь",
-  "Декабрь",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
 ];
 
-export const yearArray = [
-  2018,
-  2019,
-  2020,
-  2021,
-  2022,
-  2023,
-  2024,
-]
+export const yearArray = (() => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let i = -7; i <= 3; i++) {
+    years.push(currentYear + i);
+  }
+  return years;
+})();

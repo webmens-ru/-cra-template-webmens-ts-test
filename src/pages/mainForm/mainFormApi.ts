@@ -25,6 +25,11 @@ export const mainFormApi: any = createApi({
         url: `${entity}/view?id=${id}`,
       }),
     }),
+    getDeposit: build.query({
+      query: (vehicleId) => ({
+        url: `/api/sp1036/view?id=${vehicleId}`,
+      }),
+    }),
   })
 })
 
@@ -34,5 +39,6 @@ export const {
   useLazyGetFormValuesQuery,
   useGetFormTitleQuery,
   useGetFormFieldsQuery,
-  useGetValidationQuery
+  useGetValidationQuery,
+  useLazyGetDepositQuery
 } = mainFormApi
