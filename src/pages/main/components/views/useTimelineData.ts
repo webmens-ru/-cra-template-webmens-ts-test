@@ -13,7 +13,7 @@ interface UseTimelineDataProps {
 }
 
 export default function useTimelineData({ entity, parentId }: UseTimelineDataProps) {
-  const period = useRef<{start: string, end: string} | null>(null)
+  const period = useRef<{start: string, end: string} | undefined>(undefined)
   const { mainSlice } = useAppSelector((state) => state);
 
   const filter = useMemo(() => parentId ? {
@@ -32,7 +32,7 @@ export default function useTimelineData({ entity, parentId }: UseTimelineDataPro
       period.current = queryPeriod
     }
 
-    fetch({ filter, entity, period: queryPeriod })
+    fetch({ filter, entity, period: queryPeriod || period.current })
   }
 
   useEffect(() => {
