@@ -23,7 +23,7 @@ export const COLUMN_INSTANCE_PLUG: TRawColumnItem = {
 
 export const ACTION_COLUMN: TColumnItem = {
   key: "action",
-  name: "Действие",
+  name: "Actions",
   frozen: true,
   headerRenderer: () => SettingsCellHeader({ onClick: () => {} }),
   formatter: ActionFormatter,

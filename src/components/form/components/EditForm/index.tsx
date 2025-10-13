@@ -161,7 +161,6 @@ export const EditForm = ({
     }
   }
 
-  console.log('FORM ERROR', form.errors)
   return (
     <>
       {fields.map(field =>

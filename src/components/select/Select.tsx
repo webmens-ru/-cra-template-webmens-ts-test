@@ -32,6 +32,8 @@ export const Select = ({
     minInputLength,
     filterable,
     value,
+    remoteMode,
+    dataUrl
   }, init)
   const isEnoughFilterLength = select.filterValue.length >= minInputLength
   const canSelectMore = select.value.length < maxSelectionLength
@@ -51,6 +53,16 @@ export const Select = ({
     }, filterDelay)
   }
 
+  const fetchSelectData = async (filter: string = '', params = {}) => {
+    try {      
+      const response = await buildFilterQuery(dataUrl, { ...params, ...queryParams }, filter, queryTitleName)
+      return response.json()
+    } catch (error) {
+      dispatch({ type: "setFetchError" })
+      return []
+    }    
+  }
+
   // Возвращает отфильтрованные данные для списка
   const updateFilteredData = async (filterValue: string) => {
     let filteredData = data
@@ -58,13 +70,7 @@ export const Select = ({
     if (canSelectMore) {
       if (remoteMode && filterValue.length >= minInputLength) {
         dispatch({ type: 'setLoading', loading: true })
-        await buildFilterQuery(dataUrl, queryParams, filterValue, queryTitleName)
-          .then(response => response.json())
-          .then(data => filteredData = data)
-          .catch(err => {
-            console.error(err)
-            dispatch({ type: "setFetchError" })
-          })
+        filteredData = await fetchSelectData(filterValue)
       } else {
         filteredData = filterSelectData(select.data, filterValue)
       }
@@ -136,6 +142,29 @@ export const Select = ({
     window.addEventListener("resize", setCoordinates)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    const defineSelectOption = async () => {
+      if ((typeof value !== 'string' && typeof value !== 'number') || !remoteMode) {
+        return
+      }
+
+      const options: IDataItem[] = await fetchSelectData('', { id: value })
+      
+      if (!options.length) {
+        return
+      } else if (options.length > 1) {
+        const newValue = options.find(item => item.value.toString() === (value as string | number).toString()) || [] as IDataItem[]
+        // @ts-ignore
+        dispatch({ type: 'setValue', value: [newValue] })
+      } else if (options.length === 1) {
+        const newValue = [options[0]]
+        dispatch({ type: 'setValue', value: newValue })
+      }
+    }
+
+    defineSelectOption()
+  }, [value])
 
   // Если данные для списка ещё не были загружены, либо возникла ошибка при их загрузке
   // Отобразить простой контейнер без логики

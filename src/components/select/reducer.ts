@@ -1,5 +1,5 @@
-import { getInitialValue } from './utils/selectUtils';
-import { ISelectReducerState, ISelectReducerAction, ISelectReducerProps } from "./types"
+import { buildFilterQuery, getInitialValue } from './utils/selectUtils';
+import { ISelectReducerState, ISelectReducerAction, ISelectReducerProps, type IDataItem } from "./types"
 
 export const reducer = function(state: ISelectReducerState, action: ISelectReducerAction): ISelectReducerState {
   switch (action.type) {

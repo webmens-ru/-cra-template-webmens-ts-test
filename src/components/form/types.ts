@@ -24,6 +24,20 @@ export interface IFormProps {
   onAfterSubmit?: (response: any) => void;
   onInit?: (form: FormValues) => void;
   onEditEnd?: () => void;
+  onValuesChange?: (values: FormValues) => void;
+  dealData?: {
+    title: string;
+    type: string;
+    url: string;
+  };
+  contactData?: {
+    title: string;
+    type: string;
+    url: string;
+  };
+  onDealClick?: (dealData: { type: string; url: string }) => void;
+  onContactClick?: (dealData: { type: string; url: string }) => void;
+  entity?: string;
 }
 
 export interface IFormRefHandlers {

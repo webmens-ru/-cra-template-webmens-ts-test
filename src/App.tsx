@@ -11,6 +11,7 @@ import MainPlacement from "./pages/mainPlacement/MainPlacement";
 import { initReactI18next } from "react-i18next";
 import ruTranslation from './translations/ru.json'
 import enTranslation from './translations/en.json'
+import CustomCard from "./pages/customCard/CustomCard";
 
 i18next
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -87,6 +88,20 @@ function App({ placementOptions }: { placementOptions?: TPlacementOptions }) {
                 ...opt.params.form
               }}
             />
+          )
+        case "customCard":
+          return (
+              <CustomCard
+                  parentId={opt.id}
+                  entity={opt.params.entity}
+                  menuId={opt.params.menuId}
+                  path={opt.path}
+                  form={{
+                    entity: opt.params.entity,
+                    closeSliderOnSubmit: stringToBoolean(opt.params.closeSliderOnSubmit),
+                    ...opt.params.form
+                  }}
+              />
           )
         case "mainIframe":
           return <MainIframe src={opt.params.link} />

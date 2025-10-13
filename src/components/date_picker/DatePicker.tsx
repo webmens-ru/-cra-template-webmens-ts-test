@@ -5,76 +5,65 @@ import { Field } from "./components/field";
 import { DatePickerContainer } from './styles';
 import { IDatePicker } from "./types";
 
-/**
- * 
- * @param onSelect - return date in ISO8601 after select
- * @param fieldWidth - css property
- * @param initialDateISO - date in ISO8601 or string text(placeholder)
- * @param withTime - boolean value for control
- * @param initialCalendarTime - hours:minutes (18:00)
- * @param svg - "none" | "left" | "right" | undefined
- * @param format - default "DD.MM.YYYY hh:mm"
- * @returns 
- */
-
 export function DatePicker({
-  onSelect,
-  fieldWidth = "100%",
-  initialDateISO,
-  withTime = true,
-  initialCalendarTime,
-  svg,
-  format = "DD.MM.YYYY hh:mm",
-}: IDatePicker) {
-  const [dateISO, setDateISO] = useState(() => {
+                             onSelect,
+                             fieldWidth = "100%",
+                             initialDateISO,
+                             withTime = true,
+                             initialCalendarTime,
+                             svg,
+                             format = "DD.MM.YYYY hh:mm",
+                           }: IDatePicker) {
+  const [dateValue, setDateValue] = useState(() => {
     let calendar = initialDateISO || "";
     if (initialCalendarTime) {
-      calendar = setTime(initialCalendarTime).toISOString();
+      // Используем новую функцию formatLocalDate вместо toISOString()
+      calendar = formatLocalDate(setTime(initialCalendarTime, initialDateISO));
     }
     return {
-      field: initialDateISO,
-      calendar,
+      field: initialDateISO || "",
+      calendar: calendar,
     };
   });
 
   const { ref, isShow, setShow } = useShowControl();
 
   useEffect(() => {
-    setDateISO((old) => ({
+    setDateValue((old) => ({
       ...old,
-      field: initialDateISO,
+      field: initialDateISO || "",
     }));
   }, [initialDateISO]);
 
   const calendarSelectHandler = (date: string) => {
-    setDateISO({ field: date, calendar: date });
+    setDateValue({ field: date, calendar: date });
     setShow(false);
     if (onSelect) onSelect(date);
   };
 
   const fieldSelectHandler = (date: string) => {
-    setDateISO((old) => ({ ...old, calendar: date }));
+    setDateValue((old) => ({ ...old, calendar: date }));
     if (onSelect) onSelect(date);
   };
 
   return (
-    <DatePickerContainer ref={ref} width={fieldWidth}>
-      <Field
-        type="date"
-        variant="with_border"
-        dateISO={dateISO.field}
-        onClick={() => setShow(true)}
-        onSelect={fieldSelectHandler}
-        svg={svg}
-        format={format}
-      />
-      <Calendar
-        isShow={isShow}
-        dateISO={dateISO.calendar}
-        onSelect={calendarSelectHandler}
-        withTime={withTime}
-      />
-    </DatePickerContainer>
+      <DatePickerContainer ref={ref} width={fieldWidth}>
+        <Field
+            type="date"
+            variant="with_border"
+            dateISO={dateValue.field} // Изменено с dateISO.field на dateValue.field
+            onClick={() => setShow(true)}
+            onSelect={fieldSelectHandler}
+            svg={svg}
+            format={format}
+        />
+        <Calendar
+            isShow={isShow}
+            dateISO={dateValue.calendar} // Изменено с dateISO.calendar на dateValue.calendar
+            onSelect={calendarSelectHandler}
+            withTime={withTime}
+        />
+      </DatePickerContainer>
   );
 }
 
@@ -95,4 +84,11 @@ function setTime(initialCalendarTime?: string, initialDateISO?: string) {
   date.setHours(+time[0]);
   date.setMinutes(+time[1]);
   return date;
+}
+
+// Новая функция для форматирования даты в локальный формат без временной зоны
+function formatLocalDate(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  // Формат: "YYYY-MM-DDTHH:mm" (без секунд и временной зоны)
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }

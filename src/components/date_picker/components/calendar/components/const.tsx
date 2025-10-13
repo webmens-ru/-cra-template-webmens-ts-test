@@ -21,6 +21,21 @@ export const monthKeys = [
   'july', 'august', 'september', 'october', 'november', 'december'
 ];
 
+export const monthArray = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+];
+
 export const yearArray = (() => {
   const currentYear = new Date().getFullYear();
   const years = [];

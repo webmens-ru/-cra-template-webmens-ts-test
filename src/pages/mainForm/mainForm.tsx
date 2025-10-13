@@ -24,6 +24,9 @@ export interface MainFormProps {
   defaultValue?: any;
   closeSliderOnSubmit?: boolean;
   onAfterSubmit?: (values: any) => void;
+  onValuesChange?: (values: FormValues) => void;
+  onDealClick?: (dealData: { type: string; url: string }) => void;
+  onContactClick?: (dealData: { type: string; url: string }) => void;
 }
 
 export default function MainForm({
@@ -37,6 +40,9 @@ export default function MainForm({
   closeSliderOnSubmit = true,
   defaultValue = {},
   onAfterSubmit = () => {},
+  onValuesChange,
+  onDealClick,
+  onContactClick,
 }: MainFormProps) {
   const [getValues] = useLazyGetFormValuesQuery();
   const formFields = useGetFormFieldsQuery(entity);
@@ -50,6 +56,14 @@ export default function MainForm({
     error: boolean;
     data?: ErrorResponse;
   }>({ error: false });
+
+  const updateFormValues = (newValues: FormValues) => {
+    // setForm((prev) => ({ ...prev, values: newValues }));
+
+    if (onValuesChange) {
+      onValuesChange(newValues);
+    }
+  };
 
   const handleFormSubmit = (formValues: FormValues) => {
     setForm({ values: formValues, isLoading: true });
@@ -76,7 +90,7 @@ export default function MainForm({
       .catch((error: AxiosError<ErrorResponse>) => {
         setForm({ values: formValues, isLoading: false });
         setSubmitError({ error: true, data: error.response?.data });
-        return Promise.reject(error)
+        return Promise.reject(error);
       });
 
     return submitRequest;
@@ -102,10 +116,20 @@ export default function MainForm({
     if (id !== 0 && action !== "create") {
       setForm({ ...form, isLoading: true });
       getValues({ entity, id }).then((response: { data: FormValues }) => {
-        setForm({ values: response.data, isLoading: false });
+        const values = response.data;
+        setForm({ values, isLoading: false });
+
+        if (onValuesChange) {
+          onValuesChange(values);
+        }
       });
     } else {
       setForm({ ...form, isLoading: false });
+
+      // ВЫЗЫВАЕМ CALLBACK С ДЕФОЛТНЫМИ ЗНАЧЕНИЯМИ
+      if (onValuesChange && Object.keys(defaultValue).length > 0) {
+        onValuesChange(defaultValue);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, action]);
@@ -119,7 +143,6 @@ export default function MainForm({
     return <Loader />;
   }
 
-  console.log(submitError.data)
   return (
     <>
       {notificationContext}
@@ -133,9 +156,19 @@ export default function MainForm({
           height={height}
           validationRules={validation.data}
           canToggleMode={canToggleMode}
-          onInit={(values) => setForm({ isLoading: false, values })}
+          onInit={(values) => {
+            setForm({ isLoading: false, values });
+            if (onValuesChange) {
+              onValuesChange(values);
+            }
+          }}
+          onValuesChange={updateFormValues}
           onSubmit={handleFormSubmit}
           onAfterSubmit={handleAfterSubmit}
+          onDealClick={onDealClick}
+          dealData={form.values?.deal}
+          onContactClick={onContactClick}
+          contactData={form.values?.contact}
         />
       </div>
     </>
