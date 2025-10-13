@@ -1,18 +1,18 @@
 import { IInputProps, InputValue } from '../input/types';
-import { SelectPropsValue, ISelectProps } from '../select/types';
+import { SelectPropsValue, SelectProps } from '../select/types';
 
 export interface IMultifieldPropsGeneric {
   minLimit?: number;
   maxLimit?: number;
   fields?: MultifieldItemProps[];
-  comboParams?: ISelectProps;
+  comboParams?: SelectProps;
   addTitle?: string;
   onChange: (fields: MultifieldItem[]) => void;
 }
 
 export type IMultifieldProps = IMultifieldPropsGeneric & (
   | { type?: "input" | "combo", fieldParams?: IInputProps }
-  | { type?: "select", fieldParams?: ISelectProps }
+  | { type?: "select", fieldParams?: SelectProps }
 );
 
 export type MultifieldTypes = "input" | "select" | "combo";
@@ -40,7 +40,7 @@ export interface IMultifieldReducerProps {
   minLimit: number;
   maxLimit: number;
   fields: MultifieldItemProps[];
-  comboParams?: ISelectProps;
+  comboParams?: SelectProps;
   type: MultifieldTypes;
   onChange: (fields: MultifieldItem[]) => void;
 }
@@ -54,7 +54,7 @@ export type IMultifieldReducerAction =
 export interface IMultifieldState {
   fields: MultifieldItem[];
   type: MultifieldTypes;
-  comboParams?: ISelectProps;
+  comboParams?: SelectProps;
   minLimit: number;
   maxLimit: number;
   keyCounter: number;

@@ -4,7 +4,7 @@ import SelectDropdown from "./components/dropdown";
 import LoadingSelect from './components/loading_select';
 import { init, reducer } from "./reducer";
 import { SelectContainer, SelectErrorMsg, SelectFilter, SelectInner, SelectSuffix, SelectTag, SelectTagsContainer, Suffix, TagRemove, TagTitle } from "./styles";
-import { IDataItem, ISelectProps } from "./types";
+import { IDataItem, SelectProps } from "./types";
 import { buildFilterQuery, filterSelectData } from "./utils/selectUtils";
 
 export const Select = ({
@@ -12,6 +12,7 @@ export const Select = ({
   filterable = true,
   minInputLength = 0,
   maxSelectionLength = Infinity,
+  readonly = false,
   filterDelay = 350,
   value = [],
   data = [],
@@ -22,7 +23,7 @@ export const Select = ({
   queryParams = {},
   queryTitleName = "title_like",
   onChange = () => { },
-}: ISelectProps) => {
+}: SelectProps) => {
   const [dropdownPosition, setDropdownPosition] = useState<DOMRect>()
   const filterRef = useRef(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -133,9 +134,11 @@ export const Select = ({
     if (closeOnSelect && isShow === true) {
       return setShow(false)
     }
-    
-    setCoordinates()
-    setShow(true)
+
+    if (!readonly) {
+      setCoordinates()
+      setShow(true)
+    }
   }
 
   useEffect(() => {
@@ -170,7 +173,7 @@ export const Select = ({
   // Отобразить простой контейнер без логики
   if (!select.inited || select.hasErrorsOnFetch) {
     return (
-      <SelectContainer width={selectWidth} isShow={isShow} ref={ref} onClick={handleContainerClick}>
+      <SelectContainer width={selectWidth} readonly={readonly} isShow={isShow} ref={ref} onClick={handleContainerClick}>
         {select.hasErrorsOnFetch && <SelectErrorMsg children="Произошла ошибка при загрузке данных" />}
 
         <SelectSuffix isShow={isShow}>
@@ -187,8 +190,7 @@ export const Select = ({
   }
 
   return (
-    <SelectContainer width={selectWidth} isShow={isShow} ref={ref} onClick={handleContainerClick}>
-
+    <SelectContainer width={selectWidth} readonly={readonly} isShow={isShow} ref={ref} onClick={handleContainerClick}>
       <SelectInner>
         {multiple && (
           <SelectTagsContainer>
@@ -203,7 +205,7 @@ export const Select = ({
 
         <SelectFilter
           ref={filterRef}
-          className={isShow ? 'opened' : 'closed'}
+          className={[isShow ? 'opened' : 'closed', readonly && 'readonly'].join(' ')}
           readOnly={!filterable}
           placeholder={getFilterPlaceholder()}
           value={isShow ? select.filterValue : ''}

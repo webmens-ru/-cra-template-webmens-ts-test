@@ -1,8 +1,9 @@
-export interface ISelectProps {
+export interface SelectProps {
   multiple?: boolean;
   filterable?: boolean;
   minInputLength?: number;
   maxSelectionLength?: number;
+  readonly?: boolean;
   filterDelay?: number;
   value?: SelectPropsValue;
   valueField?: string;

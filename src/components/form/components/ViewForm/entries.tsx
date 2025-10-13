@@ -2,8 +2,10 @@ import React from "react";
 import { FileInputItem } from "../../../file_input/types";
 import { IMultifieldProps, MultifieldItem, MultifieldItemComboValue, MultifieldItemValue } from "../../../multifield/types";
 import { RichTextValue } from "../../../richtext/types";
-import { IDataItem, ISelectProps } from "../../../select/types";
+import { IDataItem, SelectProps } from "../../../select/types";
 import { ViewFieldLink, ViewFieldList, ViewFieldText } from "./styles";
+import type { LinkFieldProps, LinkFieldValue } from "../fields/LinkField";
+import useNavigation from "../../../../app/hooks/useNavigation";
 
 const FIELD_PLACEHOLDER = "Не задано";
 
@@ -12,7 +14,7 @@ export interface IViewField<T> {
 }
 
 export interface ISelectViewField extends IViewField<string | IDataItem | IDataItem[]> {
-  fieldParams?: ISelectProps;
+  fieldParams?: SelectProps;
 }
 
 export interface IMultifieldViewField extends IViewField<Array<string | MultifieldItem>> {
@@ -21,6 +23,10 @@ export interface IMultifieldViewField extends IViewField<Array<string | Multifie
 
 export interface IMultifieldInner extends IMultifieldViewField {
   itemValue: string | MultifieldItem | MultifieldItemValue;
+}
+
+export interface LinkViewField extends IViewField<LinkFieldValue> {
+  fieldParams?: LinkFieldProps
 }
 
 export const InputVF = ({ value }: IViewField<string>) => {
@@ -134,4 +140,31 @@ export const RichtextVF = ({ value }: IViewField<RichTextValue>) => {
   }
 
   return <div dangerouslySetInnerHTML={{ __html: value }} />
+}
+
+export const LinkVF = ({ value, fieldParams }: LinkViewField) => {
+  const navigator = useNavigation()
+
+  console.log(value, fieldParams)
+
+  const selectValue = value?.[0]
+  const link = fieldParams?.linkView?.linkTemplate.replace('{{value}}', selectValue?.value.toString() || '')
+
+  const handleLinkClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
+    evt.preventDefault();
+
+    if (fieldParams?.linkView) {
+      navigator({
+        type: fieldParams.linkView.type,
+        url: link,
+        width: fieldParams.linkView.width?.toString()
+      })
+    }
+  }
+
+  if (!link) {
+    return <ViewFieldText children={FIELD_PLACEHOLDER} hasValue={false} />
+  } else {
+    return <a href={link} children={selectValue?.title} onClick={handleLinkClick} />
+  }
 }

@@ -1,12 +1,13 @@
 import { IDatePicker } from '../date_picker/types';
 import { IInputProps, InputValue } from '../input/types';
 import { RichTextProps, RichTextValue } from '../richtext/types';
-import { ISelectProps, SelectPropsValue } from '../select/types';
+import { SelectProps, SelectPropsValue } from '../select/types';
 import { CheckboxProps, CheckboxValue } from './../checkbox/types';
 import { FileInputItem, FileInputPropsValue, IFileInputProps } from './../file_input/types';
 import { IMultifieldProps, MultifieldItemProps } from './../multifield/types';
 import { IDataItem } from './../select/types';
 import { ErrorsItem } from './components/field/types';
+import type { LinkFieldProps, LinkFieldValue } from './components/fields/LinkField';
 
 export interface IFormProps {
   fields: FormFieldsItem[];
@@ -59,12 +60,13 @@ export interface FormFieldsItemGeneric {
 export type FormFieldsItem = FormFieldsItemGeneric &
   (
     | {type: 'input', value?: InputValue, fieldParams?: IInputProps}
-    | {type: 'select', value?: SelectPropsValue, fieldParams?: ISelectProps}
+    | {type: 'select', value?: SelectPropsValue, fieldParams?: SelectProps}
     | {type: 'date', value: string, fieldParams?: IDatePicker}
     | {type: 'checkbox', value?: CheckboxValue, fieldParams?: CheckboxProps}
     | {type: 'file', value?: FileInputPropsValue, fieldParams?: IFileInputProps}
     | {type: 'multifield', value?: MultifieldItemProps[], fieldParams?: IMultifieldProps}
     | {type: 'richtext', value?: RichTextValue, fieldParams?: RichTextProps}
+    | {type: 'link-select', value?: LinkFieldValue, fieldParams?: LinkFieldProps}
   )
 
 export type FormFieldsItemShort = {

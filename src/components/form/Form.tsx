@@ -14,7 +14,7 @@ import {
     BlockContainer,
     BlockInnerContainer,
 } from "./styles";
-import {FormValues, IFormProps, IFormRefHandlers, IValidationErrorItem} from "./types";
+import {IFormProps, IFormRefHandlers, IValidationErrorItem} from "./types";
 import {prepareFormData} from "./utils/parse";
 import {validator} from "./utils/validator";
 import {useLazyGetDepositQuery} from "../../pages/mainForm/mainFormApi";

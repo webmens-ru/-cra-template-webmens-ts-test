@@ -1,7 +1,7 @@
 import { FileInputItem } from '../../file_input';
 import { FileInputPropsValue } from './../../file_input/types';
 import { IMultifieldProps, MultifieldItem } from './../../multifield/types';
-import { IDataItem, ISelectProps } from './../../select/types';
+import { IDataItem, SelectProps } from './../../select/types';
 import { buildCallbackValue } from './../../select/utils/selectUtils';
 import { FormValues, IFormReducerState } from './../types';
 
@@ -14,7 +14,7 @@ export const prepareFormData = ({ fields, tempValues: values }: IFormReducerStat
     const field = fields.find(field => field.name === name)
 
     if (field?.type === 'select') {
-      const multiple = (field?.fieldParams as ISelectProps).multiple
+      const multiple = (field?.fieldParams as SelectProps).multiple
       parsedValue = buildCallbackValue(parsedValue as IDataItem[], multiple)
     }
     if (field?.type === 'multifield') {

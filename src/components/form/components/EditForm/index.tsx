@@ -12,10 +12,11 @@ import { MultifieldItem, MultifieldItemComboValue } from "../../../multifield/ty
 import { Richtext } from "../../../richtext/Richtext";
 import { RichTextValue } from "../../../richtext/types";
 import Select from "../../../select";
-import { SelectPropsValue } from "../../../select/types";
+import { SelectPropsValue, type SelectValue } from "../../../select/types";
 import { validator } from "../../utils/validator";
 import Field from "../field";
 import { IEditFormProps } from "./types";
+import LinkField from "../fields/LinkField";
 
 export const EditForm = ({
   form,
@@ -153,6 +154,14 @@ export const EditForm = ({
           <Richtext
             {...field.fieldParams}
             value={formValue as RichTextValue}
+            onChange={(value) => handleFieldChange(field, value)}
+          />
+        )
+      case 'link-select':
+        return (
+          <LinkField
+            {...field.fieldParams}
+            value={formValue as SelectValue}
             onChange={(value) => handleFieldChange(field, value)}
           />
         )
