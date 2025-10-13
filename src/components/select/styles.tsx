@@ -1,8 +1,9 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 type SelectContainerProps = {
   width: string;
   isShow: boolean;
+  readonly: boolean;
 }
 type SuffixProps = {
   isShow: boolean;
@@ -29,6 +30,10 @@ export const SelectContainer = styled.div.attrs({ className: 'wm-select' }) <Sel
   &:focus, &:hover {
     border-color: #66afe9;
   }
+
+  ${({ readonly }) => readonly && css`
+    background-color: rgb(244, 244, 244);
+  `}
 `
 
 export const SelectInner = styled.div`
@@ -60,6 +65,10 @@ export const SelectFilter = styled.input`
     padding: 0 5px;
     font-size: 14px;
     opacity: .5;
+  }
+
+  &.readonly {
+    cursor: default;
   }
 `
 

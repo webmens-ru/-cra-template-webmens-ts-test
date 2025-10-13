@@ -4,25 +4,26 @@ import SelectDropdown from "./components/dropdown";
 import LoadingSelect from './components/loading_select';
 import { init, reducer } from "./reducer";
 import { SelectContainer, SelectErrorMsg, SelectFilter, SelectInner, SelectSuffix, SelectTag, SelectTagsContainer, Suffix, TagRemove, TagTitle } from "./styles";
-import { IDataItem, ISelectProps } from "./types";
+import { IDataItem, SelectProps } from "./types";
 import { buildFilterQuery, filterSelectData } from "./utils/selectUtils";
 
 export const Select = ({
-                         multiple = false,
-                         filterable = true,
-                         minInputLength = 0,
-                         maxSelectionLength = Infinity,
-                         filterDelay = 350,
-                         value = [],
-                         data = [],
-                         dataUrl = "",
-                         remoteMode = false,
-                         closeOnSelect = true,
-                         selectWidth = '100%',
-                         queryParams = {},
-                         queryTitleName = "title_like",
-                         onChange = () => { },
-                       }: ISelectProps) => {
+  multiple = false,
+  filterable = true,
+  minInputLength = 0,
+  maxSelectionLength = Infinity,
+  readonly = false,
+  filterDelay = 350,
+  value = [],
+  data = [],
+  dataUrl = "",
+  remoteMode = false,
+  closeOnSelect = true,
+  selectWidth = '100%',
+  queryParams = {},
+  queryTitleName = "title_like",
+  onChange = () => { },
+}: SelectProps) => {
   const [dropdownPosition, setDropdownPosition] = useState<DOMRect>()
   const filterRef = useRef(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -54,13 +55,13 @@ export const Select = ({
   }
 
   const fetchSelectData = async (filter: string = '', params = {}) => {
-    try {
+    try {      
       const response = await buildFilterQuery(dataUrl, { ...params, ...queryParams }, filter, queryTitleName)
       return response.json()
     } catch (error) {
       dispatch({ type: "setFetchError" })
       return []
-    }
+    }    
   }
 
   // Возвращает отфильтрованные данные для списка
@@ -134,13 +135,15 @@ export const Select = ({
       return setShow(false)
     }
 
-    setCoordinates()
-    setShow(true)
+    if (!readonly) {
+      setCoordinates()
+      setShow(true)
+    }
   }
 
   useEffect(() => {
     window.addEventListener("resize", setCoordinates)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -150,7 +153,7 @@ export const Select = ({
       }
 
       const options: IDataItem[] = await fetchSelectData('', { id: value })
-
+      
       if (!options.length) {
         return
       } else if (options.length > 1) {
@@ -170,69 +173,68 @@ export const Select = ({
   // Отобразить простой контейнер без логики
   if (!select.inited || select.hasErrorsOnFetch) {
     return (
-        <SelectContainer width={selectWidth} isShow={isShow} ref={ref} onClick={handleContainerClick}>
-          {select.hasErrorsOnFetch && <SelectErrorMsg children="Произошла ошибка при загрузке данных" />}
-
-          <SelectSuffix isShow={isShow}>
-            <Suffix />
-          </SelectSuffix>
-
-          {isShow && (
-              <SelectDropdown>
-                <LoadingSelect />
-              </SelectDropdown>
-          )}
-        </SelectContainer>
-    )
-  }
-
-  return (
-      <SelectContainer width={selectWidth} isShow={isShow} ref={ref} onClick={handleContainerClick}>
-
-        <SelectInner>
-          {multiple && (
-              <SelectTagsContainer>
-                {select.value.map((tag) => (
-                    <SelectTag key={tag.value}>
-                      <TagTitle children={tag.title || <i>Нет данных</i>} />
-                      <TagRemove onClick={(event: React.MouseEvent) => handleRemoveTag(event, tag)} />
-                    </SelectTag>
-                ))}
-              </SelectTagsContainer>
-          )}
-
-          <SelectFilter
-              ref={filterRef}
-              className={isShow ? 'opened' : 'closed'}
-              readOnly={!filterable}
-              placeholder={getFilterPlaceholder()}
-              value={isShow ? select.filterValue : ''}
-              onChange={handleFilterChange}
-              onClick={handleFilterClick}
-          />
-
-        </SelectInner>
+      <SelectContainer width={selectWidth} readonly={readonly} isShow={isShow} ref={ref} onClick={handleContainerClick}>
+        {select.hasErrorsOnFetch && <SelectErrorMsg children="Произошла ошибка при загрузке данных" />}
 
         <SelectSuffix isShow={isShow}>
           <Suffix />
         </SelectSuffix>
 
         {isShow && (
-            <SelectDropdown
-                ref={dropdownRef}
-                multiple={multiple}
-                isShowLettersCount={minInputLength > 0 && !isEnoughFilterLength}
-                lettersRemaining={minInputLength - select.filterValue.length}
-                isNoData={!isEnoughFilterLength && !select.filteredData.length && !select.loading}
-                canSelectMore={canSelectMore}
-                isLoading={select.loading}
-                selectedOptions={select.value}
-                data={select.filteredData}
-                position={dropdownPosition}
-                onChange={handleSelectChange}
-            />
+          <SelectDropdown>
+            <LoadingSelect />
+          </SelectDropdown>
+        )}
+      </SelectContainer>
+    )
+  }
+
+  return (
+    <SelectContainer width={selectWidth} readonly={readonly} isShow={isShow} ref={ref} onClick={handleContainerClick}>
+      <SelectInner>
+        {multiple && (
+          <SelectTagsContainer>
+            {select.value.map((tag) => (
+              <SelectTag key={tag.value}>
+                <TagTitle children={tag.title || <i>Нет данных</i>} />
+                <TagRemove onClick={(event: React.MouseEvent) => handleRemoveTag(event, tag)} />
+              </SelectTag>
+            ))}
+          </SelectTagsContainer>
         )}
 
-      </SelectContainer>
+        <SelectFilter
+          ref={filterRef}
+          className={[isShow ? 'opened' : 'closed', readonly && 'readonly'].join(' ')}
+          readOnly={!filterable}
+          placeholder={getFilterPlaceholder()}
+          value={isShow ? select.filterValue : ''}
+          onChange={handleFilterChange}
+          onClick={handleFilterClick}
+        />
+
+      </SelectInner>
+
+      <SelectSuffix isShow={isShow}>
+        <Suffix />
+      </SelectSuffix>
+
+      {isShow && (
+        <SelectDropdown
+          ref={dropdownRef}
+          multiple={multiple}
+          isShowLettersCount={minInputLength > 0 && !isEnoughFilterLength}
+          lettersRemaining={minInputLength - select.filterValue.length}
+          isNoData={!isEnoughFilterLength && !select.filteredData.length && !select.loading}
+          canSelectMore={canSelectMore}
+          isLoading={select.loading}
+          selectedOptions={select.value}
+          data={select.filteredData}
+          position={dropdownPosition}
+          onChange={handleSelectChange}
+        />
+      )}
+
+    </SelectContainer>
   )
 }

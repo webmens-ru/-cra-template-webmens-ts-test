@@ -6,7 +6,7 @@ import { ComboContainer, FieldAdd, FieldRemove, MultifieldContainer, MultifieldI
 import { IMultifieldProps, MultifieldItem, MultifieldItemComboValue } from "./types";
 import { Icon } from "../icon";
 import { IInputProps, InputValue } from "../input/types";
-import { ISelectProps, SelectPropsValue } from "../select/types";
+import { SelectProps, SelectPropsValue } from "../select/types";
 
 export const Multifield = ({
   type = "input",
@@ -39,7 +39,7 @@ export const Multifield = ({
       case "input":
         return <Input {...fieldParams as IInputProps} value={field.value as InputValue} onChange={(value) => handleFieldChange(value, field)} />
       case "select":
-        return <Select {...fieldParams as ISelectProps} value={field.value as SelectPropsValue} onChange={(value) => handleFieldChange(value, field)} />
+        return <Select {...fieldParams as SelectProps} value={field.value as SelectPropsValue} onChange={(value) => handleFieldChange(value, field)} />
       case "combo":
         const value = (typeof field !== "number" && "value" in field) ? field.value as MultifieldItemComboValue : field as unknown as MultifieldItemComboValue
         return (
