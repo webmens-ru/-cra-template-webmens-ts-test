@@ -33,7 +33,7 @@ export const CalendarContainer = styled.div`
 `;
 
 export const HeaderContainer = styled.div`
-  height: 40px;
+  height: 50px;
   width: 100%;
   display: flex;
   justify-content: space-between;
