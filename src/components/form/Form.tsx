@@ -82,7 +82,7 @@ export const Form = React.forwardRef(({
         onAfterSubmit(response)
         return true
       }).catch(({ response }) => {
-        console.log('FORM CATCH', response, response.status)
+        console.error('FORM CATCH', response, response.status)
         if (response.status !== 500) {
           dispatch({ type: "set_errors", errors: response.data })
         }
