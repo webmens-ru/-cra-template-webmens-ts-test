@@ -117,9 +117,7 @@ export const Select = ({
 
   // Показывает серый текст с выбранным значением (если Select не множественный)
   const getFilterPlaceholder = (): string => {
-    // @ts-ignore
-    if (!multiple && select.value.length > 0 && select.value[0]?.length > 0 ) {
-      // console.log(toBool(select.value[0]))
+    if (!multiple && select.value.length > 0 && select.value[0]?.title) {
       const title = select.value[0].title;
       return title.toString() || 'Нет данных...';
     } else return ''
