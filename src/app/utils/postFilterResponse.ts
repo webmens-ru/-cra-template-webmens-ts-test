@@ -228,10 +228,15 @@ export const getDateResponse = (value: string[]): PostFilterResponse<string>[] =
     case "range":
       const dayBefore1 = new Date(value[1]);
       const dayAfter1 = new Date(new Date(value[2]).getTime() + 86400000);
-      return [
-        { operator: ">=", value: `${dayBefore1.getFullYear() || year}-${dayBefore1.getMonth() + 1 || month}-${dayBefore1.getDate()}` },
-        { operator: "<", value: `${dayAfter1.getFullYear() || year}-${dayAfter1.getMonth() + 1 || month}-${dayAfter1.getDate()}` }
-      ]
+      
+      if (dayBefore1 && dayAfter1) {
+        return [
+          { operator: ">=", value: `${dayBefore1.getFullYear() || year}-${dayBefore1.getMonth() + 1 || month}-${dayBefore1.getDate()}` },
+          { operator: "<", value: `${dayAfter1.getFullYear() || year}-${dayAfter1.getMonth() + 1 || month}-${dayAfter1.getDate()}` }
+        ]
+      } else {
+        return []
+      }
     case "nextWeek":
       let nextMonday = 8 - date.getDay();
       return [

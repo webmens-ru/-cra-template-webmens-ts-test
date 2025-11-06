@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useShowControl } from "../../hooks";
 import { Calendar } from "./components/calendar";
-import { Field } from "./components/field";
 import { DatePickerContainer } from './styles';
 import { IDatePicker } from "./types";
+import { DateField } from "./components/field/field_types/date";
 
 /**
  * 
@@ -59,7 +59,7 @@ export function DatePicker({
 
   return (
     <DatePickerContainer ref={ref} width={fieldWidth}>
-      <Field
+      <DateField
         type="date"
         variant="with_border"
         dateISO={dateISO.field}

@@ -27,31 +27,36 @@ export default function DateField({ item, updateField }: IField) {
   });
 
   const updateValue = useCallback((value: string[]) => {
+    if (!value[0]) {
+      value[0] = dropDownValue.value.toString()
+    }
+
     const field = { ...item, value };
     dispatch({ type: 'SET_FILTER_FIELD_VALUE', field });
     updateField(field, 'value');
-  }, [dispatch, item, updateField]);
+  }, [dispatch, dropDownValue.value, item, updateField]);
 
   const setDDV = useCallback((value: IDataItem[]) => {
     const date = new Date()
     const year = date.getFullYear().toString()
+    const variantValue = value[0].value || dropDownValue.value
 
     const resultValue = function () {
-      switch (value[0].value) {
+      switch (variantValue) {
         case "month":
-          return [value[0].value, (date.getMonth() + 1).toString(), year]
+          return [variantValue, (date.getMonth() + 1).toString(), year]
         case "quarter":
-          return [value[0].value, "1", year, ""]
+          return [variantValue, "1", year, ""]
         case "year":
-          return [value[0].value, year, ""]
+          return [variantValue, year, ""]
         default:
-          return [value[0].value.toString(), "", ""]
+          return [variantValue.toString(), "", ""]
       }
     }()
 
     setDropDownValue(value[0]);
     updateValue(resultValue);
-  }, [updateValue]);
+  }, [dropDownValue.value, updateValue]);
 
   const currentComponent = useMemo(() => {
     switch (dropDownValue.value) {
