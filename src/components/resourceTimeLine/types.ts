@@ -6,7 +6,16 @@ import type { Colors } from "../../app/model/colors"
 export interface TimelineProps {
   resources?: TimelineResource[]
   events?: TimelineEvent[]
-  settings?: TimelineSettingsResponse
+  settings?: TimelineSettingsResponse & {
+    currentDate?: string;
+    showCurrentDate?: boolean;
+    currentDateHighlight?: {
+      color?: string;
+      opacity?: number;
+      borderColor?: string;
+      borderWidth?: string;
+    };
+  }
   options?: TimelineOptions
   onEventClick?: (event: TimelineEvent) => void
   onDateClick?: (resource: TimelineResourceApi) => void

@@ -4,6 +4,7 @@ import type { PaginationProps } from "../../components/grid/components/paginatio
 import type { TimelineAction, TimelineEvent, TimelineResource } from "../../components/resourceTimeLine/types";
 import type { IToolbarBlock } from "../../components/toolbar";
 import type { ViewOptionsRefined } from "@fullcalendar/core/internal";
+import type { ColSpec } from "@fullcalendar/resource-common";
 
 // TODO: Написать тип ошибки сабмита
 export type ErrorResponse = any;
@@ -53,6 +54,12 @@ export interface TimelineSettingsResponse {
   resourceAreaHeaderContent?: string
   minSlotsForTooltip?: number;
   slotDuration?:string;
+  resourceAreaWidth?: string
+  resourceAreaColumns?: ColSpec[]
+  height?: string
+  resourceOrder?: string
+  slotMinTime?: string;
+  slotMaxTime?: string;
   views?: {
     [key: string]: ViewOptionsRefined
   }

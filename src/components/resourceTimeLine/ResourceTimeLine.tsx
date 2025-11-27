@@ -17,23 +17,78 @@ interface TimelineActionState extends Omit<TimelineActionArgs, 'action'> {
 }
 
 export default function ResourceTimeLine({
-  events = [],
-  resources = [],
-  options = {},
-  settings = {},
-  onEventClick,
-  onAction,
-  onResourceClick,
-  onChangeView
-}: TimelineProps) {
-  const [actionState, setActionState] = useState<TimelineActionState | null>(null)
+                                           events = [],
+                                           resources = [],
+                                           options = {},
+                                           settings = {},
+                                           onEventClick,
+                                           onAction,
+                                           onResourceClick,
+                                           onChangeView
+                                         }: TimelineProps) {
+  const [actionState, setActionState] = useState<TimelineActionState | null>(null);
   const calendarRef = useRef<{ calendar: CalendarApi, elRef: RefObject<HTMLElement> }>(null);
-  const selectionTimeoutRef = useRef<NodeJS.Timeout>()
+  const selectionTimeoutRef = useRef<NodeJS.Timeout>();
 
   const minSlotsForTooltip = settings.minSlotsForTooltip ?? 1;
 
+  // Настройки подсветки текущей даты
+  const currentDate = settings.currentDate;
+  const showCurrentDate = settings.showCurrentDate ?? true;
+  const highlightConfig = settings.currentDateHighlight || {
+    color: '#ffeb3b',
+    opacity: 0.2,
+    borderColor: '#ffeb3b',
+    borderWidth: '2px'
+  };
+
+  // Функция для применения подсветки
+  const applyCurrentDateHighlight = () => {
+    if (!calendarRef.current?.calendar || !currentDate || !showCurrentDate) {
+      return;
+    }
+
+    // Убираем предыдущую подсветку
+    document.querySelectorAll('.fc-current-date-highlight').forEach(el => {
+      el.classList.remove('fc-current-date-highlight');
+    });
+
+    try {
+      const date = new Date(currentDate);
+      const targetDateString = date.toISOString().split('T')[0];
+
+      // Ищем все элементы с data-date
+      const allDateElements = document.querySelectorAll('[data-date]');
+
+      allDateElements.forEach(element => {
+        const elementDate = element.getAttribute('data-date');
+        if (elementDate && elementDate.includes(targetDateString)) {
+          element.classList.add('fc-current-date-highlight');
+        }
+      });
+
+    } catch (error) {
+      console.error('Error applying current date highlight:', error);
+    }
+  };
+
+  // Эффект для подсветки при изменении даты или настроек
+  useEffect(() => {
+    const timer = setTimeout(applyCurrentDateHighlight, 500);
+    return () => clearTimeout(timer);
+  }, [currentDate, showCurrentDate, highlightConfig]);
+
+  // Эффект для переприменения подсветки при изменении ресурсов или событий
+  useEffect(() => {
+    const timer = setTimeout(applyCurrentDateHighlight, 300);
+    return () => clearTimeout(timer);
+  }, [resources, events]);
+
   const resourceAreaColumns = useMemo<ColSpec[]>(() => {
-    return [
+    const backendColumns = settings.resourceAreaColumns || [];
+
+    // Базовые колонки с фронтенда
+    const frontendColumns: ColSpec[] = [
       {
         field: '_wm_burger',
         headerContent: '#',
@@ -45,7 +100,8 @@ export default function ResourceTimeLine({
                   {...props}
                   actions={options.burger?.actions}
                   onAction={(action) => onAction?.({action, resource: props.resource})}
-              />)
+              />
+          )
         },
       },
       {
@@ -53,15 +109,43 @@ export default function ResourceTimeLine({
         headerContent: settings.resourceAreaHeaderContent,
         cellContent: (props: any) => {
           return (
-            <ResourceCellContent
-              {...props}
-              onClick={onResourceClick}
-            />
+              <ResourceCellContent
+                  {...props}
+                  onClick={onResourceClick}
+              />
           );
         },
       }
-    ]
-  }, [onAction, options.burger?.actions, settings.resourceAreaHeaderContent, onResourceClick])
+    ];
+
+    if (backendColumns.length === 0) {
+      return frontendColumns;
+    }
+
+    const resultColumns: ColSpec[] = [];
+
+    backendColumns.forEach(backendCol => {
+      const frontendCol = frontendColumns.find(col => col.field === backendCol.field);
+
+      if (frontendCol) {
+        resultColumns.push({
+          ...frontendCol,
+          ...backendCol,
+          cellContent: frontendCol.cellContent,
+        });
+      } else {
+        resultColumns.push(backendCol);
+      }
+    });
+
+    return resultColumns;
+  }, [
+    onAction,
+    options.burger?.actions,
+    settings.resourceAreaHeaderContent,
+    settings.resourceAreaColumns,
+    onResourceClick
+  ]);
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     if (onEventClick) {
@@ -78,38 +162,27 @@ export default function ResourceTimeLine({
   };
 
   const handleDatesSelect = (evt: DateSelectArg) => {
-    console.log(evt)
     if (!evt.jsEvent || evt.jsEvent.type !== 'mouseup') {
       return
     }
 
-    // Рассчитываем количество выбранных клеточек
     const start = new Date(evt.startStr);
     const end = new Date(evt.endStr);
 
-    // Получаем длительность слота из настроек календаря
-    const slotDuration = settings?.slotDuration || '24:00:00'; // Значение по умолчанию
+    const slotDuration = settings?.slotDuration || '24:00:00';
 
-    // Парсим длительность слота в миллисекундах
     const parseSlotDuration = (duration: string): number => {
       const [hours, minutes, seconds] = duration.split(':').map(Number);
       return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000);
     };
 
     const slotDurationMs = parseSlotDuration(slotDuration);
-
-    // Рассчитываем разницу во времени
     const diffTime = Math.abs(end.getTime() - start.getTime());
-
-    // Вычисляем количество клеточек
     const diffSlots = Math.ceil(diffTime / slotDurationMs);
 
-    // Если выбрано меньше клеточек чем минимальное требование - не показываем тултип
     if (diffSlots < minSlotsForTooltip) {
-      console.log(`Selected ${diffSlots} slots, but need at least ${minSlotsForTooltip}`);
       return;
     }
-
 
     selectionTimeoutRef.current = setTimeout(() => {
       const resource = evt.resource as unknown as TimelineResourceApi
@@ -149,72 +222,125 @@ export default function ResourceTimeLine({
   }
 
   const resourceRender = function(info:any) {
-    info.el.classList.add(info.resource.className); // добавление CSS класса
+    info.el.classList.add(info.resource.className);
+  }
+
+  // Обработчик изменения вида
+  const handleDatesSet = (evt: any) => {
+    onChangeView?.(evt.startStr, evt.endStr);
+
+    // Переприменяем подсветку при смене вида
+    setTimeout(applyCurrentDateHighlight, 800);
   }
 
   return (
-    <>
-      <FullCalendarStyle />
-      {actionState && (
-        <ActionsTooltip
-          cellRect={actionState?.cellRect}
-          actions={actionState?.actions}
-          onAction={handleAction}
-          onClose={onCloseTooltip}
+      <>
+        <FullCalendarStyle />
+
+        {/* Кастомные стили для подсветки текущей даты */}
+        <style>
+          {`
+          .fc-current-date-highlight {
+            background-color: ${highlightConfig.color} !important;
+            opacity: ${highlightConfig.opacity} !important;
+            position: relative;
+            z-index: 5;
+          }
+          
+          .fc-current-date-highlight::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            border: ${highlightConfig.borderWidth} solid ${highlightConfig.borderColor};
+            pointer-events: none;
+            box-sizing: border-box;
+            z-index: 6;
+            border-radius: 2px;
+          }
+          
+          /* Усиливаем специфичность для различных элементов */
+          .fc .fc-timeline-slot.fc-current-date-highlight {
+            background-color: ${highlightConfig.color} !important;
+          }
+          
+          .fc .fc-timeline-cell.fc-current-date-highlight {
+            background-color: ${highlightConfig.color} !important;
+          }
+          
+          .fc-timeline .fc-current-date-highlight {
+            background-color: ${highlightConfig.color} !important;
+          }
+          
+          .fc-timeline-slot-lane .fc-current-date-highlight,
+          .fc-timeline-bg .fc-current-date-highlight {
+            background-color: ${highlightConfig.color} !important;
+          }
+          
+          /* Для темной темы */
+          .fc-theme-standard .fc-current-date-highlight {
+            background-color: ${highlightConfig.color} !important;
+          }
+          
+          .fc-theme-dark .fc-current-date-highlight {
+            background-color: ${highlightConfig.color} !important;
+          }
+        `}
+        </style>
+
+        {actionState && (
+            <ActionsTooltip
+                cellRect={actionState?.cellRect}
+                actions={actionState?.actions}
+                onAction={handleAction}
+                onClose={onCloseTooltip}
+            />
+        )}
+
+        {/* @ts-ignore */}
+        <FullCalendar
+            {...settings}
+            // @ts-ignore
+            ref={calendarRef}
+            schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
+            plugins={[resourceTimelinePlugin, interactionPlugin]}
+            resources={resources}
+            handleCustomRendering={resourceRender}
+            resourceAreaColumns={resourceAreaColumns}
+            resourceAreaHeaderContent={null}
+            events={events}
+            eventClick={handleEventClick}
+            dayCellContent={CellContent}
+            selectable
+            select={handleDatesSelect}
+            datesSet={handleDatesSet}
+            eventDidMount={(arg) => {
+              const eventData = arg.event.extendedProps as TimelineEvent;
+
+              if (eventData.style) {
+                Object.assign(arg.el.style, eventData.style);
+              }
+
+              if (eventData.style?.borderRadius) {
+                arg.el.style.borderRadius = eventData.style.borderRadius;
+              }
+              if (eventData.style?.border) {
+                arg.el.style.border = eventData.style.border;
+              }
+              if (eventData.style?.backgroundColor) {
+                arg.el.style.backgroundColor = eventData.style.backgroundColor;
+              }
+              if (eventData.style?.height) {
+                arg.el.style.height = eventData.style.height;
+              }
+
+              if (eventData.className && typeof eventData.className === 'string') {
+                arg.el.classList.add(eventData.className);
+              }
+            }}
         />
-      )}
-      {/* @ts-ignore */}
-      <FullCalendar
-        {...settings}
-        // @ts-ignore
-        ref={calendarRef}
-        // buttonText={{
-        //   today: "Сегодня",
-        //   month: "Месяц",
-        //   week: "Неделя",
-        //   day: "День",
-        //   list: "Список",
-        // }}
-        schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
-        plugins={[resourceTimelinePlugin, interactionPlugin]}
-        resources={resources}
-        handleCustomRendering={resourceRender}
-        resourceAreaColumns={resourceAreaColumns}
-        resourceAreaHeaderContent={null}
-        events={events}
-        eventClick={handleEventClick}
-        dayCellContent={CellContent}
-        selectable
-        select={handleDatesSelect}
-        datesSet={(evt) => onChangeView?.(evt.startStr, evt.endStr)}
-        eventDidMount={(arg) => { // ← ДОБАВЬТЕ ЭТУ СТРОЧКУ
-          const eventData = arg.event.extendedProps as TimelineEvent;
-
-          // Применяем стили из данных события
-          if (eventData.style) {
-            Object.assign(arg.el.style, eventData.style);
-          }
-
-          // Или применяем конкретные свойства
-          if (eventData.style?.borderRadius) {
-            arg.el.style.borderRadius = eventData.style.borderRadius;
-          }
-          if (eventData.style?.border) {
-            arg.el.style.border = eventData.style.border;
-          }
-          if (eventData.style?.backgroundColor) {
-            arg.el.style.backgroundColor = eventData.style.backgroundColor;
-          }
-          if (eventData.style?.height) {
-            arg.el.style.height = eventData.style.height;
-          }
-
-          // Добавляем CSS классы, если они есть
-          if (eventData.className && typeof eventData.className === 'string') {
-            arg.el.classList.add(eventData.className);
-          }
-        }}
-      />
-    </>
+      </>
   );
 }
