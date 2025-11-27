@@ -64,7 +64,7 @@ export default function ActionsTooltip({
   const tooltipRef = useClickOutside<HTMLDivElement>(onClose, {
     ignoreSelectors: ['.fc-timeline-slots']
   })
-  const timelineBodyContainer = document.querySelector('.fc .fc-scrollgrid .fc-scroller.fc-scroller-liquid-absolute .fc-timeline-body')
+  const timelineBodyContainer = document.querySelector('.fc .fc-scrollgrid .fc-timeline-body')
 
   if (!timelineBodyContainer) return <></>
 

@@ -17,15 +17,15 @@ interface TimelineActionState extends Omit<TimelineActionArgs, 'action'> {
 }
 
 export default function ResourceTimeLine({
-                                           events = [],
-                                           resources = [],
-                                           options = {},
-                                           settings = {},
-                                           onEventClick,
-                                           onAction,
-                                           onResourceClick,
-                                           onChangeView
-                                         }: TimelineProps) {
+  events = [],
+  resources = [],
+  options = {},
+  settings = {},
+  onEventClick,
+  onAction,
+  onResourceClick,
+  onChangeView
+}: TimelineProps) {
   const [actionState, setActionState] = useState<TimelineActionState | null>(null);
   const calendarRef = useRef<{ calendar: CalendarApi, elRef: RefObject<HTMLElement> }>(null);
   const selectionTimeoutRef = useRef<NodeJS.Timeout>();
