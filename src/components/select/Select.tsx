@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef } from "react";
 import { useShowControl } from "../../hooks/useShowControl";
 import SelectDropdown from "./components/dropdown";
 import LoadingSelect from './components/loading_select';
@@ -24,9 +24,10 @@ export const Select = ({
   queryTitleName = "title_like",
   onChange = () => { },
 }: SelectProps) => {
-  const [dropdownPosition, setDropdownPosition] = useState<DOMRect>()
   const filterRef = useRef(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const dropdownPosition = useRef<DOMRect>()
+
   const { ref, isShow, setShow } = useShowControl(undefined, dropdownRef.current)
   const [select, dispatch] = useReducer(reducer, {
     data,
@@ -85,8 +86,6 @@ export const Select = ({
   const handleFilterClick = (evt: React.MouseEvent) => {
     if (isShow) {
       evt.stopPropagation()
-    } else {
-      updateFilteredData(select.filterValue)
     }
   }
 
@@ -127,17 +126,18 @@ export const Select = ({
     if (!ref.current) return
 
     const domRect = ref.current.getBoundingClientRect()
-    setDropdownPosition(domRect)
+    dropdownPosition.current = domRect
   }
 
   const handleContainerClick = () => {
-    if (closeOnSelect && isShow === true) {
+    if (closeOnSelect && isShow) {
       return setShow(false)
     }
 
     if (!readonly) {
       setCoordinates()
       setShow(true)
+      updateFilteredData(select.filterValue)
     }
   }
 
@@ -230,7 +230,7 @@ export const Select = ({
           isLoading={select.loading}
           selectedOptions={select.value}
           data={select.filteredData}
-          position={dropdownPosition}
+          position={dropdownPosition.current}
           onChange={handleSelectChange}
         />
       )}
