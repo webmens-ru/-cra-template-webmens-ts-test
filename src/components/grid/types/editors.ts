@@ -12,4 +12,4 @@ export type EditorsCollection = {
   [key in EditorTypes]: (props: EditorProps) => JSX.Element;
 };
 
-export type EditorTypes = "text" | "dropdown" | "date" | "checkbox"
+export type EditorTypes = "text" | "dropdown" | "date" | "checkbox" | "number"

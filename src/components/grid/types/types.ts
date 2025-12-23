@@ -15,7 +15,7 @@ export interface IGridProps {
   rowColorKey?: string;
   cellColorKey?: CellColorKey | CellColorKey[];
   columnMutation?: (arr: TRawColumnItem[]) => void;
-  onRowMutation?: (row: TRowItem, key: string, value: any) => void;
+  onRowMutation?: (row: TRowItem, key: string, value: any) => Promise<any> | void;
   onBurgerItemClick?: (arg: BurgerItem, row: TRowItem) => void;
   onChangeCheckboxes?: (arr: TRowID[]) => void;
   onCellClick?: (cell: TCellItem) => void;

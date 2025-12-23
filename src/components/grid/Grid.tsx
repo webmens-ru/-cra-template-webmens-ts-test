@@ -44,6 +44,21 @@ export const Grid2 = ({
   // @ts-ignore
   const { onColumnResize } = useColumnResize({ mutableColumns, draggableColumns, onResizeEnd: handleColumnsMutation })
 
+  const handleRowsChange = (rows: TRowItem[], data: any) => {
+    const prevRows = createRows
+    setCreateRows(rows)
+
+    if (data?.indexes?.length && data?.column && onRowMutation) {
+      const row = rows[data.indexes[0]]
+      const key = data.column.key
+      const value = row[key]
+
+      Promise.resolve(onRowMutation(row, key, value)).catch(() => {
+        setCreateRows(prevRows)
+      })
+    }
+  }
+
   function handleColumnsMutation(columns: TColumnItem[]) {
     setMutableColumns(columns)
     columnMutation(toRawColumns(columns))
@@ -102,7 +117,7 @@ export const Grid2 = ({
             summaryRows={footer}
             rowKeyGetter={rowKeyGetter}
             onColumnResize={onColumnResize}
-            onRowsChange={setCreateRows}
+            onRowsChange={handleRowsChange}
             onSortColumnsChange={setSortColumns}
             components={{ checkboxFormatter: CheckboxFormatter }}
             style={{ height }}

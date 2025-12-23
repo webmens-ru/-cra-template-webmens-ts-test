@@ -1,6 +1,7 @@
 import { SelectColumn } from 'react-data-grid';
 import SettingsCellHeader from './components/SettingsCellHeader';
 import TextEditor from './editors/TextEditor';
+import NumberEditor from './editors/NumberEditor';
 import ActionFormatter from './formatters/ActionFormatter';
 import { CommonFormatter } from './formatters/CommonFormatter';
 import { DateFormatter } from './formatters/DateFormatter';
@@ -55,5 +56,6 @@ export const EDITORS: EditorsCollection = {
   text: TextEditor,
   date: TextEditor,
   checkbox: TextEditor,
-  dropdown: TextEditor
+  dropdown: TextEditor,
+  number: NumberEditor
 }

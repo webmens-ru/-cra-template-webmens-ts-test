@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from '../icon';
 import { InputContainer, PostfixIconContainer, PrefixIconContainer } from './styles';
 import { IInputProps } from './types';
@@ -17,6 +17,11 @@ export const Input = ({
   onBlur = () => { },
 }: IInputProps) => {
   const [input, setInput] = useState({ value, focus: false })
+
+  // Обновляем внутреннее значение, если пропсы изменились извне
+  useEffect(() => {
+    setInput(prev => ({ ...prev, value }))
+  }, [value])
 
   // Срабатывает при изменении значения в поле
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {

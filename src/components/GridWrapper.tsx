@@ -101,9 +101,28 @@ export function GridWrapper({
   }
 
   const handleRowMutation = (row: TRowItem, key: string, value: any) => {
-    if (onRowMutation) {
-      onRowMutation({ id: row[rowKey], key, value, entity: slice.entity })
-    }
+    if (!onRowMutation) return Promise.resolve()
+
+    const mutation = onRowMutation({ id: row[rowKey], key, value, entity: slice.entity })
+    const promise =
+      mutation && typeof (mutation as any).unwrap === "function"
+        // @ts-ignore unwrap exists on RTK Query mutation trigger
+        ? (mutation as any).unwrap()
+        : Promise.resolve(mutation).then((res: any) => {
+            if (res?.error) {
+              throw res.error
+            }
+            return res
+          })
+
+    return promise.catch((err: any) => {
+      if (err?.data?.notification) {
+        notificationAPI.show(err.data.notification)
+      } else {
+        notificationAPI.show({ type: "error", content: "Не удалось сохранить изменения" })
+      }
+      return Promise.reject(err)
+    })
   }
 
   const checkboxesHandler = useCallback(
