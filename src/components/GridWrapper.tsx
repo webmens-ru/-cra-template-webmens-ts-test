@@ -116,7 +116,11 @@ export function GridWrapper({
           })
 
     return promise.catch((err: any) => {
-      if (err?.data?.notification) {
+      const summary = Array.isArray(err?.data?.errorSummary) ? err.data.errorSummary.join("\n") : null
+
+      if (summary) {
+        notificationAPI.show({ type: "error", content: summary })
+      } else if (err?.data?.notification) {
         notificationAPI.show(err.data.notification)
       } else {
         notificationAPI.show({ type: "error", content: "Не удалось сохранить изменения" })
