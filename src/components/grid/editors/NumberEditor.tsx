@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Input from "../../input";
 import { EditorProps } from "../types/editors";
+import { EditorConfig } from "../types";
 
 export default function NumberEditor({ row, column, onRowChange, onClose, onChangeEnd }: EditorProps) {
   const initialValue = row[column.key] ?? ""
   const [value, setValue] = useState(initialValue)
-  const editorProps = column.instance.editor?.editorProps
+  const editorProps = column.instance.editor?.editorProps as EditorConfig | undefined
   const key = editorProps?.name || column.key
 
   useEffect(() => {

@@ -52,6 +52,13 @@ export enum GridColor {
   "dark-purple" = "#b491ff",
 }
 
+// Дополнительные настройки для редакторов: name — алиас поля,
+// остальные ключи зависят от конкретного редактора (step/min/max для number, и т.д.)
+export type EditorConfig = {
+  name?: string;
+  [key: string]: any;
+}
+
 export type TRawColumnItem = {
   id: number;
   code: string;
@@ -67,9 +74,7 @@ export type TRawColumnItem = {
   info?: string;
   editor?: {
     type: EditorTypes,
-    editorProps?: {
-      name?: string
-    }
+    editorProps?: EditorConfig
   }
   order: number;
   width: number;
