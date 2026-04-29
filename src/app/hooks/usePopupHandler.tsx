@@ -2,9 +2,9 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { axiosInst } from "../api/baseQuery";
 import { PopupAction } from "../model/popup-action";
-import { ErrorResponse } from "../model/query";
 import { getPrintFrame } from "../utils/print";
-import type { NotificationAPI } from "../../components/notification/types";
+import { extractNotification, parseAxiosResponseBody } from "../utils/parseAxiosResponseBody";
+import type { NotificationAPI, NotificationProps } from "../../components/notification/types";
 
 interface usePopupHandlerProps {
   notificationAPI: NotificationAPI;
@@ -26,17 +26,35 @@ export default function usePopupHandler({ notificationAPI, onClosePopup }: usePo
     return axiosInst
       .post(popupAction.handler, { ...body, grid: popupAction.grid }, { responseType })
       .then((response) => {
-        if (response?.data && "notification" in response.data) {
-          notificationAPI.show(response.data.notification)
+        const data = response?.data;
+        if (
+          data &&
+          typeof data === "object" &&
+          !(typeof Blob !== "undefined" && data instanceof Blob) &&
+          "notification" in data
+        ) {
+          notificationAPI.show((data as { notification: NotificationProps }).notification);
         }
-        setIsShowPopup(false)
-        return response
+        setIsShowPopup(false);
+        return response;
       })
-      .catch((err: AxiosError<ErrorResponse>) => {
-        setIsShowPopup(false)
-        if (err.response?.data && "notification" in err.response.data) {
-          notificationAPI.show(err.response.data.notification)
+      .catch(async (err: AxiosError) => {
+        setIsShowPopup(false);
+        const parsed = await parseAxiosResponseBody(err.response?.data);
+        const notification = extractNotification(parsed);
+        if (notification) {
+          notificationAPI.show(notification);
+        } else {
+          notificationAPI.show({
+            type: "error",
+            closable: true,
+            content:
+              err.response?.status != null
+                ? `Произошла ошибка при отправке запроса (код ответа ${err.response.status}).`
+                : "Произошла ошибка при отправке запроса.",
+          });
         }
+        throw err;
       })
   }
 

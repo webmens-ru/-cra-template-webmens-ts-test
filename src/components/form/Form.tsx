@@ -1,4 +1,6 @@
 import React, { useEffect, useImperativeHandle, useReducer } from "react";
+import { AxiosError } from "axios";
+import { parseAxiosResponseBody, extractNotification } from "../../app/utils/parseAxiosResponseBody";
 import { Button } from "../button";
 import { EditForm } from "./components/EditForm";
 import { ViewForm } from "./components/ViewForm";
@@ -81,10 +83,23 @@ export const Form = React.forwardRef(({
         dispatch({ type: "submit_form" })
         onAfterSubmit(response)
         return true
-      }).catch(({ response }) => {
-        console.log('FORM CATCH', response, response.status)
-        if (response.status !== 500) {
-          dispatch({ type: "set_errors", errors: response.data })
+      }).catch(async (err: unknown) => {
+        const response = (err as AxiosError).response
+        console.log('FORM CATCH', response, response?.status)
+        if (!response || response.status === 500) {
+          return false
+        }
+        const parsed = await parseAxiosResponseBody(response.data)
+        if (Array.isArray(parsed)) {
+          dispatch({ type: "set_errors", errors: parsed })
+        } else if (
+          parsed &&
+          typeof parsed === 'object' &&
+          Array.isArray((parsed as { errors?: unknown }).errors)
+        ) {
+          dispatch({ type: "set_errors", errors: (parsed as { errors: IValidationErrorItem[] }).errors })
+        } else if (parsed && typeof parsed === 'object' && !extractNotification(parsed)) {
+          dispatch({ type: "set_errors", errors: parsed as IValidationErrorItem[] })
         }
         return false
       })
